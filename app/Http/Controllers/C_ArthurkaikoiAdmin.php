@@ -1,0 +1,2165 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Yajra\DataTables\Facades\DataTables;
+
+use App\Models\Koi;
+
+
+// Admin Master
+use App\Models\History;
+use App\Models\Variety;
+use App\Models\Bloodline;
+use App\Models\Breeder;
+use App\Models\Agent;
+use App\Models\HandlingAgent;
+
+// Admin Website
+use App\Models\AboutUs;
+use App\Models\ContactUs;
+use App\Models\News;
+use App\Models\OurCollection;
+
+
+
+
+class C_ArthurkaikoiAdmin extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function dashboard()
+    {
+        $koi = Koi::count();
+        $variety = Variety::count();
+        $bloodline = Bloodline::count();
+        $breeder = Breeder::count();
+        $agent = Agent::count();
+        return view('arthurkaikoiadmin.homemenu', compact('koi', 'variety', 'bloodline', 'breeder', 'agent'));
+    }
+
+    ### KOI ###
+
+    public function koi()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::all();
+        return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi'));
+    }
+
+    public function getDataKoi(Request $request)
+    {
+        $columns = [
+            0 => 'id',
+            1 => 'action',
+            2 => 'code',         
+            3 => 'nickname',
+            4 => 'variety',
+            5 => 'gender',
+            6 => 'birth',
+            7 => 'age',
+            8 => 'purchase_date',
+            10 => 'size',
+            11 => 'selleragent',
+            12 => 'handling_agent',
+            13 => 'price_buy',
+            14 => 'price_sell',
+            15 => 'kep_loc',
+            16 => 'date_of_sell',
+            17 => 'buyer_name',
+            18 => 'date_of_death',
+            19 => 'death_note',
+            20 => 'breeder',
+            21 => 'bloodline'
+        ];
+
+        $totalData = Koi::count();
+        $totalFiltered = $totalData;
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        if (empty($request->input('search.value'))) {
+            $kois = Koi::with('history')
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)
+                        ->get();
+        } else {
+            $search = $request->input('search.value');
+
+            $kois = Koi::with('history')
+                        ->where('code', 'LIKE', "%{$search}%")
+                        ->orWhere('nickname', 'LIKE', "%{$search}%")
+                        ->orWhere('gender', 'LIKE', "%{$search}%")
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)
+                        ->get();
+
+            $totalFiltered = Koi::with('history')
+                                ->where('code', 'LIKE', "%{$search}%")
+                                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                                ->orWhere('gender', 'LIKE', "%{$search}%")                
+                                ->count();
+        }
+
+        $data = [];
+        if (!empty($kois)) {
+            foreach ($kois as $index => $koi) {
+                    $nestedData['index'] = $start + $index + 1;
+                    $nestedData['id'] = $koi->id;
+                    $nestedData['action'] = view('partials.koi_actions', ['k' => $koi])->render();
+                    $nestedData['code'] = $koi->code;
+                    $nestedData['nickname'] = $koi->nickname ?? '-';
+                    $nestedData['variety'] = $koi->variety->name;
+                    $nestedData['gender'] = $koi->gender;
+                    $nestedData['birth'] = $koi->birthdate;
+                    // Calculate the age using Carbon
+                    if ($koi->birthdate) {
+                        $birthDate = Carbon::createFromFormat('Y-m-d', $koi->birthdate);
+                        $now = Carbon::now();
+                        $age = $birthDate->diff($now);
+                        $umurTahun = $age->y;
+                        $umurBulan = $age->m;
+                        $nestedData['age'] = $umurTahun . 'yr ' . $umurBulan . 'm ';
+                    } else {
+                        $nestedData['age'] = '-';
+                    }
+                    $nestedData['date_purchase'] = $koi->purchase_date;
+                    $nestedData['size'] = $koi->size;
+                    $nestedData['selleragent'] = $koi->seller;
+                    $nestedData['handling_agent'] = $koi->handler;
+                    $idrPriceBuy = $koi->price_buy_idr !== null ? number_format($koi->price_buy_idr) : '-';
+                    $jpyPriceBuy = $koi->price_buy_jpy !== null ? number_format($koi->price_buy_jpy) : '-';
+                    $nestedData['price_buy'] = 'IDR: ' . $idrPriceBuy . '<br>JPY: ' . $jpyPriceBuy;
+                    $idrPriceSell = $koi->price_sell_idr !== null ? number_format($koi->price_sell_idr) : '-';
+                    $jpyPriceSell = $koi->price_sell_jpy !== null ? number_format($koi->price_sell_jpy) : '-';
+                    $nestedData['price_sell'] = 'IDR: ' . $idrPriceBuy . '<br>JPY: ' . $jpyPriceBuy;
+                    $nestedData['kep_loc'] = $koi->kep_loc;
+                    $nestedData['sell_price_idr'] = $koi->sell_price_idr;
+                    $nestedData['sell_price_jpy'] = $koi->sell_price_jpy;
+                    $nestedData['date_of_sell'] = $koi->date_of_sell;
+                    $nestedData['buyer_name'] = $koi->buyer_name;
+                    $nestedData['date_of_death'] = $koi->date_of_death;
+                    $nestedData['death_note'] = $koi->death_note;
+                    $nestedData['breeder'] = $koi->breeder->name;
+                    $nestedData['bloodline'] = $koi->bloodline;
+
+                    $data[] = $nestedData;
+                }
+        }
+
+        $json_data = [
+            "draw" => intval($request->input('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        ];
+
+        echo json_encode($json_data);
+    }
+
+    public function getDataKoiZA(Request $request)
+    {
+        $columns = [
+            0 => 'id',
+            1 => 'action',
+            2 => 'koi_code',
+            3 => 'history_year',
+            4 => 'nickname',
+            5 => 'variety',
+            6 => 'gender',
+            7 => 'birth',
+            8 => 'age',
+            9 => 'date_purchese',
+            10 => 'size',
+            11 => 'salleragent',
+            12 => 'handling_agent',
+            13 => 'pricebuy_idr',
+            14 => 'pricebuy_jpy',
+            15 => 'kep_loc',
+            16 => 'sell_price_idr',
+            17 => 'sell_price_jpy',
+            18 => 'date_of_sell',
+            19 => 'buyer_name',
+            20 => 'date_of_death',
+            21 => 'death_note',
+            22 => 'breeder',
+            23 => 'bloodline'
+        ];
+
+        $totalData = Koi::count();
+        $totalFiltered = $totalData;
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        if (empty($request->input('search.value'))) {
+            $kois = Koi::with('history')
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy('koi_code', 'desc')
+                        ->orderBy($order, $dir)
+                        ->get();
+        } else {
+            $search = $request->input('search.value');
+
+            $kois = Koi::with('history')
+                        ->where('koi_code', 'LIKE', "%{$search}%")
+                        ->orWhere('nickname', 'LIKE', "%{$search}%")
+                        ->orWhere('variety', 'LIKE', "%{$search}%")
+                        ->orWhere('gender', 'LIKE', "%{$search}%")
+                        // Add other search fields as necessary
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)
+                        ->get();
+
+            $totalFiltered = Koi::with('history')
+                                ->where('koi_code', 'LIKE', "%{$search}%")
+                                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                                ->orWhere('variety', 'LIKE', "%{$search}%")
+                                ->orWhere('gender', 'LIKE', "%{$search}%")
+                                // Add other search fields as necessary
+                                ->count();
+        }
+
+        $data = [];
+        if (!empty($kois)) {
+            foreach ($kois as $index => $koi) {
+                foreach ($koi->history as $history) {
+                    $nestedData['index'] = $start + $index + 1;
+                    $nestedData['id_koi'] = $koi->id;
+                    $nestedData['action'] = view('partials.koi_actions', ['k' => $koi])->render();
+                    $nestedData['koi_code'] = $koi->koi_code;
+                    $nestedData['nickname'] = $koi->nickname;
+                    $nestedData['variety'] = $koi->variety;
+                    $nestedData['gender'] = $koi->gender;
+                    $nestedData['birth'] = $koi->birth;
+                    // Calculate the age using Carbon
+                    if ($koi->birth) {
+                        $birthDate = Carbon::createFromFormat('Y-m', $koi->birth);
+                        $now = Carbon::now();
+                        $age = $birthDate->diff($now);
+                        $umurTahun = $age->y;
+                        $umurBulan = $age->m;
+                        $nestedData['age'] = $umurTahun . 'yr ' . $umurBulan . 'm ';
+                    } else {
+                        $nestedData['age'] = '-';
+                    }
+                    $nestedData['date_purchese'] = $koi->date_purchese;
+                    $nestedData['size'] = $history->size;
+                    $nestedData['salleragent'] = $koi->salleragent;
+                    $nestedData['handling_agent'] = $history->handling_agent;
+                    $nestedData['pricebuy_idr'] = $koi->pricebuy_idr;
+                    $nestedData['pricebuy_jpy'] = $koi->pricebuy_jpy;
+                    $nestedData['kep_loc'] = $koi->kep_loc;
+                    $nestedData['sell_price_idr'] = $history->sell_price_idr;
+                    $nestedData['sell_price_jpy'] = $history->sell_price_jpy;
+                    $nestedData['date_of_sell'] = $history->date_of_sell;
+                    $nestedData['buyer_name'] = $history->buyer_name;
+                    $nestedData['date_of_death'] = $history->date_of_death;
+                    $nestedData['death_note'] = $history->death_note;
+                    $nestedData['breeder'] = $koi->breeder;
+                    $nestedData['bloodline'] = $koi->bloodline;
+
+                    $data[] = $nestedData;
+                }
+            }
+        }
+
+        $json_data = [
+            "draw" => intval($request->input('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        ];
+
+        echo json_encode($json_data);
+    }
+
+    public function getDataKoi19(Request $request)
+    {
+        $columns = [
+            0 => 'id_koi',
+            1 => 'action',
+            2 => 'koi_code',
+            3 => 'history_year',
+            4 => 'nickname',
+            5 => 'variety',
+            6 => 'gender',
+            7 => 'birth',
+            8 => 'age',
+            9 => 'date_purchese',
+            10 => 'size',
+            11 => 'salleragent',
+            12 => 'handling_agent',
+            13 => 'pricebuy_idr',
+            14 => 'pricebuy_jpy',
+            15 => 'kep_loc',
+            16 => 'sell_price_idr',
+            17 => 'sell_price_jpy',
+            18 => 'date_of_sell',
+            19 => 'buyer_name',
+            20 => 'date_of_death',
+            21 => 'death_note',
+            22 => 'breeder',
+            23 => 'bloodline'
+        ];
+
+        $totalData = Koi::count();
+        $totalFiltered = $totalData;
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        if (empty($request->input('search.value'))) {
+            $kois = Koi::with('history')
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy('koi_code', 'asc')
+                        ->orderBy($order, $dir)
+                        ->get();
+        } else {
+            $search = $request->input('search.value');
+
+            $kois = Koi::with('history')
+                        ->where('koi_code', 'LIKE', "%{$search}%")
+                        ->orWhere('nickname', 'LIKE', "%{$search}%")
+                        ->orWhere('variety', 'LIKE', "%{$search}%")
+                        ->orWhere('gender', 'LIKE', "%{$search}%")
+                        // Add other search fields as necessary
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)
+                        ->get();
+
+            $totalFiltered = Koi::with('history')
+                                ->where('koi_code', 'LIKE', "%{$search}%")
+                                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                                ->orWhere('variety', 'LIKE', "%{$search}%")
+                                ->orWhere('gender', 'LIKE', "%{$search}%")
+                                // Add other search fields as necessary
+                                ->count();
+        }
+
+        $data = [];
+        if (!empty($kois)) {
+            foreach ($kois as $index => $koi) {
+                foreach ($koi->history as $history) {
+                    $nestedData['index'] = $start + $index + 1;
+                    $nestedData['id_koi'] = $koi->id;
+                    $nestedData['action'] = view('partials.koi_actions', ['k' => $koi])->render();
+                    $nestedData['koi_code'] = $koi->koi_code;
+                    $nestedData['history_year'] = $history->year;
+                    $nestedData['nickname'] = $koi->nickname;
+                    $nestedData['variety'] = $koi->variety;
+                    $nestedData['gender'] = $koi->gender;
+                    $nestedData['birth'] = $koi->birth;
+                    // Calculate the age using Carbon
+                    if ($koi->birth) {
+                        $birthDate = Carbon::createFromFormat('Y-m', $koi->birth);
+                        $now = Carbon::now();
+                        $age = $birthDate->diff($now);
+                        $umurTahun = $age->y;
+                        $umurBulan = $age->m;
+                        $nestedData['age'] = $umurTahun . 'yr ' . $umurBulan . 'm ';
+                    } else {
+                        $nestedData['age'] = '-';
+                    }
+                    $nestedData['date_purchese'] = $koi->date_purchese;
+                    $nestedData['size'] = $history->size;
+                    $nestedData['salleragent'] = $koi->salleragent;
+                    $nestedData['handling_agent'] = $history->handling_agent;
+                    $nestedData['pricebuy_idr'] = $koi->pricebuy_idr;
+                    $nestedData['pricebuy_jpy'] = $koi->pricebuy_jpy;
+                    $nestedData['kep_loc'] = $koi->kep_loc;
+                    $nestedData['sell_price_idr'] = $history->sell_price_idr;
+                    $nestedData['sell_price_jpy'] = $history->sell_price_jpy;
+                    $nestedData['date_of_sell'] = $history->date_of_sell;
+                    $nestedData['buyer_name'] = $history->buyer_name;
+                    $nestedData['date_of_death'] = $history->date_of_death;
+                    $nestedData['death_note'] = $history->death_note;
+                    $nestedData['breeder'] = $koi->breeder;
+                    $nestedData['bloodline'] = $koi->bloodline;
+
+                    $data[] = $nestedData;
+                }
+            }
+        }
+
+        $json_data = [
+            "draw" => intval($request->input('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        ];
+
+        echo json_encode($json_data);
+    }
+
+    public function getDataKoi91(Request $request)
+    {
+        $columns = [
+            0 => 'id_koi',
+            1 => 'action',
+            2 => 'koi_code',
+            3 => 'history_year',
+            4 => 'nickname',
+            5 => 'variety',
+            6 => 'gender',
+            7 => 'birth',
+            8 => 'age',
+            9 => 'date_purchese',
+            10 => 'size',
+            11 => 'salleragent',
+            12 => 'handling_agent',
+            13 => 'pricebuy_idr',
+            14 => 'pricebuy_jpy',
+            15 => 'kep_loc',
+            16 => 'sell_price_idr',
+            17 => 'sell_price_jpy',
+            18 => 'date_of_sell',
+            19 => 'buyer_name',
+            20 => 'date_of_death',
+            21 => 'death_note',
+            22 => 'breeder',
+            23 => 'bloodline'
+        ];
+
+        $totalData = Koi::count();
+        $totalFiltered = $totalData;
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        if (empty($request->input('search.value'))) {
+            $kois = Koi::with('history')
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy('koi_code', 'desc')
+                        ->orderBy($order, $dir)
+                        ->get();
+        } else {
+            $search = $request->input('search.value');
+
+            $kois = Koi::with('history')
+                        ->where('koi_code', 'LIKE', "%{$search}%")
+                        ->orWhere('nickname', 'LIKE', "%{$search}%")
+                        ->orWhere('variety', 'LIKE', "%{$search}%")
+                        ->orWhere('gender', 'LIKE', "%{$search}%")
+                        // Add other search fields as necessary
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)
+                        ->get();
+
+            $totalFiltered = Koi::with('history')
+                                ->where('koi_code', 'LIKE', "%{$search}%")
+                                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                                ->orWhere('variety', 'LIKE', "%{$search}%")
+                                ->orWhere('gender', 'LIKE', "%{$search}%")
+                                // Add other search fields as necessary
+                                ->count();
+        }
+
+        $data = [];
+        if (!empty($kois)) {
+            foreach ($kois as $index => $koi) {
+                foreach ($koi->history as $history) {
+                    $nestedData['index'] = $start + $index + 1;
+                    $nestedData['id_koi'] = $koi->id;
+                    $nestedData['action'] = view('partials.koi_actions', ['k' => $koi])->render();
+                    $nestedData['koi_code'] = $koi->koi_code;
+                    $nestedData['history_year'] = $history->year;
+                    $nestedData['nickname'] = $koi->nickname;
+                    $nestedData['variety'] = $koi->variety;
+                    $nestedData['gender'] = $koi->gender;
+                    $nestedData['birth'] = $koi->birth;
+                    // Calculate the age using Carbon
+                    if ($koi->birth) {
+                        $birthDate = Carbon::createFromFormat('Y-m', $koi->birth);
+                        $now = Carbon::now();
+                        $age = $birthDate->diff($now);
+                        $umurTahun = $age->y;
+                        $umurBulan = $age->m;
+                        $nestedData['age'] = $umurTahun . 'yr ' . $umurBulan . 'm ';
+                    } else {
+                        $nestedData['age'] = '-';
+                    }
+                    $nestedData['date_purchese'] = $koi->date_purchese;
+                    $nestedData['size'] = $history->size;
+                    $nestedData['salleragent'] = $koi->salleragent;
+                    $nestedData['handling_agent'] = $history->handling_agent;
+                    $nestedData['pricebuy_idr'] = $koi->pricebuy_idr;
+                    $nestedData['pricebuy_jpy'] = $koi->pricebuy_jpy;
+                    $nestedData['kep_loc'] = $koi->kep_loc;
+                    $nestedData['sell_price_idr'] = $history->sell_price_idr;
+                    $nestedData['sell_price_jpy'] = $history->sell_price_jpy;
+                    $nestedData['date_of_sell'] = $history->date_of_sell;
+                    $nestedData['buyer_name'] = $history->buyer_name;
+                    $nestedData['date_of_death'] = $history->date_of_death;
+                    $nestedData['death_note'] = $history->death_note;
+                    $nestedData['breeder'] = $koi->breeder;
+                    $nestedData['bloodline'] = $koi->bloodline;
+
+                    $data[] = $nestedData;
+                }
+            }
+        }
+
+        $json_data = [
+            "draw" => intval($request->input('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        ];
+
+        echo json_encode($json_data);
+    }
+
+    public function getDataKoiHigh(Request $request)
+    {
+        $columns = [
+            0 => 'id_koi',
+            1 => 'action',
+            2 => 'koi_code',
+            3 => 'history_year',
+            4 => 'nickname',
+            5 => 'variety',
+            6 => 'gender',
+            7 => 'birth',
+            8 => 'age',
+            9 => 'date_purchese',
+            10 => 'size',
+            11 => 'salleragent',
+            12 => 'handling_agent',
+            13 => 'pricebuy_idr',
+            14 => 'pricebuy_jpy',
+            15 => 'kep_loc',
+            16 => 'sell_price_idr',
+            17 => 'sell_price_jpy',
+            18 => 'date_of_sell',
+            19 => 'buyer_name',
+            20 => 'date_of_death',
+            21 => 'death_note',
+            22 => 'breeder',
+            23 => 'bloodline'
+        ];
+
+        $totalData = Koi::count();
+        $totalFiltered = $totalData;
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        if (empty($request->input('search.value'))) {
+            $kois = Koi::with('history')
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy('pricebuy_idr', 'desc')
+                        ->orderBy($order, $dir)
+                        ->get();
+        } else {
+            $search = $request->input('search.value');
+
+            $kois = Koi::with('history')
+                        ->where('koi_code', 'LIKE', "%{$search}%")
+                        ->orWhere('nickname', 'LIKE', "%{$search}%")
+                        ->orWhere('variety', 'LIKE', "%{$search}%")
+                        ->orWhere('gender', 'LIKE', "%{$search}%")
+                        // Add other search fields as necessary
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)
+                        ->get();
+
+            $totalFiltered = Koi::with('history')
+                                ->where('koi_code', 'LIKE', "%{$search}%")
+                                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                                ->orWhere('variety', 'LIKE', "%{$search}%")
+                                ->orWhere('gender', 'LIKE', "%{$search}%")
+                                // Add other search fields as necessary
+                                ->count();
+        }
+
+        $data = [];
+        if (!empty($kois)) {
+            foreach ($kois as $index => $koi) {
+                foreach ($koi->history as $history) {
+                    $nestedData['index'] = $start + $index + 1;
+                    $nestedData['id_koi'] = $koi->id;
+                    $nestedData['action'] = view('partials.koi_actions', ['k' => $koi])->render();
+                    $nestedData['koi_code'] = $koi->koi_code;
+                    $nestedData['history_year'] = $history->year;
+                    $nestedData['nickname'] = $koi->nickname;
+                    $nestedData['variety'] = $koi->variety;
+                    $nestedData['gender'] = $koi->gender;
+                    $nestedData['birth'] = $koi->birth;
+                    // Calculate the age using Carbon
+                    if ($koi->birth) {
+                        $birthDate = Carbon::createFromFormat('Y-m', $koi->birth);
+                        $now = Carbon::now();
+                        $age = $birthDate->diff($now);
+                        $umurTahun = $age->y;
+                        $umurBulan = $age->m;
+                        $nestedData['age'] = $umurTahun . 'yr ' . $umurBulan . 'm ';
+                    } else {
+                        $nestedData['age'] = '-';
+                    }
+                    $nestedData['date_purchese'] = $koi->date_purchese;
+                    $nestedData['size'] = $history->size;
+                    $nestedData['salleragent'] = $koi->salleragent;
+                    $nestedData['handling_agent'] = $history->handling_agent;
+                    $nestedData['pricebuy_idr'] = $koi->pricebuy_idr;
+                    $nestedData['pricebuy_jpy'] = $koi->pricebuy_jpy;
+                    $nestedData['kep_loc'] = $koi->kep_loc;
+                    $nestedData['sell_price_idr'] = $history->sell_price_idr;
+                    $nestedData['sell_price_jpy'] = $history->sell_price_jpy;
+                    $nestedData['date_of_sell'] = $history->date_of_sell;
+                    $nestedData['buyer_name'] = $history->buyer_name;
+                    $nestedData['date_of_death'] = $history->date_of_death;
+                    $nestedData['death_note'] = $history->death_note;
+                    $nestedData['breeder'] = $koi->breeder;
+                    $nestedData['bloodline'] = $koi->bloodline;
+
+                    $data[] = $nestedData;
+                }
+            }
+        }
+
+        $json_data = [
+            "draw" => intval($request->input('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        ];
+
+        echo json_encode($json_data);
+    }
+
+    public function getDataKoiLow(Request $request)
+    {
+        $columns = [
+            0 => 'id_koi',
+            1 => 'action',
+            2 => 'koi_code',
+            3 => 'history_year',
+            4 => 'nickname',
+            5 => 'variety',
+            6 => 'gender',
+            7 => 'birth',
+            8 => 'age',
+            9 => 'date_purchese',
+            10 => 'size',
+            11 => 'salleragent',
+            12 => 'handling_agent',
+            13 => 'pricebuy_idr',
+            14 => 'pricebuy_jpy',
+            15 => 'kep_loc',
+            16 => 'sell_price_idr',
+            17 => 'sell_price_jpy',
+            18 => 'date_of_sell',
+            19 => 'buyer_name',
+            20 => 'date_of_death',
+            21 => 'death_note',
+            22 => 'breeder',
+            23 => 'bloodline'
+        ];
+
+        $totalData = Koi::count();
+        $totalFiltered = $totalData;
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        if (empty($request->input('search.value'))) {
+            $kois = Koi::with('history')
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy('pricebuy_idr', 'asc')
+                        ->orderBy($order, $dir)
+                        ->get();
+        } else {
+            $search = $request->input('search.value');
+
+            $kois = Koi::with('history')
+                        ->where('koi_code', 'LIKE', "%{$search}%")
+                        ->orWhere('nickname', 'LIKE', "%{$search}%")
+                        ->orWhere('variety', 'LIKE', "%{$search}%")
+                        ->orWhere('gender', 'LIKE', "%{$search}%")
+                        // Add other search fields as necessary
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)
+                        ->get();
+
+            $totalFiltered = Koi::with('history')
+                                ->where('koi_code', 'LIKE', "%{$search}%")
+                                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                                ->orWhere('variety', 'LIKE', "%{$search}%")
+                                ->orWhere('gender', 'LIKE', "%{$search}%")
+                                // Add other search fields as necessary
+                                ->count();
+        }
+
+        $data = [];
+        if (!empty($kois)) {
+            foreach ($kois as $index => $koi) {
+                foreach ($koi->history as $history) {
+                    $nestedData['index'] = $start + $index + 1;
+                    $nestedData['id_koi'] = $koi->id;
+                    $nestedData['action'] = view('partials.koi_actions', ['k' => $koi])->render();
+                    $nestedData['koi_code'] = $koi->koi_code;
+                    $nestedData['history_year'] = $history->year;
+                    $nestedData['nickname'] = $koi->nickname;
+                    $nestedData['variety'] = $koi->variety;
+                    $nestedData['gender'] = $koi->gender;
+                    $nestedData['birth'] = $koi->birth;
+                    // Calculate the age using Carbon
+                    if ($koi->birth) {
+                        $birthDate = Carbon::createFromFormat('Y-m', $koi->birth);
+                        $now = Carbon::now();
+                        $age = $birthDate->diff($now);
+                        $umurTahun = $age->y;
+                        $umurBulan = $age->m;
+                        $nestedData['age'] = $umurTahun . 'yr ' . $umurBulan . 'm ';
+                    } else {
+                        $nestedData['age'] = '-';
+                    }
+                    $nestedData['date_purchese'] = $koi->date_purchese;
+                    $nestedData['size'] = $history->size;
+                    $nestedData['salleragent'] = $koi->salleragent;
+                    $nestedData['handling_agent'] = $history->handling_agent;
+                    $nestedData['pricebuy_idr'] = $koi->pricebuy_idr;
+                    $nestedData['pricebuy_jpy'] = $koi->pricebuy_jpy;
+                    $nestedData['kep_loc'] = $koi->kep_loc;
+                    $nestedData['sell_price_idr'] = $history->sell_price_idr;
+                    $nestedData['sell_price_jpy'] = $history->sell_price_jpy;
+                    $nestedData['date_of_sell'] = $history->date_of_sell;
+                    $nestedData['buyer_name'] = $history->buyer_name;
+                    $nestedData['date_of_death'] = $history->date_of_death;
+                    $nestedData['death_note'] = $history->death_note;
+                    $nestedData['breeder'] = $koi->breeder;
+                    $nestedData['bloodline'] = $koi->bloodline;
+
+                    $data[] = $nestedData;
+                }
+            }
+        }
+
+        $json_data = [
+            "draw" => intval($request->input('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        ];
+
+        echo json_encode($json_data);
+    }
+
+
+    public function koigrid()
+    {
+        $koitotal = Koi::count();
+        $koi = koi::latest()->paginate(8);
+        return view('arthurkaikoiadmin.koi.koi_grid', compact('koitotal', 'koi'));
+    }
+
+    public function koigridsearch(request $request)
+    {
+        $koitotal = Koi::count();
+        $search = $request->search;
+        $koi = Koi::where('variety', 'like', "%" . $search . "%")
+        ->orWhere('koi_code', 'like', "%" . $search . "%")
+        ->orWhere('bloodline', 'like', "%" . $search . "%")
+        ->orWhere('variety', 'like', "%" . $search . "%")
+        ->orWhere('breeder', 'like', "%" . $search . "%")
+        ->orWhere('gender', 'like', "%" . $search . "%")
+        ->orWhere('n_status', 'like', "%" . $search . "%")
+        ->get();
+        return view('arthurkaikoiadmin.koi.koi_grid_search', compact('koitotal', 'koi'));
+    }
+
+    public function koidetail($id)
+    {
+        $koi = Koi::with('history')->where('id', $id)->get();
+        return view('arthurkaikoiadmin.koi.koi_detail', compact('koi'));
+    }
+
+    public function koidetailgrid($id)
+    {
+        $koi = Koi::where('id', $id)->get();
+        return view('arthurkaikoiadmin.koi.koi_detail_grid', compact('koi'));
+    }
+
+    public function koiadd()
+    {
+        $variety = Variety::all();
+        $bloodline = Bloodline::all();
+        $breeder = Breeder::all();
+        $agent = Agent::all();
+
+        return view('arthurkaikoiadmin.koi.koi_add', compact('variety', 'bloodline', 'breeder', 'agent'));
+    }
+
+    public function getyear(Request $request)
+    {
+        $koi_id = $request->input('koi_id');
+        $year = $request->input('year');
+        $history = History::where('koi_id', $koi_id)->where('year', $year)->get();
+
+
+        return response()->json($history);
+    }
+
+    public function koigadd()
+    {
+        $variety = Variety::all();
+        $bloodline = Bloodline::all();
+        $breeder = Breeder::all();
+        $agent = Agent::all();
+        return view('arthurkaikoiadmin.koi.koig_add', compact('variety', 'bloodline', 'breeder', 'agent'));
+    }
+
+    public function koistore(request $request)
+    {
+        $mmyy = Carbon::createFromFormat('Y-m', $request->date_purchese);
+        $date_purchese = $mmyy->format('my');
+        $code_variety = Variety::where('variety_name', $request->variety)->first();
+        $variety = $code_variety->variety_code;
+        $code_breeder = Breeder::where('breeder_name', $request->breeder)->first();
+        $breeder = $code_breeder->breeder_code;
+
+        $sequence_awal = '00001';
+
+        $code_koi_fill = $variety . $breeder . $date_purchese . $sequence_awal;
+
+        $koi_code_where = koi::where('koi_code', $code_koi_fill)->first();
+
+        // Jika kode koi belum ada dalam database
+        if ($koi_code_where == null) {
+            $sequence = '00001';
+        } else {
+            // Jika kode koi sudah ada dalam database
+            // Periksa apakah semua entitas sebelumnya memiliki nilai yang sama untuk variety, breeder, dan date_purchese
+            $previous_kois = Koi::where('code_variety', $variety)
+                                ->orWhere('code_breeder', $breeder)
+                                ->orWhere('code_purchasedate', $date_purchese)
+                                ->orderBy('code_sequence', 'desc')
+                                ->get();
+
+            if ($previous_kois->isEmpty()) {
+                // Jika tidak ada entitas sebelumnya yang memiliki nilai yang sama
+                $sequence = '00001';
+            } else {
+                // Jika ada entitas sebelumnya yang memiliki nilai yang sama
+                // Periksa nomor urutan terakhir
+                $last_sequence = intval($previous_kois->first()->code_sequence);
+                $next_sequence = $last_sequence + 1;
+                $sequence = str_pad($next_sequence, 5, '0', STR_PAD_LEFT);
+            }
+        }
+
+        $code_koi = $variety . $breeder . $date_purchese . $sequence;
+
+
+        $image = array();
+        if($files = $request->file('link_photo')){
+          foreach ($files as $file){
+            $link_photos = time()."_".$file->getClientOriginalName();
+            $tujuan_upload = 'img/koi/photo';
+            $image_url = $link_photos;
+            $file->move($tujuan_upload,$link_photos);
+            $image[] = $image_url;
+          }
+        }
+        else if($request->file('link_photo') == null)
+        {
+            $image[] = '';
+        }
+        else{
+            $image[] = '';
+        }
+
+        // $imageh = array();
+        // if($files = $request->file('photo_highlight')){
+        //   foreach ($files as $file){
+        //     $photo_highlights = time()."_".$file->getClientOriginalName();
+        //     $tujuan_upload = 'img/koi/photo_highlight';
+        //     $imageh_url = $photo_highlights;
+        //     $file->move($tujuan_upload,$photo_highlights);
+        //     $imageh[] = $imageh_url;
+        //   }
+        // }
+        // else if($request->file('photo_highlight') == null)
+        // {
+        //     $imageh[] = '';
+        // }
+        // else{
+        //     $imageh[] = '';
+        // }
+
+        $imagev = array();
+        if($files = $request->file('link_video')){
+          foreach ($files as $file){
+            $link_videos = time()."_".$file->getClientOriginalName();
+            $tujuan_upload = 'img/koi/video';
+            $image_url = $link_videos;
+            $file->move($tujuan_upload,$link_videos);
+            $imagev[] = $image_url;
+          }
+        }
+        else if($request->file('link_video') == null)
+        {
+            $imagev[] = '';
+        }
+        else{
+            $imagev[] = '';
+        }
+
+        if($request->file('link_trophy') != null){
+            $link_trophy = $request->file('link_trophy');
+            $link_trophys = time()."_".$link_trophy->getClientOriginalName();
+            $tujuan_upload = 'img/koi/trophy';
+            $link_trophy->move($tujuan_upload,$link_trophys);
+        }
+        else{
+            $link_trophys = '';
+        }
+
+        if($request->file('link_certificate') != null){
+            $link_certificate = $request->file('link_certificate');
+            $link_certificates = time()."_".$link_certificate->getClientOriginalName();
+            $tujuan_upload = 'img/koi/certificate';
+            $link_certificate->move($tujuan_upload,$link_certificates);
+        }
+        else{
+            $link_certificates = '';
+        }
+
+
+        $koi = Koi::create([
+            'koi_code' => $code_koi,
+            'code_variety' => $variety,
+            'code_breeder' => $breeder,
+            'code_purchasedate' => $date_purchese,
+            'code_sequence' => $sequence,
+            'nickname' => $request->nickname,
+            'variety' => $request->variety,
+            'birth' => $request->birth,
+            'gender' => $request->gender,
+            'date_purchese' => $request->date_purchese,
+            'salleragent' => $request->salleragent,
+            'pricebuy_idr' => $request->pricebuy_idr,
+            'pricebuy_jpy' => $request->pricebuy_jpy,
+            'breeder' => $request->breeder,
+            'bloodline' => $request->bloodline,
+            'year' => $request->year,
+            'n_status' => $request->n_status,
+        ]);
+
+        History::create([
+            'koi_id' => $koi->id,
+            'year' => $request->year,
+            'age' => $request->age,
+            'size' => $request->size,
+            'hagent' => $request->hagent,
+            'kep_loc' => $request->kep_loc,
+            'link_photo' => implode('|', $image),
+            'link_video' => implode('|', $imagev),
+            'link_trophy' => $link_trophys,
+            'name_trophy' => $request->name_trophys,
+            'link_certificate' => $link_certificates,
+            'name_certificate' => $request->name_certificate,
+            'pricesell_idr' => $request->pricesell_idr,
+            'pricesell_jpy' => $request->pricesell_jpy,
+            'buyer_name' => $request->buyer_name,
+            'death_date' => $request->death_date,
+            'death_note' => $request->death_note,
+            'koi_sequence' => $sequence,
+        ]);
+
+
+
+
+        return redirect('/CMS/koi');
+    }
+
+    public function koigstore(request $request)
+    {
+
+        $mmyy = Carbon::createFromFormat('Y-m', $request->date_purchese);
+        $date_purchese = $mmyy->format('my');
+        $code_variety = Variety::where('variety_name', $request->variety)->first();
+        $variety = $code_variety->variety_code;
+        $code_breeder = Breeder::where('breeder_name', $request->breeder)->first();
+        $breeder = $code_breeder->breeder_code;
+
+        $sequence_awal = '00001';
+
+        $code_koi_fill = $variety . $breeder . $date_purchese . $sequence_awal;
+
+        $koi_code_where = koi::where('koi_code', $code_koi_fill)->first();
+
+        // Jika kode koi belum ada dalam database
+        if ($koi_code_where == null) {
+            $sequence = '00001';
+        } else {
+            // Jika kode koi sudah ada dalam database
+            // Periksa apakah semua entitas sebelumnya memiliki nilai yang sama untuk variety, breeder, dan date_purchese
+            $previous_kois = Koi::where('code_variety', $variety)
+                                ->orWhere('code_breeder', $breeder)
+                                ->orWhere('code_purchasedate', $date_purchese)
+                                ->orderBy('code_sequence', 'desc')
+                                ->get();
+
+            if ($previous_kois->isEmpty()) {
+                // Jika tidak ada entitas sebelumnya yang memiliki nilai yang sama
+                $sequence = '00001';
+            } else {
+                // Jika ada entitas sebelumnya yang memiliki nilai yang sama
+                // Periksa nomor urutan terakhir
+                $last_sequence = intval($previous_kois->first()->code_sequence);
+                $next_sequence = $last_sequence + 1;
+                $sequence = str_pad($next_sequence, 5, '0', STR_PAD_LEFT);
+            }
+        }
+
+        $code_koi = $variety . $breeder . $date_purchese . $sequence;
+
+
+        $image = array();
+        if($files = $request->file('link_photo')){
+          foreach ($files as $file){
+            $link_photos = time()."_".$file->getClientOriginalName();
+            $tujuan_upload = 'img/koi/photo';
+            $image_url = $link_photos;
+            $file->move($tujuan_upload,$link_photos);
+            $image[] = $image_url;
+          }
+        }
+        else if($request->file('link_photo') == null)
+        {
+            $image[] = '';
+        }
+        else{
+            $image[] = '';
+        }
+
+        // $imageh = array();
+        // if($files = $request->file('photo_highlight')){
+        //   foreach ($files as $file){
+        //     $photo_highlights = time()."_".$file->getClientOriginalName();
+        //     $tujuan_upload = 'img/koi/photo_highlight';
+        //     $imageh_url = $photo_highlights;
+        //     $file->move($tujuan_upload,$photo_highlights);
+        //     $imageh[] = $imageh_url;
+        //   }
+        // }
+        // else if($request->file('photo_highlight') == null)
+        // {
+        //     $imageh[] = '';
+        // }
+        // else{
+        //     $imageh[] = '';
+        // }
+
+        $imagev = array();
+        if($files = $request->file('link_video')){
+          foreach ($files as $file){
+            $link_videos = time()."_".$file->getClientOriginalName();
+            $tujuan_upload = 'img/koi/video';
+            $image_url = $link_videos;
+            $file->move($tujuan_upload,$link_videos);
+            $imagev[] = $image_url;
+          }
+        }
+        else if($request->file('link_video') == null)
+        {
+            $imagev[] = '';
+        }
+        else{
+            $imagev[] = '';
+        }
+
+        if($request->file('link_trophy') != null){
+            $link_trophy = $request->file('link_trophy');
+            $link_trophys = time()."_".$link_trophy->getClientOriginalName();
+            $tujuan_upload = 'img/koi/trophy';
+            $link_trophy->move($tujuan_upload,$link_trophys);
+        }
+        else{
+            $link_trophys = '';
+        }
+
+        if($request->file('link_certificate') != null){
+            $link_certificate = $request->file('link_certificate');
+            $link_certificates = time()."_".$link_certificate->getClientOriginalName();
+            $tujuan_upload = 'img/koi/certificate';
+            $link_certificate->move($tujuan_upload,$link_certificates);
+        }
+        else{
+            $link_certificates = '';
+        }
+
+
+        $koi = Koi::create([
+            'koi_code' => $code_koi,
+            'code_variety' => $variety,
+            'code_breeder' => $breeder,
+            'code_purchasedate' => $date_purchese,
+            'code_sequence' => $sequence,
+            'nickname' => $request->nickname,
+            'variety' => $request->variety,
+            'birth' => $request->birth,
+            'gender' => $request->gender,
+            'date_purchese' => $request->date_purchese,
+            'salleragent' => $request->salleragent,
+            'pricebuy_idr' => $request->pricebuy_idr,
+            'pricebuy_jpy' => $request->pricebuy_jpy,
+            'breeder' => $request->breeder,
+            'bloodline' => $request->bloodline,
+            'year' => $request->year,
+            'n_status' => $request->n_status,
+        ]);
+
+        History::create([
+            'koi_id' => $koi->id,
+            'year' => $request->year,
+            'age' => $request->age,
+            'size' => $request->size,
+            'hagent' => $request->hagent,
+            'kep_loc' => $request->kep_loc,
+            'link_photo' => implode('|', $image),
+            'link_video' => implode('|', $imagev),
+            'link_trophy' => $link_trophys,
+            'name_trophy' => $request->name_trophys,
+            'link_certificate' => $link_certificates,
+            'name_certificate' => $request->name_certificate,
+            'pricesell_idr' => $request->pricesell_idr,
+            'pricesell_jpy' => $request->pricesell_jpy,
+            'buyer_name' => $request->buyer_name,
+            'death_date' => $request->death_date,
+            'death_note' => $request->death_note,
+        ]);
+
+
+
+
+        return redirect('/CMS/koi/grid');
+    }
+
+    public function koiuploads(Request $request)
+    {
+        $path = storage_path('tmp/uploads');
+
+        // !file_exists($path)) && mkdir($path, 0777, true);
+
+        $file = $request->file('file');
+        $name = uniqid() . '_' . trim($file->getClientOriginalName());
+        $file->move($path, $name);
+
+        return response()->json([
+            'name'          => $name,
+            'original_name' => $file->getClientOriginalName(),
+        ]);
+    }
+
+    public function koiedit($id)
+    {
+        $koi = Koi::where('id_koi', $id)->get();
+        $variety = Variety::all();
+        $bloodline = Bloodline::all();
+        $breeder = Breeder::all();
+        $agent = Agent::all();
+        $sequence = History::where('koi_id', $id)->get();
+        return view('arthurkaikoiadmin.koi.koi_edit', compact('koi', 'variety', 'bloodline', 'breeder', 'agent', 'sequence'));
+    }
+
+    public function koigedit($id)
+    {
+        $koi = Koi::where('id_koi', $id)->get();
+        $variety = Variety::all();
+        $bloodline = Bloodline::all();
+        $breeder = Breeder::all();
+        $agent = Agent::all();
+        return view('arthurkaikoiadmin.koi.koig_edit', compact('koi', 'variety', 'bloodline', 'breeder', 'agent'));
+    }
+
+    public function koiretweet($id)
+    {
+        $koi = Koi::where('id_koi', $id)->get();
+        return view('arthurkaikoiadmin.koi.koi_retweet', compact('koi'));
+    }
+
+    public function koiupdate(request $request)
+    {
+        if($request->file('link_photo') == null){
+            $image = array();
+            if($files = explode('|', $request->link_photos)){
+            $image = $files;
+            }
+          }else{
+            $image = array();
+            if($files = $request->file('link_photo')){
+              foreach ($files as $file){
+                $link_photo = time()."_".$file->getClientOriginalName();
+                $tujuan_upload = 'img/koi/photo';
+                $image_url = $link_photo;
+                $file->move($tujuan_upload,$link_photo);
+                $image[] = $image_url;
+              }
+            }
+          }
+
+        //   if($request->file('photo_highlight') == null){
+        //     $imageh = array();
+        //     if($files = explode('|', $request->photo_highlights)){
+        //     $imageh = $files;
+        //     }
+        //   }else{
+        //     $imageh = array();
+        //     if($files = $request->file('photo_highlight')){
+        //       foreach ($files as $file){
+        //         $photo_highlight = time()."_".$file->getClientOriginalName();
+        //         $tujuan_upload = 'img/koi/photo_highlight';
+        //         $imageh_url = $photo_highlight;
+        //         $file->move($tujuan_upload,$photo_highlight);
+        //         $imageh[] = $imageh_url;
+        //       }
+        //     }
+        //   }
+
+          if($request->file('link_video') == null){
+            $imagev = array();
+            if($files = explode('|', $request->link_videos)){
+            $imagev = $files;
+            }
+          }else{
+            $imagev = array();
+            if($files = $request->file('link_video')){
+              foreach ($files as $file){
+                $link_video = time()."_".$file->getClientOriginalName();
+                $tujuan_upload = 'img/koi/video';
+                $imagev_url = $link_video;
+                $file->move($tujuan_upload,$link_video);
+                $imagev[] = $imagev_url;
+              }
+            }
+          }
+
+        if($request->file('link_trophy') == null){
+            $link_trophy = $request->link_trophys;
+            }
+        else{
+            $file_image = $request->file('link_trophy');
+            $link_trophy = time()."_".$file_image->getClientOriginalName();
+            $tujuan_upload = 'img/koi/trophy';
+            $file_image->move($tujuan_upload,$link_trophy);
+        }
+
+        if($request->file('link_certificate') == null){
+            $link_certificate = $request->link_certificates;
+            }
+        else{
+            $file_image = $request->file('link_certificate');
+            $link_certificate = time()."_".$file_image->getClientOriginalName();
+            $tujuan_upload = 'img/koi/certificate/';
+            $file_image->move($tujuan_upload,$link_certificate);
+        }
+
+        Koi::where('id_koi', $request->id)->update([
+            'koi_code' => $request->koi_code,
+            'nickname' => $request->nickname,
+            'variety' => $request->variety,
+            'birth' => $request->birth,
+            'gender' => $request->gender,
+            'date_purchese' => $request->date_purchese,
+            'salleragent' => $request->salleragent,
+            'pricebuy_idr' => $request->pricebuy_idr,
+            'pricebuy_jpy' => $request->pricebuy_jpy,
+            'kep_loc' => $request->kep_loc,
+            'date_sell' => $request->date_sell,
+            'photo_highlight' => $request->photo_highlight,
+            'breeder' => $request->breeder,
+            'bloodline' => $request->bloodline,
+            'year' => $request->year,
+            'n_status' => $request->n_status
+        ]);
+
+        // Fetch all history records for the specified koi
+        $latestHistory = History::where('koi_id', $request->koi_id)
+        ->orderBy('created_at', 'desc')
+        ->first();
+        // Initialize newKoiSequence
+        $newKoiSequence = '00001';
+
+        // Check if there is any history record
+        if ($latestHistory->koi_sequence !== null) {
+        // Get the latest history record
+        $latestRecord = $latestHistory->latest()->first();   
+        
+        // If the latest history is for the same year
+        if ($latestRecord->year == $request->year) {
+            $newKoiSequence = $latestRecord->koi_sequence;
+        } else {
+            // Increment the sequence number by 1, ensuring it's 5 digits long
+            $newKoiSequence = str_pad((int) $latestRecord->koi_sequence + 1, 5, '0', STR_PAD_LEFT);
+        }
+         }
+
+        if($request->id_history != null)
+        {
+            History::where('id_history', $request->id_history)->update([
+                'koi_id' => $request->koi_id,
+                'year' => $request->year,
+                'age' => $request->age,
+                'size' => $request->size,
+                'hagent' => $request->hagent,
+                'kep_loc' => $request->kep_loc,
+                'photo_highlight' => $request->photo_highlight,
+                'link_photo' => implode('|', $image),
+                'link_video' => implode('|', $imagev),
+                'link_trophy' => $link_trophy,
+                'name_trophy' => $request->name_trophy,
+                'link_certificate' => $link_certificate,
+                'name_certificate' => $request->name_certificate,
+                'pricesell_idr' => $request->pricesell_idr,
+                'pricesell_jpy' => $request->pricesell_jpy,
+                'buyer_name' => $request->buyer_name,
+                'death_date' => $request->death_date,
+                'death_note' => $request->death_note,
+            ]);
+        }
+        else
+        {
+            History::create([
+                'koi_id' => $request->koi_id,
+                'year' => $request->year,
+                'age' => $request->age,
+                'size' => $request->size,
+                'hagent' => $request->hagent,
+                'kep_loc' => $request->kep_loc,
+                'photo_highlight' => $request->photo_highlight,
+                'link_photo' => implode('|', $image),
+                'link_video' => implode('|', $imagev),
+                'link_trophy' => $link_trophy,
+                'name_trophy' => $request->name_trophy,
+                'link_certificate' => $link_certificate,
+                'name_certificate' => $request->name_certificate,
+                'pricesell_idr' => $request->pricesell_idr,
+                'pricesell_jpy' => $request->pricesell_jpy,
+                'buyer_name' => $request->buyer_name,
+                'death_date' => $request->death_date,
+                'death_note' => $request->death_note,
+                'koi_sequence' => $newKoiSequence
+            ]);
+        }
+        return response()->json(['success' => 'Data is successfully updated ', $newKoiSequence, 'latest history', $latestHistory->koi_sequence]);
+        // return redirect('/CMS/koi');
+    }
+
+
+    public function koigupdate(request $request)
+    {
+        if($request->file('link_photo') == null){
+            $image = array();
+            if($files = explode('|', $request->link_photos)){
+            $image = $files;
+            }
+          }else{
+            $image = array();
+            if($files = $request->file('link_photo')){
+              foreach ($files as $file){
+                $link_photo = time()."_".$file->getClientOriginalName();
+                $tujuan_upload = 'img/koi/photo';
+                $image_url = $link_photo;
+                $file->move($tujuan_upload,$link_photo);
+                $image[] = $image_url;
+              }
+            }
+          }
+
+        //   if($request->file('photo_highlight') == null){
+        //     $imageh = array();
+        //     if($files = explode('|', $request->photo_highlights)){
+        //     $imageh = $files;
+        //     }
+        //   }else{
+        //     $imageh = array();
+        //     if($files = $request->file('photo_highlight')){
+        //       foreach ($files as $file){
+        //         $photo_highlight = time()."_".$file->getClientOriginalName();
+        //         $tujuan_upload = 'img/koi/photo_highlight';
+        //         $imageh_url = $photo_highlight;
+        //         $file->move($tujuan_upload,$photo_highlight);
+        //         $imageh[] = $imageh_url;
+        //       }
+        //     }
+        //   }
+
+          if($request->file('link_video') == null){
+            $imagev = array();
+            if($files = explode('|', $request->link_videos)){
+            $imagev = $files;
+            }
+          }else{
+            $imagev = array();
+            if($files = $request->file('link_video')){
+              foreach ($files as $file){
+                $link_video = time()."_".$file->getClientOriginalName();
+                $tujuan_upload = 'img/koi/video';
+                $imagev_url = $link_video;
+                $file->move($tujuan_upload,$link_video);
+                $imagev[] = $imagev_url;
+              }
+            }
+          }
+
+        if($request->file('link_trophy') == null){
+            $link_trophy = $request->link_trophys;
+            }
+        else{
+            $file_image = $request->file('link_trophy');
+            $link_trophy = time()."_".$file_image->getClientOriginalName();
+            $tujuan_upload = 'img/koi/trophy';
+            $file_image->move($tujuan_upload,$link_trophy);
+        }
+
+        if($request->file('link_certificate') == null){
+            $link_certificate = $request->link_certificates;
+            }
+        else{
+            $file_image = $request->file('link_certificate');
+            $link_certificate = time()."_".$file_image->getClientOriginalName();
+            $tujuan_upload = 'img/koi/certificate/';
+            $file_image->move($tujuan_upload,$link_certificate);
+        }
+
+        Koi::where('id_koi', $request->id)->update([
+            'koi_code' => $request->koi_code,
+            'nickname' => $request->nickname,
+            'variety' => $request->variety,
+            'birth' => $request->birth,
+            'gender' => $request->gender,
+            'date_purchese' => $request->date_purchese,
+            'salleragent' => $request->salleragent,
+            'pricebuy_idr' => $request->pricebuy_idr,
+            'pricebuy_jpy' => $request->pricebuy_jpy,
+            'kep_loc' => $request->kep_loc,
+            'date_sell' => $request->date_sell,
+            'photo_highlight' => $request->photo_highlight,
+            'breeder' => $request->breeder,
+            'bloodline' => $request->bloodline,
+            'year' => $request->year,
+            'n_status' => $request->n_status
+        ]);
+
+
+
+
+        if($request->id_history != null)
+        {
+            History::where('id_history', $request->id_history)->update([
+                'koi_id' => $request->koi_id,
+                'year' => $request->year,
+                'age' => $request->age,
+                'size' => $request->size,
+                'hagent' => $request->hagent,
+                'kep_loc' => $request->kep_loc,
+                'photo_highlight' => $request->photo_highlight,
+                'link_photo' => implode('|', $image),
+                'link_video' => implode('|', $imagev),
+                'link_trophy' => $link_trophy,
+                'name_trophy' => $request->name_trophy,
+                'link_certificate' => $link_certificate,
+                'name_certificate' => $request->name_certificate,
+                'pricesell_idr' => $request->pricesell_idr,
+                'pricesell_jpy' => $request->pricesell_jpy,
+                'buyer_name' => $request->buyer_name,
+                'death_date' => $request->death_date,
+                'death_note' => $request->death_note,
+            ]);
+        }
+        else
+        {
+            History::create([
+                'koi_id' => $request->koi_id,
+                'year' => $request->year,
+                'age' => $request->age,
+                'size' => $request->size,
+                'hagent' => $request->hagent,
+                'kep_loc' => $request->kep_loc,
+                'photo_highlight' => $request->photo_highlight,
+                'link_photo' => implode('|', $image),
+                'link_video' => implode('|', $imagev),
+                'link_trophy' => $link_trophy,
+                'name_trophy' => $request->name_trophy,
+                'link_certificate' => $link_certificate,
+                'name_certificate' => $request->name_certificate,
+                'pricesell_idr' => $request->pricesell_idr,
+                'pricesell_jpy' => $request->pricesell_jpy,
+                'buyer_name' => $request->buyer_name,
+                'death_date' => $request->death_date,
+                'death_note' => $request->death_note,
+            ]);
+        }
+
+        return redirect('/CMS/koi/grid');
+    }
+
+    public function koidelete($id)
+    {
+        Koi::where('id', $id)->delete();
+        return redirect('/CMS/koi');
+    }
+
+    public function koigriddelete($id)
+    {
+        Koi::where('id', $id)->delete();
+        return redirect('/CMS/koi/grid');
+    }
+
+    ### KOI filter TABLE ###
+
+    public function koifilter_az()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('variety', 'ASC')->get();
+        return view('arthurkaikoiadmin.filter.filter', compact('koitotal', 'koi'));
+    }
+
+    public function koifilter_za()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('variety', 'DESC')->get();
+        return view('arthurkaikoiadmin.filter.filter_za', compact('koitotal', 'koi'));
+    }
+
+    public function koifilter_19()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('id_koi', 'ASC')->get();
+        return view('arthurkaikoiadmin.filter.filter_19', compact('koitotal', 'koi'));
+    }
+
+    public function koifilter_91()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('id_koi', 'DESC')->get();
+        return view('arthurkaikoiadmin.filter.filter_91', compact('koitotal', 'koi'));
+    }
+
+    public function koifilter_pricebuyhigh()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('pricebuy_idr', 'ASC')->get();
+        return view('arthurkaikoiadmin.filter.filter_high', compact('koitotal', 'koi'));
+    }
+
+    public function koifilter_pricebuylow()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('pricebuy_idr', 'DESC')->get();
+        return view('arthurkaikoiadmin.filter.filter_low', compact('koitotal', 'koi'));
+    }
+
+    ### KOI filter GRID ###
+
+    public function koigfilter_az()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('variety', 'ASC')->paginate(12);
+        return view('arthurkaikoiadmin.filter.filtergrid', compact('koitotal', 'koi'));
+    }
+
+    public function koigfilter_za()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('variety', 'DESC')->paginate(12);
+        return view('arthurkaikoiadmin.filter.filtergrid', compact('koitotal', 'koi'));
+    }
+
+    public function koigfilter_19()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('id_koi', 'ASC')->paginate(12);
+        return view('arthurkaikoiadmin.filter.filtergrid', compact('koitotal', 'koi'));
+    }
+
+    public function koigfilter_91()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('id_koi', 'DESC')->paginate(12);
+        return view('arthurkaikoiadmin.filter.filtergrid', compact('koitotal', 'koi'));
+    }
+
+    public function koigfilter_pricebuyhigh()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('pricebuy_idr', 'ASC')->paginate(12);
+        return view('arthurkaikoiadmin.filter.filtergrid', compact('koitotal', 'koi'));
+    }
+
+    public function koigfilter_pricebuylow()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::orderBy('pricebuy_idr', 'DESC')->paginate(12);
+        return view('arthurkaikoiadmin.filter.filtergrid', compact('koitotal', 'koi'));
+    }
+
+    ### KOI Update Status
+
+    public function statusupdate(request $request)
+    {
+        if($request->status == 'Death'){
+            $dateDeath = Carbon::now()->format('Y-m-d');
+            Koi::where('koi', $request->id)->update([
+                'status' => $request->status,
+                'death_date' => $dateDeath
+            ]);
+        }
+        else{
+            Koi::where('koi', $request->id)->update([
+                'status' => $request->status,
+            ]);
+        }
+
+        return redirect('/CMS/dashboard');
+    }
+
+    ### KOI History
+
+    public function koihistory()
+    {
+        $koitotal = Koi::count();
+        $koi = Koi::all();
+        $History = History::all();
+        return view('arthurkaikoiadmin.history.history', compact('koitotal', 'koi'));
+    }
+
+    ### KOI filter Years ###
+    public function koifilter_year($year)
+    {
+        $koi = Koi::where('year', $year)->get();
+        return view('arthurkaikoiadmin.filter.year', compact('koi'));
+    }
+
+    ### Variety ###
+
+    public function variety()
+    {
+        $variety = Variety::all();
+        // return response()->json($variety);
+        return view('arthurkaikoiadmin.variety.variety', compact('variety'));
+    }
+
+    public function varietyadd()
+    {
+        return view('arthurkaikoiadmin.variety.variety_add');
+    }
+
+    public function varietystore(request $request)
+    {
+        Variety::create([
+            'name' => $request->variety_name,
+            'code' => $request->variety_code,
+        ]);
+
+        return redirect('/CMS/variety');
+    }
+
+    public function varietyedit($id)
+    {
+        $variety = Variety::where('id', $id)->get();
+        return view('arthurkaikoiadmin.variety.variety_edit', compact('variety'));
+    }
+
+    public function varietyupdate(request $request)
+    {
+
+        Variety::where('id', $request->id)->update([
+            'variety_name' => $request->variety_name,
+            'variety_code' => $request->variety_code,
+        ]);
+
+        return redirect('/CMS/variety');
+    }
+
+    public function varietydelete($id)
+    {
+        Variety::where('id', $id)->delete();
+        return redirect('/CMS/variety');
+    }
+
+    ### Bloodline ###
+
+    public function bloodline()
+    {
+        $bloodline = Bloodline::all();
+        return view('arthurkaikoiadmin.bloodline.bloodline', compact('bloodline'));
+    }
+
+    public function bloodlineadd()
+    {
+        return view('arthurkaikoiadmin.bloodline.bloodline_add');
+    }
+
+    public function bloodlinestore(request $request)
+    {
+        Bloodline::create([
+            'name' => $request->bloodline_name,
+            'code' => $request->bloodline_code,
+            // 'variety' => $request->variety,
+        ]);
+
+        return redirect('/CMS/bloodline');
+    }
+
+    public function bloodlineedit($id)
+    {
+        $bloodline = Bloodline::where('id', $id)->get();
+        return view('arthurkaikoiadmin.bloodline.bloodline_edit', compact('bloodline'));
+    }
+
+    public function bloodlineupdate(request $request)
+    {
+
+        Bloodline::where('id_bloodline', $request->id)->update([
+            'bloodline_name' => $request->bloodline_name,
+            'bloodline_code' => $request->bloodline_code,
+            'variety' => $request->variety,
+        ]);
+
+        return redirect('/CMS/bloodline');
+    }
+
+    public function bloodlinedelete($id)
+    {
+        Bloodline::where('id_bloodline', $id)->delete();
+        return redirect('/CMS/bloodline');
+    }
+
+    ### Breeder ###
+
+    public function breeder()
+    {
+        $breeder = Breeder::all();
+        return view('arthurkaikoiadmin.breeder.breeder', compact('breeder'));
+    }
+
+    public function breederadd()
+    {
+        return view('arthurkaikoiadmin.breeder.breeder_add');
+    }
+
+    public function breederstore(request $request)
+    {
+        Breeder::create([
+            'breeder_name' => $request->breeder_name,
+            'breeder_location' => $request->breeder_location,
+            'breeder_contact' => $request->breeder_contact,
+            'breeder_code' => $request->breeder_code,
+            'breeder_website' => $request->breeder_website,
+        ]);
+
+        return redirect('/CMS/breeder');
+    }
+
+    public function breederedit($id)
+    {
+        $breeder = Breeder::where('id_breeder', $id)->get();
+        return view('arthurkaikoiadmin.breeder.breeder_edit', compact('breeder'));
+    }
+
+    public function breederupdate(request $request)
+    {
+
+        Breeder::where('id_breeder', $request->id)->update([
+            'breeder_name' => $request->breeder_name,
+            'breeder_location' => $request->breeder_location,
+            'breeder_contact' => $request->breeder_contact,
+            'breeder_code' => $request->breeder_code,
+            'breeder_website' => $request->breeder_website,
+        ]);
+
+        return redirect('/CMS/breeder');
+    }
+
+    public function breederdelete($id)
+    {
+        Breeder::where('id_breeder', $id)->delete();
+        return redirect('/CMS/breeder');
+    }
+
+     ### Agent ###
+
+     public function agent()
+     {
+         $agent = Agent::all();
+         return view('arthurkaikoiadmin.agent.agent', compact('agent'));
+     }
+
+     public function agentadd()
+     {
+         return view('arthurkaikoiadmin.agent.agent_add');
+     }
+
+     public function agentstore(request $request)
+     {
+         Agent::create([
+             'agent_name' => $request->agent_name,
+             'agent_location' => $request->agent_location,
+             'agent_website' => $request->agent_website,
+             'agent_owner' => $request->agent_owner,
+             'agent_code' => $request->agent_code,
+         ]);
+
+         return redirect('/CMS/agent');
+     }
+
+     public function agentedit($id)
+     {
+         $agent = Agent::where('id_agent', $id)->get();
+         return view('arthurkaikoiadmin.agent.agent_edit', compact('agent'));
+     }
+
+     public function agentupdate(request $request)
+     {
+
+         Agent::where('id_agent', $request->id)->update([
+            'agent_name' => $request->agent_name,
+            'agent_location' => $request->agent_location,
+            'agent_website' => $request->agent_website,
+            'agent_owner' => $request->agent_owner,
+            'agent_code' => $request->agent_code,
+         ]);
+
+         return redirect('/CMS/agent');
+     }
+
+     public function agentdelete($id)
+     {
+         Agent::where('id_agent', $id)->delete();
+         return redirect('/CMS/agent');
+     }
+
+     ### Handlin Agent ###
+
+     public function handlingagent()
+     {
+         $handlingagent = HandlingAgent::all();
+         return view('arthurkaikoiadmin.handlingagent.handlingagent', compact('handlingagent'));
+     }
+
+     public function handlingagentadd()
+     {
+         return view('arthurkaikoiadmin.handlingagent.handlingagent_add');
+     }
+
+     public function handlingagentstore(request $request)
+     {
+         HandlingAgent::create([
+
+         ]);
+
+         return redirect('/CMS/handlingagent');
+     }
+
+     public function handlingagentedit($id)
+     {
+         $handlingagent = HandlingAgent::where('id_handlingagent', $id)->get();
+         return view('arthurkaikoiadmin.handlingagent.handlingagent_edit', compact('handlingagent'));
+     }
+
+     public function handlingagentupdate(request $request)
+     {
+
+         HandlingAgent::where('id_handlingagent', $request->id)->update([
+
+         ]);
+
+         return redirect('/CMS/handlingagent');
+     }
+
+     public function handlingagentdelete($id)
+     {
+         HandlingAgent::where('id_handlingagent', $id)->delete();
+         return redirect('/CMS/handlingagent');
+     }
+
+     ##$ page Website $$$
+
+     /// # Web Uur Collection # ///
+
+     public function ourcollection()
+     {
+         $ourcollection = OurCollection::with('koi')->get();
+        //  return response()->json($ourcollection);
+         return view('arthurkaikoiadmin.website.ourcollection.ourcollection', compact('ourcollection'));
+     }
+
+     public function ourcollectionadd()
+     {
+         return view('arthurkaikoiadmin.website.ourcollection.ourcollection_add');
+     }
+
+     public function ourcollectionstore(request $request)
+     {
+        if($request->file('image') == null){
+            $image = $request->images;
+            }
+        else{
+            $file_image = $request->file('image');
+            $image = time()."_".$file_image->getClientOriginalName();
+            $tujuan_upload = 'img/koi/website/ourcollection';
+            $file_image->move($tujuan_upload,$image);
+        }
+
+         OurCollection::create([
+            'title' => $request->title,
+            'image' => $image,
+            'deskripsi' => $request->deskripsi,
+            'deskripsi_singkat' => $request->deskripsi_singkat,
+            'koi_id' => $request->koi_id,
+         ]);
+         return redirect('/CMS/ourcollection');
+     }
+
+     public function ourcollectionedit($id)
+     {
+         $ourcollection = OurCollection::where('id_ourcollection', $id)->get();
+         return view('arthurkaikoiadmin.website.ourcollection.ourcollection_edit', compact('ourcollection'));
+     }
+
+     public function ourcollectionupdate(request $request)
+     {
+        if($request->file('image') == null){
+            $image = $request->images;
+            }
+        else{
+            $file_image = $request->file('image');
+            $image = time()."_".$file_image->getClientOriginalName();
+            $tujuan_upload = 'img/koi/website/ourcollection';
+            $file_image->move($tujuan_upload,$image);
+        }
+
+         OurCollection::where('id_ourcollection', $request->id)->update([
+            'title' => $request->title,
+            'image' => $image,
+            'deskripsi' => $request->deskripsi,
+            'deskripsi_singkat' => $request->deskripsi_singkat,
+         ]);
+
+         return redirect('/CMS/ourcollection');
+     }
+
+     public function ourcollectiondelete($id)
+     {
+         OurCollection::where('id_ourcollection', $id)->delete();
+         return redirect('/CMS/ourcollection');
+     }
+
+     /// # Web News # ///
+     public function news()
+     {
+         $news = News::all();
+         return view('arthurkaikoiadmin.website.news.news', compact('news'));
+     }
+
+     public function newsadd()
+     {
+         return view('arthurkaikoiadmin.website.news.news_add');
+     }
+
+     public function newsstore(request $request)
+     {
+        if($request->file('image') == null){
+            $image = $request->images;
+            }
+        else{
+            $file_image = $request->file('image');
+            $image = time()."_".$file_image->getClientOriginalName();
+            $tujuan_upload = 'img/koi/website/news';
+            $file_image->move($tujuan_upload,$image);
+        }
+
+        News::create([
+            'title' => $request->title,
+            'image' => $image,
+            'deskripsi' => $request->deskripsi,
+            'deskripsi_singkat' => $request->deskripsi_singkat,
+         ]);
+
+         return redirect('/CMS/news');
+     }
+
+     public function newsedit($id)
+     {
+         $news = News::where('id_news', $id)->get();
+         return view('arthurkaikoiadmin.website.news.news_edit', compact('news'));
+     }
+
+     public function newsupdate(request $request)
+     {
+        if($request->file('image') == null){
+            $image = $request->images;
+            }
+        else{
+            $file_image = $request->file('image');
+            $image = time()."_".$file_image->getClientOriginalName();
+            $tujuan_upload = 'img/koi/website/news';
+            $file_image->move($tujuan_upload,$image);
+        }
+
+         News::where('id_news', $request->id)->update([
+            'title' => $request->title,
+            'image' => $image,
+            'deskripsi' => $request->deskripsi,
+            'deskripsi_singkat' => $request->deskripsi_singkat,
+         ]);
+
+         return redirect('/CMS/news');
+     }
+
+     public function newsdelete($id)
+     {
+         News::where('id_news', $id)->delete();
+         return redirect('/CMS/news');
+     }
+
+     /// # Web About US # ///
+     public function aboutus()
+     {
+         $aboutus = aboutus::all();
+         return view('arthurkaikoiadmin.website.aboutus.aboutus', compact('aboutus'));
+     }
+
+     public function aboutusadd()
+     {
+         return view('arthurkaikoiadmin.website.aboutus.aboutus_add');
+     }
+
+     public function aboutusstore(request $request)
+     {
+        if($request->file('image') == null){
+            $image = $request->images;
+            }
+        else{
+            $file_image = $request->file('image');
+            $image = time()."_".$file_image->getClientOriginalName();
+            $tujuan_upload = 'img/koi/website/aboutus';
+            $file_image->move($tujuan_upload,$image);
+        }
+
+         AboutUs::create([
+             'image' => $image,
+             'deskripsi' => $request->deskripsi,
+         ]);
+
+         return redirect('/CMS/aboutus');
+     }
+
+     public function aboutusedit($id)
+     {
+         $aboutus = AboutUs::where('id_aboutus', $id)->get();
+         return view('arthurkaikoiadmin.website.aboutus.aboutus_edit', compact('aboutus'));
+     }
+
+     public function aboutusupdate(request $request)
+     {
+
+        if($request->file('image') == null){
+            $image = $request->images;
+            }
+        else{
+            $file_image = $request->file('image');
+            $image = time()."_".$file_image->getClientOriginalName();
+            $tujuan_upload = 'img/koi/website/aboutus';
+            $file_image->move($tujuan_upload,$image);
+        }
+
+         AboutUs::where('id_aboutus', $request->id)->update([
+             'image' => $image,
+             'deskripsi' => $request->deskripsi,
+         ]);
+
+         return redirect('/CMS/aboutus');
+     }
+
+     public function aboutusdelete($id)
+     {
+         AboutUs::where('id_aboutus', $id)->delete();
+         return redirect('/CMS/aboutus');
+     }
+
+     /// # Web Contact US # ///
+     public function contactus()
+     {
+         $contactus = ContactUs::all();
+         return view('arthurkaikoiadmin.website.contactus.contactus', compact('contactus'));
+     }
+
+     public function contactusadd()
+     {
+         return view('arthurkaikoiadmin.website.contactus.contactus_add');
+     }
+
+     public function contactusstore(request $request)
+     {
+         ContactUs::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'no_wa' => $request->no_wa,
+            'message' => $request->message,
+         ]);
+
+         return redirect('/CMS/contactus');
+     }
+
+     public function contactusedit($id)
+     {
+         $contactus = ContactUs::where('id_contactus', $id)->get();
+         return view('arthurkaikoiadmin.website.contactus.contactus_edit', compact('contactus'));
+     }
+
+     public function contactusupdate(request $request)
+     {
+
+         ContactUs::where('id_contactus', $request->id)->update([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'no_wa' => $request->no_wa,
+            'message' => $request->message,
+         ]);
+
+         return redirect('/CMS/contactus');
+     }
+
+     public function contactusdelete($id)
+     {
+         ContactUs::where('id_contactus', $id)->delete();
+         return redirect('/CMS/contactus');
+     }
+
+}

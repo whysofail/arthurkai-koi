@@ -1,0 +1,27 @@
+<IfModule mod_rewrite.c>
+
+  RewriteEngine On
+
+  RewriteBase /
+
+
+
+  # Force SSL
+
+  RewriteCond %{HTTPS} !=on
+
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Remove public folder form URL
+
+  RewriteRule ^(.*)$ public/$1 [L]
+
+</IfModule>
+
+
+
+<IfModule mime_module>
+
+AddType application/x-httpd-alt-php80 .php .php8 .phtml
+
+</IfModule>
