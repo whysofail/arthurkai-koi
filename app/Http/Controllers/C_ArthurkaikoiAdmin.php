@@ -2051,7 +2051,7 @@ class C_ArthurkaikoiAdmin extends Controller
      /// # Web About US # ///
      public function aboutus()
      {
-         $aboutus = aboutus::all();
+         $aboutus = AboutUs::all();
          return view('arthurkaikoiadmin.website.aboutus.aboutus', compact('aboutus'));
      }
 
@@ -2082,7 +2082,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
      public function aboutusedit($id)
      {
-         $aboutus = AboutUs::where('id_aboutus', $id)->get();
+         $aboutus = AboutUs::where('id', $id)->get();
          return view('arthurkaikoiadmin.website.aboutus.aboutus_edit', compact('aboutus'));
      }
 

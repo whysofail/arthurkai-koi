@@ -1,17 +1,23 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<html lang="{{ str_replace("_", "-", app()->getLocale()) }}">
 
 <head>
-    <link href="{{ asset('images/logo/koi.png') }}" rel="icon">
+
+    <link href="{{ asset("images/logo/koi.png") }}" rel="icon">
+
     <meta charset="utf-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>ArthurKai-Koi</title>
 
     <!-- Fonts -->
+
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- Styles -->
+
     <style>
         /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
         html {
@@ -403,31 +409,43 @@
             font-family: 'Nunito', sans-serif;
         }
     </style>
+
 </head>
 
 <body class="antialiased">
+
     <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0"
         style="background: white">
-        @if (Route::has('login'))
+
+        @if (Route::has("login"))
+
             <div class="fixed top-0 right-0 px-6 py-4 sm:block">
+
                 @auth
-                    <a href="{{ url('/home') }}" class="text-sm text-gray-700 dark:text-gray-500 underline"
+
+                    <a href="{{ url("/home") }}" class="text-sm text-gray-700 dark:text-gray-500 underline"
                         style="color: black; font-weight: bold;">Home</a>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline"
+                    <a href="{{ route("login") }}" class="text-sm text-gray-700 dark:text-gray-500 underline"
                         style="color: black; font-weight: bold;">Log in</a>
 
-                    @if (Route::has('register'))
+                    @if (Route::has("register"))
                     @endif
+
                 @endauth
+
             </div>
+
         @endif
+
         <div style="text-align: center; color: white; font-size: 4rem">
-            <img src="{{ asset('images/logo/koilogo.png') }}" style="width: 360px; padding-top: 100px;">
+
+            <img src="{{ asset("images/logo/koilogo.png") }}" style="width: 360px; padding-top: 100px;">
 
         </div>
 
     </div>
+
 </body>
 
 </html>

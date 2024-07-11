@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 use App\Models\Koi;
+use App\Models\AboutUs;
 
 
 class C_Arthurkaikoi extends Controller
@@ -42,7 +43,8 @@ class C_Arthurkaikoi extends Controller
 
     public function aboutus()
     {
-        return view('arthurkaikoi.aboutus');
+        $data = AboutUs::latest()->first();
+        return view('arthurkaikoi.aboutus', compact('data'));
     }
 
     public function contactus()

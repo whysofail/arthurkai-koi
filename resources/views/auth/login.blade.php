@@ -1,13 +1,19 @@
 <!doctype html>
+
 <html lang="en">
 
 <head>
-    <link href="{{ asset('images/logo/koilogo.png') }}" rel="icon">
+
+    <link href="{{ asset("images/logo/koilogo.png") }}" rel="icon">
+
     <!-- Required meta tags -->
+
     <meta charset="utf-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
@@ -156,52 +162,77 @@
             top: 40px;
         }
     </style>
+
 </head>
 
 <body>
+
     <div class="container">
-        <form action="{{ route('login') }}" method="POST">
+
+        <form action="{{ route("login") }}" method="POST">
+
             @csrf
+
             <div class="body d-md-flex align-items-center justify-content-between mr-5 mgtop">
 
-                <img src="{{ asset('images/logo/koilogo.png') }}" style="width: 310px">
+                <img src="{{ asset("images/logo/koilogo.png") }}" style="width: 310px">
+
                 <div class=" box-2 d-flex flex-column h-150">
+
                     <div class="text-center" style="padding: 20px;">
+
                         <form>
 
                             <div class="input-group mb-3">
-                                <input type="username" class="form-control @error('username') is-invalid @enderror"
-                                    name="username" value="{{ old('username') }}" aria-label="username"
+
+                                <input type="username" class="form-control @error("username") is-invalid @enderror"
+                                    name="username" value="{{ old("username") }}" aria-label="username"
                                     aria-describedby="basic-addon1" placeholder="Username"
                                     style="border-radius: 5px; text-align:center">
-                                @error('username')
+
+                                @error("username")
                                     <span class="invalid-feedback" role="alert">
+
                                         <strong>{{ $message }}</strong>
+
                                     </span>
                                 @enderror
+
                             </div>
+
                             <div class="input-group mb-3">
-                                <input type="password" class="form-control @error('password') is-invalid @enderror"
+
+                                <input type="password" class="form-control @error("password") is-invalid @enderror"
                                     name="password" aria-label="password" aria-describedby="basic-addon1"
                                     placeholder="Password" style="border-radius: 5px; text-align:center">
-                                @error('password')
+
+                                @error("password")
                                     <span class="invalid-feedback" role="alert">
+
                                         <strong>{{ $message }}</strong>
+
                                     </span>
                                 @enderror
+
                             </div>
+
                             <button type="submit" class="btn btn-dark"
                                 style="width: 70%; border-radius: 25px; background: darkred;">LOGIN</button>
 
                     </div>
+
         </form>
+
     </div>
+
     </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
     </script>
+
 </body>
 
 </html>
