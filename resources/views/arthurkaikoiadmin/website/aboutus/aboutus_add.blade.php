@@ -319,9 +319,7 @@
                                         <div class="input-group row">
 
                                             <label for="image" class="col-sm-2 col-form-label">Image</label>
-
                                             <div class="col-sm-10">
-
                                                 <input type="file" class="form-control" name="image"
                                                     value="{{ old("image") }}" id="image"
                                                     style="height: auto !important;">
@@ -334,7 +332,7 @@
 
                                     <div class="col-sm-12" style="margin-top: 20px;">
 
-                                        <label>Deskripsi</label>
+                                        <label>Description</label>
 
                                         <textarea id="deskripsi" name="deskripsi" rows="7">
                                       {{ old("deskripsi") }}
@@ -389,10 +387,8 @@
     <!-- Summernote -->
 
     <script src="{{ asset("plugins/summernote/summernote-bs4.min.js") }}"></script>
-
     <script>
         $(document).ready(function() {
-
             $('#deskripsi').summernote({
                 height: 400,
                 toolbar: [

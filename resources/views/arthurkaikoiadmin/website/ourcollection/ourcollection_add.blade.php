@@ -353,32 +353,24 @@
                                         </div>
 
                                     </div>
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
+                                    {{-- <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="input-group row">
-
                                             <label for="image" class="col-sm-2 col-form-label">Image</label>
-
                                             <div class="col-sm-10">
-
                                                 <input type="file" class="form-control" name="image"
                                                     value="{{ old("image") }}" id="image"
                                                     style="height: auto !important;">
 
                                             </div>
-
                                         </div>
-
-                                    </div>
-
-                                    <div class="col-sm-12" style="margin-top: 20px;">
+                                    </div> --}}
+                                    {{-- <div class="col-sm-12" style="margin-top: 20px;">
 
                                         <label>Deskripsi Singkat</label>
 
                                         <textarea id="deskripsi_singkat" name="deskripsi_singkat" class="form-control" rows="7" placeholder="">{{ old("deskripsi_singkat") }}</textarea>
 
-                                    </div>
+                                    </div> --}}
 
                                     <div class="col-sm-12" style="margin-top: 20px;">
 

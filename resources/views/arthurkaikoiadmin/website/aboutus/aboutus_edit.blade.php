@@ -370,10 +370,10 @@
 
                                         <div class="col-sm-12" style="margin-top: 20px;">
 
-                                            <label>Deskripsi</label>
+                                            <label>Description</label>
 
                                             <textarea id="deskripsi" name="deskripsi" rows="7">
-                                        {{ old("deskripsi") ? old("deskripsi") : $a->deskripsi }}
+                                        {{ old("deskripsi") ? old("deskripsi") : $a->description }}
                                     </textarea>
 
                                         </div>

@@ -350,10 +350,8 @@
 
                                                         @if ($o->image != null)
                                                             <div class="swiper-slide">
-
                                                                 <img width="125" class="img-thumbnail"
                                                                     src="{{ asset("img/koi/website/ourcollection/" . $o->image) }}">
-
                                                             </div>
                                                         @endif
 

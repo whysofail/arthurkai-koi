@@ -43,8 +43,8 @@ class C_Arthurkaikoi extends Controller
 
     public function aboutus()
     {
-        $data = AboutUs::latest()->first();
-        return view('arthurkaikoi.aboutus', compact('data'));
+        $about = AboutUs::latest()->first();
+        return view('arthurkaikoi.aboutus', compact('about'));
     }
 
     public function contactus()

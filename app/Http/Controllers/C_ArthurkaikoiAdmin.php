@@ -1288,7 +1288,7 @@ class C_ArthurkaikoiAdmin extends Controller
             $file_image->move($tujuan_upload,$link_certificate);
         }
 
-        Koi::where('id_koi', $request->id)->update([
+        Koi::where('id', $request->id)->update([
             'koi_code' => $request->koi_code,
             'nickname' => $request->nickname,
             'variety' => $request->variety,
@@ -1330,7 +1330,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
         if($request->id_history != null)
         {
-            History::where('id_history', $request->id_history)->update([
+            History::where('id', $request->id_history)->update([
                 'koi_id' => $request->koi_id,
                 'year' => $request->year,
                 'age' => $request->age,
@@ -1456,7 +1456,7 @@ class C_ArthurkaikoiAdmin extends Controller
             $file_image->move($tujuan_upload,$link_certificate);
         }
 
-        Koi::where('id_koi', $request->id)->update([
+        Koi::where('id', $request->id)->update([
             'koi_code' => $request->koi_code,
             'nickname' => $request->nickname,
             'variety' => $request->variety,
@@ -1559,28 +1559,28 @@ class C_ArthurkaikoiAdmin extends Controller
     public function koifilter_19()
     {
         $koitotal = Koi::count();
-        $koi = Koi::orderBy('id_koi', 'ASC')->get();
+        $koi = Koi::orderBy('id', 'ASC')->get();
         return view('arthurkaikoiadmin.filter.filter_19', compact('koitotal', 'koi'));
     }
 
     public function koifilter_91()
     {
         $koitotal = Koi::count();
-        $koi = Koi::orderBy('id_koi', 'DESC')->get();
+        $koi = Koi::orderBy('id', 'DESC')->get();
         return view('arthurkaikoiadmin.filter.filter_91', compact('koitotal', 'koi'));
     }
 
     public function koifilter_pricebuyhigh()
     {
         $koitotal = Koi::count();
-        $koi = Koi::orderBy('pricebuy_idr', 'ASC')->get();
+        $koi = Koi::orderBy('price_buy_idr', 'ASC')->get();
         return view('arthurkaikoiadmin.filter.filter_high', compact('koitotal', 'koi'));
     }
 
     public function koifilter_pricebuylow()
     {
         $koitotal = Koi::count();
-        $koi = Koi::orderBy('pricebuy_idr', 'DESC')->get();
+        $koi = Koi::orderBy('price_buy_idr', 'DESC')->get();
         return view('arthurkaikoiadmin.filter.filter_low', compact('koitotal', 'koi'));
     }
 
@@ -1603,28 +1603,28 @@ class C_ArthurkaikoiAdmin extends Controller
     public function koigfilter_19()
     {
         $koitotal = Koi::count();
-        $koi = Koi::orderBy('id_koi', 'ASC')->paginate(12);
+        $koi = Koi::orderBy('id', 'ASC')->paginate(12);
         return view('arthurkaikoiadmin.filter.filtergrid', compact('koitotal', 'koi'));
     }
 
     public function koigfilter_91()
     {
         $koitotal = Koi::count();
-        $koi = Koi::orderBy('id_koi', 'DESC')->paginate(12);
+        $koi = Koi::orderBy('id', 'DESC')->paginate(12);
         return view('arthurkaikoiadmin.filter.filtergrid', compact('koitotal', 'koi'));
     }
 
     public function koigfilter_pricebuyhigh()
     {
         $koitotal = Koi::count();
-        $koi = Koi::orderBy('pricebuy_idr', 'ASC')->paginate(12);
+        $koi = Koi::orderBy('price_buy_idr', 'ASC')->paginate(12);
         return view('arthurkaikoiadmin.filter.filtergrid', compact('koitotal', 'koi'));
     }
 
     public function koigfilter_pricebuylow()
     {
         $koitotal = Koi::count();
-        $koi = Koi::orderBy('pricebuy_idr', 'DESC')->paginate(12);
+        $koi = Koi::orderBy('price_buy_idr', 'DESC')->paginate(12);
         return view('arthurkaikoiadmin.filter.filtergrid', compact('koitotal', 'koi'));
     }
 
@@ -1634,13 +1634,13 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         if($request->status == 'Death'){
             $dateDeath = Carbon::now()->format('Y-m-d');
-            Koi::where('koi', $request->id)->update([
+            Koi::where('id', $request->id)->update([
                 'status' => $request->status,
                 'death_date' => $dateDeath
             ]);
         }
         else{
-            Koi::where('koi', $request->id)->update([
+            Koi::where('id', $request->id)->update([
                 'status' => $request->status,
             ]);
         }
@@ -1745,10 +1745,10 @@ class C_ArthurkaikoiAdmin extends Controller
     public function bloodlineupdate(request $request)
     {
 
-        Bloodline::where('id_bloodline', $request->id)->update([
-            'bloodline_name' => $request->bloodline_name,
-            'bloodline_code' => $request->bloodline_code,
-            'variety' => $request->variety,
+        Bloodline::where('id', $request->id)->update([
+            'name' => $request->bloodline_name,
+            'code' => $request->bloodline_code,
+            // 'variety' => $request->variety,
         ]);
 
         return redirect('/CMS/bloodline');
@@ -1756,7 +1756,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function bloodlinedelete($id)
     {
-        Bloodline::where('id_bloodline', $id)->delete();
+        Bloodline::where('id', $id)->delete();
         return redirect('/CMS/bloodline');
     }
 
@@ -1788,19 +1788,19 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function breederedit($id)
     {
-        $breeder = Breeder::where('id_breeder', $id)->get();
+        $breeder = Breeder::where('id', $id)->get();
         return view('arthurkaikoiadmin.breeder.breeder_edit', compact('breeder'));
     }
 
     public function breederupdate(request $request)
     {
 
-        Breeder::where('id_breeder', $request->id)->update([
-            'breeder_name' => $request->breeder_name,
-            'breeder_location' => $request->breeder_location,
-            'breeder_contact' => $request->breeder_contact,
-            'breeder_code' => $request->breeder_code,
-            'breeder_website' => $request->breeder_website,
+        Breeder::where('id', $request->id)->update([
+            'name' => $request->breeder_name,
+            'location' => $request->breeder_location,
+            'contact' => $request->breeder_contact,
+            'code' => $request->breeder_code,
+            'website' => $request->breeder_website,
         ]);
 
         return redirect('/CMS/breeder');
@@ -1808,7 +1808,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function breederdelete($id)
     {
-        Breeder::where('id_breeder', $id)->delete();
+        Breeder::where('id', $id)->delete();
         return redirect('/CMS/breeder');
     }
 
@@ -1828,11 +1828,11 @@ class C_ArthurkaikoiAdmin extends Controller
      public function agentstore(request $request)
      {
          Agent::create([
-             'agent_name' => $request->agent_name,
-             'agent_location' => $request->agent_location,
-             'agent_website' => $request->agent_website,
-             'agent_owner' => $request->agent_owner,
-             'agent_code' => $request->agent_code,
+             'name' => $request->agent_name,
+             'location' => $request->agent_location,
+             'website' => $request->agent_website,
+             'owner' => $request->agent_owner,
+             'code' => $request->agent_code,
          ]);
 
          return redirect('/CMS/agent');
@@ -1840,19 +1840,19 @@ class C_ArthurkaikoiAdmin extends Controller
 
      public function agentedit($id)
      {
-         $agent = Agent::where('id_agent', $id)->get();
+         $agent = Agent::where('id', $id)->get();
          return view('arthurkaikoiadmin.agent.agent_edit', compact('agent'));
      }
 
      public function agentupdate(request $request)
      {
 
-         Agent::where('id_agent', $request->id)->update([
-            'agent_name' => $request->agent_name,
-            'agent_location' => $request->agent_location,
-            'agent_website' => $request->agent_website,
-            'agent_owner' => $request->agent_owner,
-            'agent_code' => $request->agent_code,
+         Agent::where('id', $request->id)->update([
+            'name' => $request->agent_name,
+            'location' => $request->agent_location,
+            'website' => $request->agent_website,
+            'owner' => $request->agent_owner,
+            'code' => $request->agent_code,
          ]);
 
          return redirect('/CMS/agent');
@@ -1860,7 +1860,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
      public function agentdelete($id)
      {
-         Agent::where('id_agent', $id)->delete();
+         Agent::where('id', $id)->delete();
          return redirect('/CMS/agent');
      }
 
@@ -1888,14 +1888,14 @@ class C_ArthurkaikoiAdmin extends Controller
 
      public function handlingagentedit($id)
      {
-         $handlingagent = HandlingAgent::where('id_handlingagent', $id)->get();
+         $handlingagent = HandlingAgent::where('id', $id)->get();
          return view('arthurkaikoiadmin.handlingagent.handlingagent_edit', compact('handlingagent'));
      }
 
      public function handlingagentupdate(request $request)
      {
 
-         HandlingAgent::where('id_handlingagent', $request->id)->update([
+         HandlingAgent::where('id', $request->id)->update([
 
          ]);
 
@@ -1904,7 +1904,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
      public function handlingagentdelete($id)
      {
-         HandlingAgent::where('id_handlingagent', $id)->delete();
+         HandlingAgent::where('id', $id)->delete();
          return redirect('/CMS/handlingagent');
      }
 
@@ -1938,9 +1938,8 @@ class C_ArthurkaikoiAdmin extends Controller
 
          OurCollection::create([
             'title' => $request->title,
-            'image' => $image,
-            'deskripsi' => $request->deskripsi,
-            'deskripsi_singkat' => $request->deskripsi_singkat,
+            // 'image' => $image,
+            'description' => $request->deskripsi,
             'koi_id' => $request->koi_id,
          ]);
          return redirect('/CMS/ourcollection');
@@ -1948,7 +1947,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
      public function ourcollectionedit($id)
      {
-         $ourcollection = OurCollection::where('id_ourcollection', $id)->get();
+         $ourcollection = OurCollection::where('id', $id)->get();
          return view('arthurkaikoiadmin.website.ourcollection.ourcollection_edit', compact('ourcollection'));
      }
 
@@ -1964,11 +1963,10 @@ class C_ArthurkaikoiAdmin extends Controller
             $file_image->move($tujuan_upload,$image);
         }
 
-         OurCollection::where('id_ourcollection', $request->id)->update([
+         OurCollection::where('id', $request->id)->update([
             'title' => $request->title,
-            'image' => $image,
-            'deskripsi' => $request->deskripsi,
-            'deskripsi_singkat' => $request->deskripsi_singkat,
+            'description' => $request->deskripsi,
+            'koi_id' => $request->koi_id
          ]);
 
          return redirect('/CMS/ourcollection');
@@ -2032,7 +2030,7 @@ class C_ArthurkaikoiAdmin extends Controller
             $file_image->move($tujuan_upload,$image);
         }
 
-         News::where('id_news', $request->id)->update([
+         News::where('id', $request->id)->update([
             'title' => $request->title,
             'image' => $image,
             'deskripsi' => $request->deskripsi,
@@ -2088,7 +2086,6 @@ class C_ArthurkaikoiAdmin extends Controller
 
      public function aboutusupdate(request $request)
      {
-
         if($request->file('image') == null){
             $image = $request->images;
             }
@@ -2099,9 +2096,9 @@ class C_ArthurkaikoiAdmin extends Controller
             $file_image->move($tujuan_upload,$image);
         }
 
-         AboutUs::where('id_aboutus', $request->id)->update([
+         AboutUs::where('id', $request->id)->update([
              'image' => $image,
-             'deskripsi' => $request->deskripsi,
+             'description' => $request->deskripsi,
          ]);
 
          return redirect('/CMS/aboutus');
@@ -2109,7 +2106,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
      public function aboutusdelete($id)
      {
-         AboutUs::where('id_aboutus', $id)->delete();
+         AboutUs::where('id', $id)->delete();
          return redirect('/CMS/aboutus');
      }
 
@@ -2158,7 +2155,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
      public function contactusdelete($id)
      {
-         ContactUs::where('id_contactus', $id)->delete();
+         ContactUs::where('id', $id)->delete();
          return redirect('/CMS/contactus');
      }
 
