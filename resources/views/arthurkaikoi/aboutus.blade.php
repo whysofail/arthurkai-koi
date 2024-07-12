@@ -21,10 +21,13 @@
                 <div class="col-lg-6 col-12 mb-4 mb-lg-0 d-flex">
                     <div class="services-info">
                         <h2 class="text-dark mb-4">About Us</h2>
-                        {!! $about->description !!}
+                        @if(isset($about) && $about->description)
+                            {!! $about->description !!}
+                        @else
+                            <p>No description available.</p>
+                        @endif
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
