@@ -618,7 +618,7 @@
                         type: 'GET'
                     },
                     columns: [{
-                            data: null,
+                            data: 'index',
                             name: 'index',
                             orderable: false,
                             searchable: false
@@ -631,7 +631,7 @@
                         },
                         {
                             data: 'code',
-                            name: 'koi_code'
+                            name: 'code'
                         },
                         {
                             data: 'nickname',
@@ -647,26 +647,26 @@
                         },
                         {
                             data: 'birth',
-                            name: 'birth'
+                            name: 'birthdate'
                         },
                         {
                             data: 'age',
                             name: 'age'
                         },
                         {
-                            data: 'date_purchase',
-                            name: 'date_purchase'
+                            data: 'purchase_date',
+                            name: 'purchase_date'
                         },
                         {
                             data: 'size',
                             name: 'size'
                         },
                         {
-                            data: 'selleragent',
+                            data: 'seller',
                             name: 'seller'
                         },
                         {
-                            data: 'handling_agent',
+                            data: 'handler',
                             name: 'handler'
                         },
                         {
@@ -680,8 +680,8 @@
                             width: '12.5%'
                         },
                         {
-                            data: 'kep_loc',
-                            name: 'kep_loc'
+                            data: 'location',
+                            name: 'location'
                         },
                         {
                             data: 'date_of_sell',

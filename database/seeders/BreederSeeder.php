@@ -18,7 +18,7 @@ class BreederSeeder extends Seeder
         $file = file_get_contents($filePath);
         $lines = explode("\n", $file);
         $header = str_getcsv(array_shift($lines));
-
+        
         $records = [];
         foreach ($lines as $line) {
             if (trim($line)) { // Skip empty lines

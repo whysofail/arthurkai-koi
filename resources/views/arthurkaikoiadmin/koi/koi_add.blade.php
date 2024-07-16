@@ -3,9 +3,7 @@
 @section("title", "Add")
 
 @section("css")
-
     <!-- Select2 -->
-
     <link rel="stylesheet" href="{{ asset("plugins/select2/css/select2.min.css") }}">
 
     <link rel="stylesheet" href="{{ asset("plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css") }}">
@@ -327,37 +325,23 @@
                     <div class="col-sm-6">
 
                         <h1>Koi</h1>
-
                     </div>
-
                     <div class="col-sm-6">
-
                         <ol class="breadcrumb float-sm-right">
-
                             <li class="breadcrumb-item"><a style="color: black">Dashboard</a></li>
-
                             <li class="breadcrumb-item active" style="color: red">Add Koi</li>
-
                         </ol>
-
                     </div>
-
                 </div>
-
             </div><!-- /.container-fluid -->
-
         </section>
 
         <!-- Main content -->
 
         <section class="content">
-
             <form action="{{ route("cmskoistore") }}" method="POST" enctype="multipart/form-data">
-
                 @csrf
-
-                <input type="hidden" name="n_status" value="Available">
-
+                <input type="hidden" name="status" value="Available">
                 <div class="col-sm-12">
 
                     <a href="{{ route("cmskoi") }}" class="btn btn-sm"
@@ -370,389 +354,204 @@
                     </a>
 
                     <div class="card">
-
                         <div class="card-body">
-
                             <div class="content tab">
-
                                 <section id="section-1" class="content-current">
-
+                                    <h2>Base Koi Information</h2>
+                                    <hr>
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="form-group row">
-
-                                            <label for="year" class="col-sm-2 col-form-label">Year</label>
-
+                                            <label for="koicode" class="col-sm-2 col-form-label">Koi Code</label>
                                             <div class="col-sm-10">
-
-                                                <select class="form-control select2" name="year" style="width: 100%;"
-                                                    required>
-
-                                                    <option value=""></option>
-
-                                                    <option value="2018">2018</option>
-
-                                                    <option value="2019">2019</option>
-
-                                                    <option value="2020">2020</option>
-
-                                                    <option value="2021">2021</option>
-
-                                                    <option value="2022">2022</option>
-
-                                                    <option value="2023">2023</option>
-
-                                                    <option value="2024">2024</option>
-
-                                                </select>
-
+                                                <input type="hidden" name="koicode" id="koicode">
+                                                <input class="form-control" name="koicode_display" id="koicode_display" style="width: 100%;"
+                                                    disabled>
+                                            </input>
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="form-group row">
-
                                             <label for="nickname" class="col-sm-2 col-form-label">Nickname</label>
-
                                             <div class="col-sm-10">
-
                                                 <input type="text" class="form-control" name="nickname"
                                                     value="{{ old("nickname") }}" id="nickname">
-
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="form-group row">
-
                                             <label for="variety" class="col-sm-2 col-form-label">Variety</label>
-
                                             <div class="col-sm-10">
-
-                                                <select class="form-control select2" name="variety" style="width: 100%;"
-                                                    required>
-
+                                                <select class="form-control select2" id="variety-select" name="variety" style="width: 100%;"
+                                                    >
                                                     <option selected="selected">Selected Variety</option>
-
                                                     @foreach ($variety as $v)
-                                                        <option value="{{ $v->variety_name }}">{{ $v->variety_name }}
-
+                                                        <option value="{{ $v->id }}" data-code='{{ $v->code }}'>{{ $v->name }}
                                                         </option>
                                                     @endforeach
-
                                                 </select>
-
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="form-group row">
-
-                                            <label for="gender" class="col-sm-2 col-form-label">Gender</label>
-
-                                            <div class="col-sm-10">
-
-                                                <select class="form-control select2" name="gender" style="width: 100%;"
-                                                    required>
-
-                                                    <option value="" selected="selected">Selected Gender</option>
-
-                                                    <option value="Male">Male</option>
-
-                                                    <option value="Female">Famele</option>
-
-                                                    <option value="Unknown">Unknown</option>
-
-                                                </select>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="form-group row">
-
-                                            <label for="birth" class="col-sm-2 col-form-label">Birth</label>
-
-                                            <div class="col-sm-10">
-
-                                                <input type="month" class="form-control" name="birth"
-                                                    value="{{ old("birth") }}" id="birth" required>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    {{-- <div class="col-sm-12" style="margin-top: 10px">
-                                    <div class="form-group row">
-                                        <label for="age" class="col-sm-2 col-form-label">Age</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="age"
-                                                value="{{ old('age') }}" id="age">
-                                        </div>
-                                    </div>
-                                </div> --}}
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="form-group row">
-
-                                            <label for="bloodline" class="col-sm-2 col-form-label">Bloodline</label>
-
-                                            <div class="col-sm-10">
-
-                                                <select class="form-control select2" name="bloodline"
-                                                    style="width: 100%;" required>
-
-                                                    <option selected="selected">Selected Bloodline</option>
-
-                                                    @foreach ($bloodline as $b)
-                                                        <option value="{{ $b->bloodline_name }}">{{ $b->bloodline_name }}
-
-                                                        </option>
-                                                    @endforeach
-
-                                                </select>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="form-group row">
-
                                             <label for="breeder" class="col-sm-2 col-form-label">Breeder</label>
-
                                             <div class="col-sm-10">
-
-                                                <select class="form-control select2" name="breeder" style="width: 100%;"
-                                                    required>
-
+                                                <select class="form-control select2" id="breeder-select" name="breeder" style="width: 100%;"
+                                                    >
                                                     <option selected="selected">Selected Breeder</option>
-
                                                     @foreach ($breeder as $b)
-                                                        <option value="{{ $b->breeder_name }}">{{ $b->breeder_name }}
-
+                                                        <option value="{{ $b->id }}" data-code="{{ $b->code }}">{{ $b->name }}
                                                         </option>
                                                     @endforeach
-
                                                 </select>
-
                                             </div>
-
                                         </div>
-
                                     </div>
+                                    <div class="col-sm-12" style="margin-top: 10px">
+                                        <div class="form-group row">
+                                            <label for="bloodline" class="col-sm-2 col-form-label">Bloodline</label>
+                                            <div class="col-sm-10">
+                                                <select class="form-control select2" name="bloodline"
+                                                    style="width: 100%;" >
+                                                    <option selected="selected">Selected Bloodline</option>
+                                                    @foreach ($bloodline as $b)
+                                                        <option value="{{ $b->id }}">{{ $b->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" style="margin-top: 10px">
+                                        <div class="form-group row">
+                                            <label for="gender" class="col-sm-2 col-form-label">Gender</label>
+                                            <div class="col-sm-10">
+                                                <select class="form-control select2" name="gender" style="width: 100%;"
+                                                    >
+                                                    <option value="" selected="selected">Selected Gender</option>
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                    <option value="Unknown">Unknown</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12" style="margin-top: 10px">
+                                        <div class="form-group row">
+                                            <label for="birth" class="col-sm-2 col-form-label">Birthdate</label>
+                                            <div class="col-sm-10">
+                                                <input type="month" class="form-control" name="birth"
+                                                    value="{{ old("birth") }}" id="birth" >
+                                            </div>
+                                        </div>
+                                    </div>
+
+                            
+
 
                                     <div class="col-sm-12" style="margin-top: 10px">
 
                                         <div class="form-group row">
-
-                                            <label for="date_purchese" class="col-sm-2 col-form-label">Purchase
-
+                                            <label for="purchase_date" class="col-sm-2 col-form-label">Purchase
                                                 Date</label>
-
                                             <div class="col-sm-10">
-
-                                                <input type="month" class="form-control" name="date_purchese"
-                                                    value="{{ old("date_purchese") }}" id="date_purchese" required>
-
+                                                <input type="month" class="form-control" name="purchase_date"
+                                                    value="{{ old("purchase_date") }}" id="purchase_date" >
                                             </div>
 
                                         </div>
-
                                     </div>
-
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="form-group row">
-
-                                            <label for="salleragent" class="col-sm-2 col-form-label">Seller Agent</label>
-
-                                            <div class="col-sm-10">
-
-                                                <select class="form-control select2" name="salleragent"
-                                                    style="width: 100%;" required>
-
-                                                    <option selected="selected">Selected Seller Agent</option>
-
-                                                    @foreach ($agent as $a)
-                                                        <option value="{{ $a->agent_owner }}">{{ $a->agent_owner }}
-
-                                                        </option>
-                                                    @endforeach
-
-                                                </select>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="form-group row">
-
-                                            <label for="pricebuy_idr" class="col-sm-2 col-form-label">Price Buy
-
-                                                (IDR)</label>
-
-                                            <div class="col-sm-10">
-
-                                                <input type="text" id="pricebuy_idr" class="form-control"
-                                                    name="pricebuy_idr" value="{{ old("pricebuy_idr") }}" required>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="form-group row">
-
-                                            <label for="pricebuy_jpy" class="col-sm-2 col-form-label">Price Buy
-
-                                                (JPY)</label>
-
-                                            <div class="col-sm-10">
-
-                                                <input type="text" id="pricebuy_jpy" class="form-control"
-                                                    name="pricebuy_jpy" value="{{ old("pricebuy_jpy") }}" required>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="form-group row">
-
                                             <label for="size" class="col-sm-2 col-form-label">Size</label>
-
                                             <div class="col-sm-10">
-
                                                 <input type="text" class="form-control" name="size"
                                                     value="{{ old("size") }}" id="size">
-
                                             </div>
-
                                         </div>
-
+                                    </div>
+                                    <div class="col-sm-12" style="margin-top: 10px">
+                                        <div class="form-group row">
+                                            <label for="seller" class="col-sm-2 col-form-label">Seller Agent</label>
+                                            <div class="col-sm-10">
+                                                <select class="form-control select2" name="seller"
+                                                    style="width: 100%;" >
+                                                    <option selected="selected">Selected Seller Agent</option>
+                                                    @foreach ($agent as $a)
+                                                        <option value="{{ $a->id }}">
+                                                            {{ $a->owner }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="form-group row">
-
-                                            <label for="hagent" class="col-sm-2 col-form-label">Handling Agent</label>
-
+                                            <label for="handler" class="col-sm-2 col-form-label">Handling Agent</label>
                                             <div class="col-sm-10">
-
-                                                <input type="text" class="form-control" name="hagent"
-                                                    value="{{ old("hagent") }}" id="hagent">
-
+                                                <select class="form-control select2" name="seller"
+                                                    style="width: 100%;" >
+                                                    <option selected="selected">Selected Handling Agent</option>
+                                                    @foreach ($agent as $a)
+                                                        <option value="{{ $a->id }}">
+                                                            {{ $a->owner }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-
                                         </div>
-
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
+                                        <div class="form-group row" style="margin-top: 10px">
+                                            <label for="pricebuy_idr" class="col-sm-2 col-form-label">Price Buy (IDR)</label>
+                                            <div class="col-sm-4">
+                                                <input type="hidden" id="pricebuy_idr" class="form-control" name="pricebuy_idr" value="{{ old('pricebuy_idr') }}" >
+                                                <input type="text" id="pricebuy_idr_display" class="form-control" name="pricebuy_idr_display" value="{{ old('pricebuy_idr_display') }}" >
+                                            </div>
+                                            
+                                            <label for="pricebuy_jpy" class="col-sm-2 col-form-label">Price Buy (JPY)</label>
+                                            <div class="col-sm-4">
+                                                <input type="hidden" id="pricebuy_jpy" class="form-control" name="pricebuy_jpy" value="{{ old('pricebuy_jpy') }}" >
+                                                <input type="text" id="pricebuy_jpy_display" class="form-control" name="pricebuy_jpy_display" value="{{ old('pricebuy_jpy_display') }}" >
+                                            </div>
+                                        </div>                                        
+                                    </div>
 
+   
+                                    <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="form-group row">
-
-                                            <label for="kep_loc" class="col-sm-2 col-form-label">Keeping Location</label>
-
+                                            <label for="location" class="col-sm-2 col-form-label">Keeping Location</label>
                                             <div class="col-sm-10">
-
-                                                <input type="text" class="form-control" name="kep_loc"
-                                                    value="{{ old("kep_loc") }}" id="kep_loc">
+                                                <input type="text" class="form-control" name="location"
+                                                    value="{{ old("location") }}" id="location">
 
                                             </div>
-
                                         </div>
-
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="form-group row">
-
-                                            <label for="pricesell_idr" class="col-sm-2 col-form-label">Sell Price
-
-                                                (IDR)</label>
-
-                                            <div class="col-sm-10">
-
-                                                <input type="text" id="pricesell_idr" class="form-control"
-                                                    name="pricesell_idr" value="{{ old("pricesell_idr") }}">
-
+                                        <div class="form-group row" style="margin-top: 10px">
+                                            <label for="pricesell_idr" class="col-sm-2 col-form-label">Sell Price (IDR)</label>
+                                            <div class="col-sm-4">
+                                                <input type="hidden" id="pricesell_idr" class="form-control" name="pricesell_idr" value="{{ old('pricesell_idr') }}">
+                                                <input type="text" id="pricesell_idr_display" class="form-control" name="pricesell_idr_display" value="{{ old('pricesell_idr_display') }}">
                                             </div>
-
+                                            <label for="pricesell_jpy" class="col-sm-2 col-form-label">Sell Price (JPY)</label>
+                                            <div class="col-sm-4">
+                                                <input type="hidden" id="pricesell_jpy" class="form-control" name="pricesell_jpy" value="{{ old('pricesell_jpy') }}">
+                                                <input type="text" id="pricesell_jpy_display" class="form-control" name="pricesell_jpy_display" value="{{ old('pricesell_jpy_display') }}">
+                                            </div>
                                         </div>
-
+                                        
                                     </div>
 
-                                    <div class="col-sm-12" style="margin-top: 10px">
 
-                                        <div class="form-group row">
-
-                                            <label for="pricesell_jpy" class="col-sm-2 col-form-label">Sell Price
-
-                                                (JPY)</label>
-
-                                            <div class="col-sm-10">
-
-                                                <input type="text" id="pricesell_jpy" class="form-control"
-                                                    name="pricesell_jpy" value="{{ old("pricesell_jpy") }}">
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="form-group row">
-
-                                            <label for="date_sell" class="col-sm-2 col-form-label">Date Of Sell</label>
-
-                                            <div class="col-sm-10">
-
-                                                <input type="month" class="form-control" name="date_sell"
-                                                    value="{{ old("date_sell") }}" id="date_sell">
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
 
                                     {{-- <div class="col-sm-12" style="margin-top: 10px">
                                     <div class="input-group row">
@@ -761,7 +560,7 @@
                                             <div class="form-group">
                                                 <img width="125" id="photo_highlight" class="img-thumbnailh">
                                                 <div class="input-group realprocodePH control-group lst incrementPH">
-                                                    <input type="file" name="photo_highlight[]" class="myfrm form-control" onchange="photohighlight(event)" required>
+                                                    <input type="file" name="photo_highlight[]" class="myfrm form-control" onchange="photohighlight(event)" >
                                                     <div class="input-group-btn">
                                                         <button class="btn btn-success btn-clickPH" type="button"><i class="fldemo glyphicon glyphicon-plus"></i>Add</button>
                                                     </div>
@@ -780,30 +579,21 @@
                                 </div> --}}
 
                                     <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="input-group row">
-
+                                        <h2>Koi Media</h2>
+                                         <hr>    
+                                        <div class="input-group row" style="align-items: center;">
                                             <label for="link_photo" class="col-sm-2 col-form-label">Link Photo</label>
-
                                             <div class="col-sm-10" id="satu">
-
                                                 <div class="form-group">
-
                                                     <img width="125" id="link_photo" class="img-thumbnailp">
-
                                                     <div class="input-group realprocodeLP control-group lst incrementLP">
-
                                                         <input type="file" name="link_photo[]"
-                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)"
-                                                            required>
-
+                                                                class="myfrm form-control" onchange="Imagelinkphoto(event)"
+                                                             >
                                                         <div class="input-group-btn">
-
                                                             <button class="btn btn-success btn-clickLP" type="button"><i
                                                                     class="fldemo glyphicon glyphicon-plus"></i>Add</button>
-
                                                         </div>
-
                                                     </div>
 
                                                     <div class="cloneLP hide" style="display: none;">
@@ -838,7 +628,7 @@
 
                                     <div class="col-sm-12" style="margin-top: 10px">
 
-                                        <div class="input-group row">
+                                        <div class="input-group row" style="align-items: center;">
 
                                             <label for="link_video" class="col-sm-2 col-form-label">Link Video</label>
 
@@ -849,156 +639,102 @@
                                                     <img width="125" id="link_video" class="img-thumbnailv">
 
                                                     <div class="input-group realprocodeLV control-group lst incrementLV">
-
                                                         <input type="file" name="link_video[]"
                                                             class="myfrm form-control" onchange="link_video(event)"
                                                             accept="video/mp4,video/x-m4v,video/*">
-
                                                         <div class="input-group-btn">
-
                                                             <button class="btn btn-success btn-clickLV" type="button"><i
                                                                     class="fldemo glyphicon glyphicon-plus"></i>Add</button>
-
                                                         </div>
-
                                                     </div>
 
                                                     <div class="cloneLV hide" style="display: none;">
-
                                                         <div class="realprocodeLV control-group lst input-group"
                                                             style="margin-top:10px">
-
                                                             <input type="file" name="link_video[]"
                                                                 class="myfrm form-control" onchange="link_video(event)"
                                                                 accept="video/mp4,video/x-m4v,video/*">
-
                                                             <div class="input-group-btn">
-
                                                                 <button class="btn btn-danger" type="button"><i
                                                                         class="fldemo glyphicon glyphicon-remove"></i>
-
                                                                     Remove</button>
 
                                                             </div>
-
                                                         </div>
-
                                                     </div>
-
                                                 </div>
-
                                             </div>
-
                                         </div>
-
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="input-group row">
-
                                             <label for="link_trophy" class="col-sm-2 col-form-label">Link Trophy</label>
-
                                             <div class="col-sm-10">
-
                                                 <input type="file" class="form-control" name="link_trophy"
                                                     value="{{ old("link_trophy") }}" id="link_trophy"
                                                     style="height: auto !important;">
 
                                             </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="form-group row">
-
                                             <label for="name_trophy" class="col-sm-2 col-form-label"></label>
-
-                                            <div class="col-sm-10">
-
+                                            <div class="col-sm-10" style="margin-top: 10px;">
                                                 <input type="text" class="form-control" name="name_trophy"
                                                     value="{{ old("name_trophy") }}" id="name_trophy"
                                                     placeholder="Nama Event">
-
                                             </div>
-
                                         </div>
-
                                     </div>
 
+                            
+
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="input-group row">
-
-                                            <label for="link_certificate" class="col-sm-2 col-form-label">Link
-
+                                            <label for="link_certificate" class="col-sm-2 col-form-label">
+                                                Link
                                                 Certificate</label>
-
                                             <div class="col-sm-10">
-
                                                 <input type="file" class="form-control" name="link_certificate"
                                                     value="{{ old("link_certificate") }}" id="link_certificate"
                                                     style="height: auto !important;">
-
                                             </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="form-group row">
-
                                             <label for="name_certificate" class="col-sm-2 col-form-label"></label>
-
-                                            <div class="col-sm-10">
-
+                                            <div class="col-sm-10" style='margin-top: 10px;'>
                                                 <input type="text" class="form-control" name="name_certificate"
                                                     value="{{ old("name_certificate") }}" id="name_certificate"
                                                     placeholder="Nama Event">
-
                                             </div>
-
                                         </div>
+                                        </div>
+                                    
 
-                                    </div>
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
+                                    <div class="col-sm-12" style="margin-top: 15px">
+                                        <h2>Additional Information</h2>
+                                        <hr>
+                                            <div class="form-group row">
+                                                <label for="date_sell" class="col-sm-2 col-form-label">Date Of Sell</label>
+                                                <div class="col-sm-10">
+                                                    <input type="month" class="form-control" name="date_sell"
+                                                        value="{{ old("date_sell") }}" id="date_sell">
+                                                </div>
+                                        </div>
                                         <div class="form-group row">
-
                                             <label for="buyer_name" class="col-sm-2 col-form-label">Buyer Name</label>
-
                                             <div class="col-sm-10">
-
                                                 <input type="text" class="form-control" name="buyer_name"
                                                     value="{{ old("buyer_name") }}" id="buyer_name">
 
                                             </div>
-
                                         </div>
 
                                     </div>
-
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="form-group row">
-
                                             <label for="death_date" class="col-sm-2 col-form-label">Date of Death</label>
-
                                             <div class="col-sm-10">
-
                                                 <input type="month" class="form-control" name="death_date"
                                                     value="{{ old("death_date") }}" id="death_date">
-
                                             </div>
-
                                         </div>
-
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
@@ -1018,9 +754,7 @@
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 50px">
-
                                         <div class="float-right">
-
                                             <button type="submit" class="btn btn-success">Save</button>
 
                                         </div>
@@ -1038,7 +772,6 @@
                 </div>
 
     </div>
-
     </form>
 
     <!-- ./row -->
@@ -1108,6 +841,32 @@
             });
 
             $('.select2').select2()
+            function convertDateFormat(date) {
+                if (date) {
+                let parts = date.split('-');
+                if (parts.length === 2) {
+                    let year = parts[0].slice(-2);
+                    let month = parts[1];
+                    return `${month}${year}`;
+                    }
+                }
+                    return '';
+            }
+
+                function updateKoiCode(){
+                    let selectedBreeder = $('#breeder-select').find('option:selected');
+                    let selectedVariety = $('#variety-select').find('option:selected');
+                    let date = $('#purchase_date').val()
+                    let convertedDate = convertDateFormat(date);
+                    let breederCode = selectedBreeder.data('code') || '';
+                    let varietyCode = selectedVariety.data('code') || '';
+                    let combine = varietyCode + breederCode + convertedDate
+                    $('#koicode').val(combine)
+                    $('#koicode_display').val(combine)
+                }
+                $('#variety-select, #breeder-select, #purchase_date').change(function() {
+                    updateKoiCode();
+                 });
 
             //Initialize Select2 Elements
             $('.select2bs4').select2({
@@ -1115,7 +874,6 @@
             })
 
         });
-
 
         /* Fungsi */
         function formatRupiah(angka, prefix) {
@@ -1129,7 +887,6 @@
                 separator = sisa ? '.' : '';
                 rupiah += separator + ribuan.join('.');
             }
-
             rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
             return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
         }
@@ -1145,29 +902,42 @@
                 separator = sisa ? '' : '';
                 jpy += separator + yen.join('');
             }
-
             jpy = split[1] != undefined ? jpy + ',' + split[1] : jpy;
             return prefix == undefined ? jpy : (jpy ? '¥ ' + jpy : '');
         }
 
-        var rupiahpsidr = document.getElementById('pricesell_idr');
-        rupiahpsidr.addEventListener('keyup', function(e) {
-            rupiahpsidr.value = formatRupiah(this.value, 'Rp. ');
+        let sellIdr = document.getElementById('pricesell_idr');
+        let sellIdrDisplay = document.getElementById('pricesell_idr_display');
+        sellIdrDisplay.addEventListener('input', function(e) {
+            let rawValue = this.value.replace(/\D/g, ''); // Remove non-numeric characters
+            sellIdr.value = rawValue
+            sellIdrDisplay.value = formatRupiah(this.value, 'Rp. ');
         });
 
-        var rupiahpsjpy = document.getElementById('pricesell_jpy');
-        rupiahpsjpy.addEventListener('keyup', function(e) {
-            rupiahpsjpy.value = formatJPY(this.value, '¥ ');
+        let sellJpy = document.getElementById('pricesell_jpy');
+        let sellJpyDisplay = document.getElementById('pricesell_jpy_display');
+        sellJpyDisplay.addEventListener('input', function(e) {
+            let rawValue = this.value.replace(/\D/g, ''); // Remove non-numeric characters
+            sellJpy.value = rawValue;
+            sellJpyDisplay.value = formatJPY(this.value, '¥ ');
         });
 
-        var rupiahpbidr = document.getElementById('pricebuy_idr');
-        rupiahpbidr.addEventListener('keyup', function(e) {
-            rupiahpbidr.value = formatRupiah(this.value, 'Rp. ');
-        });
-
-        var rupiahpbjpy = document.getElementById('pricebuy_jpy');
-        rupiahpbjpy.addEventListener('keyup', function(e) {
-            rupiahpbjpy.value = formatJPY(this.value, '¥ ');
+        let buyIdr = document.getElementById('pricebuy_idr');
+        let buyIdrDisplay = document.getElementById('pricebuy_idr_display');
+        buyIdrDisplay.addEventListener('input', function(e) {
+            let rawValue = this.value.replace(/\D/g, ''); // Remove non-numeric characters
+            buyIdr.value = rawValue;
+            // Format the value for display using formatRupiah function
+            let formattedValue = formatRupiah(rawValue, 'Rp. ');
+            buyIdrDisplay.value = formattedValue;
+        }
+    );
+        let buyJpy = document.getElementById('pricebuy_jpy');
+        let buyJpyDisplay = document.getElementById('pricebuy_jpy_display');
+        buyJpyDisplay.addEventListener('input', function(e) {
+            let rawValue = this.value.replace(/\D/g, ''); // Remove non-numeric characters
+            buyJpy.value = rawValue;
+            buyJpyDisplay.value = formatJPY(this.value, '¥ ');
         });
 
         // Function to format Japanese Yen
@@ -1266,7 +1036,6 @@
             });
         });
     </script>
-
     <script>
         $(document).ready(function() {
             // Fetch pre-populated search suggestions on page load
@@ -1284,7 +1053,6 @@
                     }
                 }
             });
-
             // Handle live search
             $('#search').on('keyup', function() {
                 let query = $(this).val();

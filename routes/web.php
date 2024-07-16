@@ -28,7 +28,6 @@ Auth::routes();
 
 // ## ADMIN Arthurkai-koi ______________#
 Route::get('CMS', [LoginController::class, 'showLoginForm'])->name('showLoginForm');
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('CMS/dashboard', [C_ArthurkaikoiAdmin::class, 'dashboard'])->name('dashboard')->middleware('auth');
 
@@ -158,7 +157,6 @@ Route::post('CMS/contactus/update', [C_ArthurkaikoiAdmin::class, 'contactusupdat
 Route::get('CMS/contactus/delete/{id}', [C_ArthurkaikoiAdmin::class, 'contactusdelete'])->name('cmscontactusDelete')->middleware('auth');
 
 // API (JSON) Stuff
-
 Route::get('/api/koi', [KoiController::class, 'index'])->name('api_koi');
 Route::get('/api/koi/search', [KoiController::class, 'searchKoi'])->name('api_koi_search');
 

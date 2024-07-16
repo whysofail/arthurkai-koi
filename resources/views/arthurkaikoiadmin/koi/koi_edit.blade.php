@@ -353,98 +353,60 @@
 
             @foreach ($koi as $k)
                 <form action="{{ route("cmskoiUpdate") }}" method="POST" enctype="multipart/form-data">
-
                     @csrf
-
-                    <input type="hidden" name="id" id="id" value="{{ $k->id_koi }}">
-
-                    @foreach ($k->history as $history)
-                        @if ($loop->first)
-                            <input type="hidden" name="id_history" id="id_history" value="{{ $history->id_history }}">
-                        @else
-                        @endif
-                    @endforeach
-
-                    <input type="hidden" name="koi_id" id="koi_id" value="{{ $k->id_koi }}">
-
-                    <input type="hidden" name="n_status" value="{{ $k->n_status }}">
-
+                    <input type="hidden" name="id" id="id" value="{{ $k->id }}">
+                    <input type="hidden" name="id" id="id" value="{{ $k->id }}">
+                    <input type="hidden" name="status" value="{{ $k->status }}">
                     <div class="col-sm-12">
-
                         <a href="{{ route("cmskoi") }}" class="btn btn-sm"
                             style="margin-bottom: 5px; border-radius: 20px 1px 10px; border: black solid 1px; ">
-
                             <i class="fas fa-arrow-circle-left" style="position: relative; right: 3%; top: 1px;"></i>
-
                             Back
-
                         </a>
-
                         <div class="card">
-
                             <div class="card-body">
-
                                 <div class="content tab" id="contentDataKOI">
-
                                     <section id="section-1" class="content-current">
-
                                         <div class="col-sm-12" style="margin-top: 10px">
-
                                             <div class="form-group row">
-
                                                 <label for="koi_code" class="col-sm-2 col-form-label">Koi Code</label>
-
                                                 <div class="col-sm-10">
-
-                                                    <input type="hidden" name="koi_code" value="{{ $k->koi_code }}">
-
+                                                    <input type="hidden" name="koi_code" value="{{ $k->code }}">
                                                     <input type="text" class="form-control" name="koi_code"
-                                                        value="{{ old("koi_code") ? old("koi_code") : $k->koi_code }}"
+                                                        value="{{ old("code") ? old("code") : $k->code }}"
                                                         id="koi_code" disabled>
-
                                                 </div>
-
                                             </div>
-
                                         </div>
-
+{{-- 
                                         <?php
-                                        if (isset($k->history) && is_object($k->history)) {
-                                            $totalHistory = count($k->history); // Count the number of elements directly
+                                        // if (isset($k->history) && is_object($k->history)) {
+                                        //     $totalHistory = count($k->history); // Count the number of elements directly
                                         
-                                            if ($totalHistory > 0) {
-                                                $lastKoiSequence = $k->history[$totalHistory - 1]->koi_sequence;
-                                            } else {
-                                                $lastKoiSequence = "No history entries available";
-                                            }
-                                        } else {
-                                            $totalHistory = 0;
-                                            $lastKoiSequence = "No history data available";
-                                        }
-                                        ?>
+                                        //     if ($totalHistory > 0) {
+                                        //         $lastKoiSequence = $k->history[$totalHistory - 1]->koi_sequence;
+                                        //     } else {
+                                        //         $lastKoiSequence = "No history entries available";
+                                        //     }
+                                        // } else {
+                                        //     $totalHistory = 0;
+                                        //     $lastKoiSequence = "No history data available";
+                                        // }
+                                        // ?> --}}
 
-                                        <div class="col-sm-12" style="margin-top: 10px">
-
+                                        {{-- <div class="col-sm-12" style="margin-top: 10px">
                                             <div class="form-group row">
-
                                                 <label for="koi_sequence" class="col-sm-2 col-form-label">Koi
-
                                                     Sequence</label>
-
                                                 <div class="col-sm-10">
-
                                                     <!-- <input type="hidden" name="koi_sequence"  value="{{ $k->history[$totalHistory - 1]->koi_sequence }}"> -->
-
                                                     <input type="text" class="form-control" name="koi_sequence"
                                                         id="koi_sequence"
                                                         value="{{ old("koi_sequence") ?? ($totalHistory > 0 ? $k->history[$totalHistory - 1]->koi_sequence : "") }}"
                                                         disabled>
-
                                                 </div>
-
                                             </div>
-
-                                        </div>
+                                        </div> --}}
 
                                         <div class="col-sm-12" style="margin-top: 10px">
 
@@ -591,12 +553,9 @@
 
                                                     <select class="form-control select2" name="breeder"
                                                         style="width: 100%;" disabled>
-
                                                         <option value="{{ $k->breeder }}"
                                                             {{ $k->breeder == $k->breeder ? "selected" : "" }}>
-
                                                             {{ $k->breeder }}</option>
-
                                                     </select>
 
                                                 </div>
@@ -612,48 +571,32 @@
                                             <div class="form-group row">
 
                                                 <label for="date_purchese" class="col-sm-2 col-form-label">Purchase
-
                                                     Date</label>
 
                                                 <div class="col-sm-10">
 
                                                     <input type="hidden" name="date_purchese"
-                                                        value="{{ $k->date_purchese }}">
+                                                        value="{{ $k->purchase_date }}">
 
                                                     <input type="month" class="form-control" name="date_purchese"
-                                                        value="{{ old("date_purchese") ? old("date_purchese") : $k->date_purchese }}"
+                                                        value="{{ old("date_purchese") ? old("date_purchese") : $k->purchase_date }}"
                                                         id="date_purchese" disabled>
-
                                                 </div>
-
                                             </div>
-
                                         </div>
-
                                         <div class="col-sm-12" style="margin-top: 10px">
-
                                             <div class="form-group row">
-
                                                 <label for="salleragent" class="col-sm-2 col-form-label">Seller
-
                                                     Agent</label>
-
                                                 <div class="col-sm-10">
-
                                                     <select class="form-control select2" name="salleragent"
                                                         style="width: 100%;" disabled>
-
-                                                        <option value="{{ $k->salleragent }}"
-                                                            {{ $k->salleragent == $k->salleragent ? "selected" : "" }}>
-
-                                                            {{ $k->salleragent }}</option>
-
+                                                        <option value="{{ $k->seller }}"
+                                                            {{ $k->seller == $k->seller ? "selected" : "" }}>
+                                                            {{ $k->seller }}</option>
                                                     </select>
-
                                                 </div>
-
                                             </div>
-
                                         </div>
 
                                         <input type="hidden" name="salleragent" value="{{ $k->salleragent }}">
@@ -662,18 +605,18 @@
 
                                             <div class="form-group row">
 
-                                                <label for="pricebuy_idr" class="col-sm-2 col-form-label">Price Buy
+                                                <label for="price_buy_idr" class="col-sm-2 col-form-label">Price Buy
 
                                                     (IDR)</label>
 
                                                 <div class="col-sm-10">
 
-                                                    <input type="hidden" name="pricebuy_idr"
-                                                        value="{{ $k->pricebuy_idr }}">
+                                                    <input type="hidden" name="price_buy_idr"
+                                                        value="{{ $k->price_buy_idr }}">
 
-                                                    <input type="text" class="form-control" name="pricebuy_idr"
-                                                        value="{{ old("pricebuy_idr") ? old("pricebuy_idr") : $k->pricebuy_idr }}"
-                                                        id="pricebuy_idr" disabled>
+                                                    <input type="text" class="form-control" name="price_buy_idr"
+                                                        value="{{ old("price_buy_idr") ? old("price_buy_idr") : $k->price_buy_idr }}"
+                                                        id="price_buy_idr" disabled>
 
                                                 </div>
 
@@ -919,13 +862,9 @@
                                         </div>
 
                                         <div class="col-sm-12">
-
                                             <label>Link Photo</label><br>
-
                                             <div class="col-sm-12">
-
                                                 <div class="form-group">
-
                                                     @foreach ($k->history as $history)
                                                         @if ($loop->first)
                                                             @foreach (explode("|", $history->link_photo) as $image)
@@ -974,52 +913,31 @@
                                                             <input type="hidden" name="photo_highlights" value="">
                                                         @else
                                                         @endif
-
                                                         <div class="input-group-btn">
-
                                                             <button class="btn btn-success btn-clickLP" type="button"><i
                                                                     class="fldemo glyphicon glyphicon-plus"></i>Add</button>
-
                                                         </div>
-
                                                     </div>
-
                                                     <div class="cloneLP hide" style="display: none;">
-
                                                         <div class="realprocodeLP control-group lst input-group"
                                                             style="margin-top:10px">
-
                                                             <input type="file" name="link_photo[]"
                                                                 class="myfrm form-control"
                                                                 onchange="Imagelinkphoto(event)">
-
                                                             <div class="input-group-btn">
-
                                                                 <button class="btn btn-danger" type="button"><i
                                                                         class="fldemo glyphicon glyphicon-remove"></i>
-
                                                                     Remove</button>
-
                                                             </div>
-
                                                         </div>
-
                                                     </div>
-
                                                 </div>
-
                                             </div>
-
                                         </div>
-
                                         <div class="col-sm-12 mt-3">
-
                                             <label>Link_Video</label><br>
-
                                             <div class="form-group">
-
                                                 <img width="125" id="link_video" class="img-thumbnailv">
-
                                                 @foreach ($k->history as $history)
                                                     @if ($loop->first)
                                                         @foreach (explode("|", $history->link_video) as $image)
@@ -1038,54 +956,34 @@
                                                     @else
                                                     @endif
                                                 @endforeach
-
                                                 </span>
-
                                                 <div class="input-group realprocodeLV control-group lst incrementLV">
-
                                                     <input type="file" name="link_video[]" class="myfrm form-control"
                                                         onchange="link_video(event)"
                                                         accept="video/mp4,video/x-m4v,video/*">
-
                                                     <div class="input-group-btn">
-
                                                         <button class="btn btn-success btn-clickLV" type="button"><i
                                                                 class="fldemo glyphicon glyphicon-plus"></i>Add</button>
-
                                                     </div>
-
                                                 </div>
-
                                                 <div class="cloneLV hide" style="display: none;">
-
                                                     <div class="realprocodeLV control-group lst input-group"
                                                         style="margin-top:10px">
-
                                                         <input type="file" name="link_video[]"
                                                             class="myfrm form-control" onchange="link_video(event)"
                                                             accept="video/mp4,video/x-m4v,video/*">
-
                                                         <div class="input-group-btn">
-
                                                             <button class="btn btn-danger" type="button"><i
                                                                     class="fldemo glyphicon glyphicon-remove"></i>
-
                                                                 Remove</button>
-
                                                         </div>
-
                                                     </div>
-
                                                 </div>
-
                                             </div>
-
                                         </div>
 
                                         <div class="col-sm-12 mt-3">
-
                                             <label>Link Trophy</label><br>
-
                                             @foreach ($k->history as $history)
                                                 @if ($loop->first)
                                                     @if ($history->link_trophy == null)
@@ -1135,9 +1033,7 @@
                                         </div>
 
                                         <div class="col-sm-12 mt-3">
-
                                             <label>Link Certificate</label><br>
-
                                             @foreach ($k->history as $history)
                                                 @if ($loop->first)
                                                     @if ($history->link_certificate == null)
@@ -1515,25 +1411,24 @@
         $(document).ready(function() {
             $('#year').change(function() {
                 let year = $(this).val();
-                let koi_id = $('#id').val();
+                let id = $('#id').val();
 
                 $.ajax({
                     url: "{{ route("cmsgetyear") }}",
                     method: 'GET', // Menggunakan metode GET
                     data: {
-                        koi_id: koi_id,
+                        id: id,
                         year: year,
 
                     },
                     dataType: 'json',
                     success: function(data) {
-
                         console.log(data)
                         if (data.length > 0) {
                             $('#koi_sequence').val(data[0].koi_sequence)
                             data.forEach(function(item) {
                                 $('#id_history').val(item.id_history);
-                                $('#koi_id').val(item.koi_id);
+                                $('#id').val(item.id);
                                 $('#size').val(item.size);
                                 $('#hagent').val(item.hagent);
                                 $('#kep_loc').val(item.kep_loc);
@@ -1542,7 +1437,7 @@
                                 $('#photo_highlight').val(item.photo_highlight);
                                 $('#photo_highlight').attr("src",
                                     "img/koi/photo_highlight/".item.photo_highlight);
-                                $('#link_photo').val(item.link_photo);
+                                $('#photo').val(item.photo);
                                 $('#link_photo').attr("src", "img/koi/link_photo/".item
                                     .link_photo);
                                 $('#link_video').val(item.link_video);

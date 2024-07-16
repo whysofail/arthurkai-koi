@@ -54,119 +54,140 @@ class C_ArthurkaikoiAdmin extends Controller
     }
 
     public function getDataKoi(Request $request)
-    {
-        $columns = [
-            0 => 'id',
-            1 => 'action',
-            2 => 'code',         
-            3 => 'nickname',
-            4 => 'variety',
-            5 => 'gender',
-            6 => 'birth',
-            7 => 'age',
-            8 => 'purchase_date',
-            10 => 'size',
-            11 => 'selleragent',
-            12 => 'handling_agent',
-            13 => 'price_buy',
-            14 => 'price_sell',
-            15 => 'kep_loc',
-            16 => 'date_of_sell',
-            17 => 'buyer_name',
-            18 => 'date_of_death',
-            19 => 'death_note',
-            20 => 'breeder',
-            21 => 'bloodline'
-        ];
+{
+    $columns = [
+        0 => 'id',
+        1 => 'action',
+        2 => 'code',
+        3 => 'nickname',
+        4 => 'variety',
+        5 => 'gender',
+        6 => 'birthdate',
+        7 => 'age',
+        8 => 'purchase_date',
+        9 => 'size',
+        10 => 'seller',
+        11 => 'handler',
+        12 => 'price_buy',
+        13 => 'price_sell',
+        14 => 'location',
+        15 => 'date_of_sell',
+        16 => 'buyer_name',
+        17 => 'date_of_death',
+        18 => 'death_note',
+        19 => 'breeder',
+        20 => 'bloodline'
+    ];
 
-        $totalData = Koi::count();
-        $totalFiltered = $totalData;
+    $totalData = Koi::count();
+    $totalFiltered = $totalData;
 
-        $limit = $request->input('length');
-        $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
-        $dir = $request->input('order.0.dir');
+    $limit = $request->input('length');
+    $start = $request->input('start');
+    $orderColumnIndex = $request->input('order.0.column');
+    $orderDir = $request->input('order.0.dir');
+    $orderColumn = $columns[$orderColumnIndex];
 
-        if (empty($request->input('search.value'))) {
-            $kois = Koi::with('history')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
-        } else {
-            $search = $request->input('search.value');
-
-            $kois = Koi::with('history')
-                        ->where('code', 'LIKE', "%{$search}%")
-                        ->orWhere('nickname', 'LIKE', "%{$search}%")
-                        ->orWhere('gender', 'LIKE', "%{$search}%")
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
-
-            $totalFiltered = Koi::with('history')
-                                ->where('code', 'LIKE', "%{$search}%")
-                                ->orWhere('nickname', 'LIKE', "%{$search}%")
-                                ->orWhere('gender', 'LIKE', "%{$search}%")                
-                                ->count();
-        }
-
-        $data = [];
-        if (!empty($kois)) {
-            foreach ($kois as $index => $koi) {
-                    $nestedData['index'] = $start + $index + 1;
-                    $nestedData['id'] = $koi->id;
-                    $nestedData['action'] = view('partials.koi_actions', ['k' => $koi])->render();
-                    $nestedData['code'] = $koi->code;
-                    $nestedData['nickname'] = $koi->nickname ?? '-';
-                    $nestedData['variety'] = $koi->variety->name;
-                    $nestedData['gender'] = $koi->gender;
-                    $nestedData['birth'] = $koi->birthdate;
-                    // Calculate the age using Carbon
-                    if ($koi->birthdate) {
-                        $birthDate = Carbon::createFromFormat('Y-m-d', $koi->birthdate);
-                        $now = Carbon::now();
-                        $age = $birthDate->diff($now);
-                        $umurTahun = $age->y;
-                        $umurBulan = $age->m;
-                        $nestedData['age'] = $umurTahun . 'yr ' . $umurBulan . 'm ';
-                    } else {
-                        $nestedData['age'] = '-';
-                    }
-                    $nestedData['date_purchase'] = $koi->purchase_date;
-                    $nestedData['size'] = $koi->size;
-                    $nestedData['selleragent'] = $koi->seller;
-                    $nestedData['handling_agent'] = $koi->handler;
-                    $idrPriceBuy = $koi->price_buy_idr !== null ? number_format($koi->price_buy_idr) : '-';
-                    $jpyPriceBuy = $koi->price_buy_jpy !== null ? number_format($koi->price_buy_jpy) : '-';
-                    $nestedData['price_buy'] = 'IDR: ' . $idrPriceBuy . '<br>JPY: ' . $jpyPriceBuy;
-                    $idrPriceSell = $koi->price_sell_idr !== null ? number_format($koi->price_sell_idr) : '-';
-                    $jpyPriceSell = $koi->price_sell_jpy !== null ? number_format($koi->price_sell_jpy) : '-';
-                    $nestedData['price_sell'] = 'IDR: ' . $idrPriceBuy . '<br>JPY: ' . $jpyPriceBuy;
-                    $nestedData['kep_loc'] = $koi->kep_loc;
-                    $nestedData['sell_price_idr'] = $koi->sell_price_idr;
-                    $nestedData['sell_price_jpy'] = $koi->sell_price_jpy;
-                    $nestedData['date_of_sell'] = $koi->date_of_sell;
-                    $nestedData['buyer_name'] = $koi->buyer_name;
-                    $nestedData['date_of_death'] = $koi->date_of_death;
-                    $nestedData['death_note'] = $koi->death_note;
-                    $nestedData['breeder'] = $koi->breeder->name;
-                    $nestedData['bloodline'] = $koi->bloodline;
-
-                    $data[] = $nestedData;
-                }
-        }
-
-        $json_data = [
-            "draw" => intval($request->input('draw')),
-            "recordsTotal" => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data" => $data
-        ];
-
-        echo json_encode($json_data);
+    // Handle dynamic ordering for variety and price columns
+    switch ($orderColumn) {
+        case 'variety':
+            $order = 'varieties.name';
+            break;
+        case 'price_buy':
+            $order = ['koi.price_buy_idr', 'koi.price_buy_jpy'];
+            break;
+        case 'price_sell':
+            $order = ['koi.price_sell_idr', 'koi.price_sell_jpy'];
+            break;
+        default:
+            $order = "koi.$orderColumn";
+            break;
     }
+
+    $query = Koi::select('koi.*')
+        ->leftJoin('variety', 'koi.variety_id', '=', 'variety.id')
+        ->leftJoin('breeder', 'koi.breeder_id', '=', 'breeder.id')
+        ->with(['history', 'breeder', 'variety']);
+
+    // Order by price columns if applicable
+    if (is_array($order)) {
+        foreach ($order as $col) {
+            $query->orderBy($col, $orderDir);
+        }
+    } else {
+        $query->orderBy($order, $orderDir);
+    }
+
+    if (empty($request->input('search.value'))) {
+        $kois = $query->offset($start)
+            ->limit($limit)
+            ->get();
+    } else {
+        $search = $request->input('search.value');
+        $query->where(function ($query) use ($search) {
+            $query->where('code', 'LIKE', "%{$search}%")
+                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                ->orWhere('gender', 'LIKE', "%{$search}%")
+                ->orWhereHas('variety', function ($query) use ($search) {
+                    $query->where('name', 'LIKE', "%{$search}%");
+                });
+        });
+
+        $kois = $query->offset($start)
+            ->limit($limit)
+            ->get();
+
+        $totalFiltered = $query->count();
+    }
+
+    $data = [];
+    if (!empty($kois)) {
+        foreach ($kois as $index => $koi) {
+            $nestedData['index'] = $start + $index + 1;
+            $nestedData['id'] = $koi->id;
+            $nestedData['action'] = view('partials.koi_actions', ['k' => $koi])->render();
+            $nestedData['code'] = $koi->code;
+            $nestedData['nickname'] = $koi->nickname ?? '-';
+            $nestedData['variety'] = optional($koi->variety)->name ?? '-';
+            $nestedData['gender'] = $koi->gender;
+            $nestedData['birth'] = $koi->birthdate;
+
+            // Calculate the age using Carbon
+            if ($koi->birthdate) {
+                $birthDate = Carbon::createFromFormat('Y-m-d', $koi->birthdate);
+                $now = Carbon::now();
+                $age = $birthDate->diff($now);
+                $nestedData['age'] = $age->y . 'yr ' . $age->m . 'm ';
+            } else {
+                $nestedData['age'] = '';
+            }
+            $nestedData['purchase_date'] = $koi->purchase_date;
+            $nestedData['size'] = $koi->size ?? '';
+            $nestedData['seller'] = $koi->seller;
+            $nestedData['handler'] = $koi->handler;
+            $nestedData['price_buy'] = 'IDR: ' . number_format($koi->price_buy_idr ?? 0) . '<br>JPY: ' . number_format($koi->price_buy_jpy ?? 0);
+            $nestedData['price_sell'] = 'IDR: ' . number_format($koi->price_sell_idr ?? 0) . '<br>JPY: ' . number_format($koi->price_sell_jpy ?? 0);
+            $nestedData['location'] = $koi->location;
+            $nestedData['date_of_sell'] = $koi->sell_date;
+            $nestedData['buyer_name'] = $koi->buyer_name;
+            $nestedData['date_of_death'] = $koi->date_of_death;
+            $nestedData['death_note'] = $koi->death_note;
+            $nestedData['breeder'] = optional($koi->breeder)->name ?? '';
+            $nestedData['bloodline'] = $koi->bloodline;
+            $data[] = $nestedData;
+        }
+    }
+
+    $json_data = [
+        "draw" => intval($request->input('draw')),
+        "recordsTotal" => intval($totalData),
+        "recordsFiltered" => intval($totalFiltered),
+        "data" => $data
+    ];
+
+    echo json_encode($json_data);
+}
+
 
     public function getDataKoiZA(Request $request)
     {
@@ -292,7 +313,7 @@ class C_ArthurkaikoiAdmin extends Controller
     public function getDataKoi19(Request $request)
     {
         $columns = [
-            0 => 'id_koi',
+            0 => 'id',
             1 => 'action',
             2 => 'koi_code',
             3 => 'history_year',
@@ -761,7 +782,6 @@ class C_ArthurkaikoiAdmin extends Controller
                     $nestedData['death_note'] = $history->death_note;
                     $nestedData['breeder'] = $koi->breeder;
                     $nestedData['bloodline'] = $koi->bloodline;
-
                     $data[] = $nestedData;
                 }
             }
@@ -828,7 +848,6 @@ class C_ArthurkaikoiAdmin extends Controller
         $year = $request->input('year');
         $history = History::where('koi_id', $koi_id)->where('year', $year)->get();
 
-
         return response()->json($history);
     }
 
@@ -843,45 +862,38 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function koistore(request $request)
     {
-        $mmyy = Carbon::createFromFormat('Y-m', $request->date_purchese);
-        $date_purchese = $mmyy->format('my');
-        $code_variety = Variety::where('variety_name', $request->variety)->first();
-        $variety = $code_variety->variety_code;
-        $code_breeder = Breeder::where('breeder_name', $request->breeder)->first();
-        $breeder = $code_breeder->breeder_code;
+        $purchaseDateParsed = Carbon::createFromFormat('Y-m', $request->purchase_date);
+        $purchaseDate = $purchaseDateParsed->format('my');
+        $variety = Variety::where('id', $request->variety)->first();
+        $breeder = Breeder::where('id', $request->breeder)->first();
+        $sequence = '00001';
+        $koiCodeInput = $variety->code . $breeder->code . $purchaseDate . $sequence;
+        $isKoiExist = Koi::where('code', $koiCodeInput)->first();
 
-        $sequence_awal = '00001';
-
-        $code_koi_fill = $variety . $breeder . $date_purchese . $sequence_awal;
-
-        $koi_code_where = koi::where('koi_code', $code_koi_fill)->first();
-
-        // Jika kode koi belum ada dalam database
-        if ($koi_code_where == null) {
-            $sequence = '00001';
-        } else {
-            // Jika kode koi sudah ada dalam database
-            // Periksa apakah semua entitas sebelumnya memiliki nilai yang sama untuk variety, breeder, dan date_purchese
-            $previous_kois = Koi::where('code_variety', $variety)
-                                ->orWhere('code_breeder', $breeder)
-                                ->orWhere('code_purchasedate', $date_purchese)
-                                ->orderBy('code_sequence', 'desc')
-                                ->get();
-
-            if ($previous_kois->isEmpty()) {
-                // Jika tidak ada entitas sebelumnya yang memiliki nilai yang sama
-                $sequence = '00001';
+        if (is_null($isKoiExist)) {
+            $sequence = '1';
+        } else {            // Jika kode koi sudah ada dalam database
+            $previousKoi = Koi::whereHas('variety', function ($query) use ($variety) {
+                $query->where('code', $variety->code);
+            })
+                ->orWhereHas('breeder', function ($query) use ($breeder){
+                $query->where('code', $breeder->code);
+            })
+                    ->orWhere('purchase_date', $purchaseDate)
+                    ->orderBy('sequence', 'desc')
+                    ->get();
+            if ($previousKoi->isEmpty()) {
+                $sequence = '1';
             } else {
                 // Jika ada entitas sebelumnya yang memiliki nilai yang sama
                 // Periksa nomor urutan terakhir
-                $last_sequence = intval($previous_kois->first()->code_sequence);
+                $last_sequence = intval($previousKoi->first()->sequence);
                 $next_sequence = $last_sequence + 1;
-                $sequence = str_pad($next_sequence, 5, '0', STR_PAD_LEFT);
+                $sequence = $next_sequence;
             }
         }
-
-        $code_koi = $variety . $breeder . $date_purchese . $sequence;
-
+        $formattedSequence = str_pad($sequence, 5, '0', STR_PAD_LEFT);
+        $koiCode = $variety->code . $breeder->code . $purchaseDate . $formattedSequence;
 
         $image = array();
         if($files = $request->file('link_photo')){
@@ -901,23 +913,6 @@ class C_ArthurkaikoiAdmin extends Controller
             $image[] = '';
         }
 
-        // $imageh = array();
-        // if($files = $request->file('photo_highlight')){
-        //   foreach ($files as $file){
-        //     $photo_highlights = time()."_".$file->getClientOriginalName();
-        //     $tujuan_upload = 'img/koi/photo_highlight';
-        //     $imageh_url = $photo_highlights;
-        //     $file->move($tujuan_upload,$photo_highlights);
-        //     $imageh[] = $imageh_url;
-        //   }
-        // }
-        // else if($request->file('photo_highlight') == null)
-        // {
-        //     $imageh[] = '';
-        // }
-        // else{
-        //     $imageh[] = '';
-        // }
 
         $imagev = array();
         if($files = $request->file('link_video')){
@@ -956,51 +951,24 @@ class C_ArthurkaikoiAdmin extends Controller
         else{
             $link_certificates = '';
         }
-
-
         $koi = Koi::create([
-            'koi_code' => $code_koi,
-            'code_variety' => $variety,
-            'code_breeder' => $breeder,
-            'code_purchasedate' => $date_purchese,
-            'code_sequence' => $sequence,
+            'code' => $koiCode,
             'nickname' => $request->nickname,
-            'variety' => $request->variety,
-            'birth' => $request->birth,
+            'variety_id' => $request->variety,
+            'breeder_id' => $request->breeder,
+            'bloodline_id' => $request->bloodline,
+            'sequence' => $sequence,
+            'birthdate' => $request->birth,
             'gender' => $request->gender,
-            'date_purchese' => $request->date_purchese,
-            'salleragent' => $request->salleragent,
-            'pricebuy_idr' => $request->pricebuy_idr,
-            'pricebuy_jpy' => $request->pricebuy_jpy,
-            'breeder' => $request->breeder,
-            'bloodline' => $request->bloodline,
-            'year' => $request->year,
-            'n_status' => $request->n_status,
+            'purchase_date' => $request->purchase_date,
+            'seller_id' => $request->salleragent,
+            'price_buy_idr' => $request->pricebuy_idr,
+            'price_buy_jpy' => $request->pricebuy_jpy,
+            'price_sell_idr' => $request->pricesell_idr,
+            'price_sell_jpy' => $request->pricesell_jpy,
+            'location' => $request->location,
+            'status' => $request->status,
         ]);
-
-        History::create([
-            'koi_id' => $koi->id,
-            'year' => $request->year,
-            'age' => $request->age,
-            'size' => $request->size,
-            'hagent' => $request->hagent,
-            'kep_loc' => $request->kep_loc,
-            'link_photo' => implode('|', $image),
-            'link_video' => implode('|', $imagev),
-            'link_trophy' => $link_trophys,
-            'name_trophy' => $request->name_trophys,
-            'link_certificate' => $link_certificates,
-            'name_certificate' => $request->name_certificate,
-            'pricesell_idr' => $request->pricesell_idr,
-            'pricesell_jpy' => $request->pricesell_jpy,
-            'buyer_name' => $request->buyer_name,
-            'death_date' => $request->death_date,
-            'death_note' => $request->death_note,
-            'koi_sequence' => $sequence,
-        ]);
-
-
-
 
         return redirect('/CMS/koi');
     }
@@ -1187,12 +1155,12 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function koiedit($id)
     {
-        $koi = Koi::where('id_koi', $id)->get();
+        $koi = Koi::where('id', $id)->get();
         $variety = Variety::all();
         $bloodline = Bloodline::all();
         $breeder = Breeder::all();
         $agent = Agent::all();
-        $sequence = History::where('koi_id', $id)->get();
+        $sequence = Koi::where('id', $id)->get();
         return view('arthurkaikoiadmin.koi.koi_edit', compact('koi', 'variety', 'bloodline', 'breeder', 'agent', 'sequence'));
     }
 
