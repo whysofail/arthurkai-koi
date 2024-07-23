@@ -6,6 +6,7 @@
             "options": {
                 "parser": "blade",
                 "tabWidth": 4,
+                "endOfLine": "lf",
                 "singleQuote": false
             }
         }

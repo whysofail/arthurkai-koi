@@ -121,40 +121,37 @@
 <div class="modal fade bannerformmodal{{ $k->id }}" id="modalShowPhoto{{ $k->id }}">
 
     <div class="modal-dialog">
-
         <div class="modal-content">
-
             <div class="modal-header" style="display: block; text-align: center;">
-
                 <h5 class="modal-title">{{ $k->code }}</h5>
-
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-
                     <span aria-hidden="true">&times;</span>
-
                 </button>
-
             </div>
-
             <div class="modal-body" style="text-align: center">
-
                 <div class="swiper mySwiper">
-
                     <div class="swiper-wrapper">
-
                         @if (!empty($k->photo))
-                            <img width="125" class="img-thumbnail" src="{{ asset("img/koi/photo/" . $k->photo) }}"
-                                style="display: block; margin: 0 auto;">
+                            @php
+                                $photos = explode("|", $k->photo);
+                            @endphp
+
+                            @foreach ($photos as $photo)
+                                <div class="swiper-slide">
+                                    <img width="125" class="img-thumbnail"
+                                        src="{{ asset("img/koi/photo/" . $photo) }}"
+                                        style="display: block; margin: 0 auto;">
+                                </div>
+                            @endforeach
                         @else
                             <p>-</p>
                         @endif
-
                     </div>
-
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                 </div>
-
             </div>
-
         </div>
 
         <div class="modal-footer justify-content-between">
@@ -213,16 +210,16 @@
                     </div>
                 </div>
             </div>
+            <div class="swiper-pagination"></div>
         </div>
-        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
     </div>
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
 </div>
 
 <div class="modal-footer justify-content-between">
     {{-- <button type="button" class="btn btn-default" data-dismiss="modal"><i --}}
-            {{-- class="fas fa-long-arrow-alt-left"></i></button> --}}
+    {{-- class="fas fa-long-arrow-alt-left"></i></button> --}}
     {{-- <a href="{{ route('cmskoiDelete', $k->id) }}"
                     type="button" class="btn btn-danger">Delete</a> --}}
 </div>
@@ -293,3 +290,17 @@
     </div>
 
 </div>
+
+<script type="module">
+    const swiper = new Swiper(".mySwiper", {
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            type: "fraction",
+            clickable: true,
+        },
+    });
+</script>

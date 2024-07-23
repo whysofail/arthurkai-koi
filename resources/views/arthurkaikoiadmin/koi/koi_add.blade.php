@@ -64,267 +64,31 @@
 @endsection
 
 @section("content")
-
-    <!-- Main Sidebar Container -->
-
-    <!-- Main Sidebar Container -->
-
-    <aside class="main-sidebar sidebar-dark-primary elevation-4"
-        style="background: #2c7abe; overflow-y: scroll; overflow-x: hidden;">
-
-        <!-- Brand Logo -->
-
-        <a href="{{ route("dashboard") }}" class="brand-link"
-            style="text-align: center; padding-top: 22px; padding-bottom: 22px;">
-
-            <img width="55" src="{{ asset("images/logo/koilogo.png") }}">
-
-        </a>
-
-        <!-- Sidebar -->
-
-        <div class="sidebar" style="background: #2c7abe">
-
-            <!-- Sidebar Menu -->
-
-            <nav class="mt-2">
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
-
-                    <li class="nav-item" style="border-bottom: 3px solid #0186fc; display:flex;">
-
-                        <a href="{{ route("cmskoi") }}" class="nav-link" style="height: 50px; background: black;">
-
-                            <i class="whitefont nav-icon far fa-image" style="font-size: 18px !important;"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi
-
-                            </p>
-
-                        </a>
-
-                        <a href="{{ route("cmskoigrid") }}" class="nav-link" style="text-align: right; height: 50px;">
-
-                            <i class="fa-solid fa-table-cells" style="font-size: 18px !important; color: white"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi<span> Grid</span>
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Setting
-
-                            Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsvariety") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Variety
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbloodline") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Bloodline
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbreeder") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Breeder
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmsagent") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Agent
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Live
-
-                            Website Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsourcollection") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Our Collection
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsnews") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                News
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsaboutus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                About Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmscontactus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Contact Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-            </nav>
-
-            <!-- /.sidebar-menu -->
-
-        </div>
-
-        <!-- /.sidebar -->
-
-    </aside>
-
     <!-- Content Wrapper. Contains page content -->
-
     <div class="content-wrapper" style="background: white;">
-
         <!-- /.content-header -->
-
         <div class="content-header">
-
             <div class="container-fluid">
-
                 <div class="row mb-2">
-
                     <div class="col-sm-6">
-
                         <h1 class="m-0"></h1>
-
                     </div><!-- /.col -->
-
                     <div class="col-sm-6">
-
                         <ol class="breadcrumb float-sm-right">
-
                             <li class="breadcrumb-item"></li>
-
                             <li class="breadcrumb-item active"> </li>
-
                         </ol>
-
                     </div><!-- /.col -->
-
                 </div><!-- /.row -->
-
             </div><!-- /.container-fluid -->
-
         </div>
 
         <!-- /.content-header -->
-
         <section class="content-header">
-
             <div class="container-fluid">
-
                 <div class="row mb-2">
-
                     <div class="col-sm-6">
-
-                        <h1>Koi</h1>
+                        <h1>Add Koi</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -346,11 +110,8 @@
 
                     <a href="{{ route("cmskoi") }}" class="btn btn-sm"
                         style="margin-bottom: 5px; border-radius: 20px 1px 10px; border: black solid 1px; ">
-
                         <i class="fas fa-arrow-circle-left" style="position: relative; right: 3%; top: 1px;"></i>
-
-                        back
-
+                        Back
                     </a>
 
                     <div class="card">
@@ -364,9 +125,9 @@
                                             <label for="koicode" class="col-sm-2 col-form-label">Koi Code</label>
                                             <div class="col-sm-10">
                                                 <input type="hidden" name="koicode" id="koicode">
-                                                <input class="form-control" name="koicode_display" id="koicode_display" style="width: 100%;"
-                                                    disabled>
-                                            </input>
+                                                <input class="form-control" name="koicode_display" id="koicode_display"
+                                                    style="width: 100%;" disabled>
+                                                </input>
                                             </div>
                                         </div>
                                     </div>
@@ -383,11 +144,12 @@
                                         <div class="form-group row">
                                             <label for="variety" class="col-sm-2 col-form-label">Variety</label>
                                             <div class="col-sm-10">
-                                                <select class="form-control select2" id="variety-select" name="variety" style="width: 100%;"
-                                                    >
-                                                    <option selected="selected">Selected Variety</option>
+                                                <select class="form-control select2 required" id="variety-select"
+                                                    name="variety" style="width: 100%;" required>
+                                                    <option selected="selected" disabled>Selected Variety</option>
                                                     @foreach ($variety as $v)
-                                                        <option value="{{ $v->id }}" data-code='{{ $v->code }}'>{{ $v->name }}
+                                                        <option value="{{ $v->id }}" data-code='{{ $v->code }}'>
+                                                            {{ $v->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -398,11 +160,12 @@
                                         <div class="form-group row">
                                             <label for="breeder" class="col-sm-2 col-form-label">Breeder</label>
                                             <div class="col-sm-10">
-                                                <select class="form-control select2" id="breeder-select" name="breeder" style="width: 100%;"
-                                                    >
+                                                <select class="form-control select2" id="breeder-select" name="breeder"
+                                                    style="width: 100%;" required>
                                                     <option selected="selected">Selected Breeder</option>
                                                     @foreach ($breeder as $b)
-                                                        <option value="{{ $b->id }}" data-code="{{ $b->code }}">{{ $b->name }}
+                                                        <option value="{{ $b->id }}" data-code="{{ $b->code }}">
+                                                            {{ $b->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -414,7 +177,7 @@
                                             <label for="bloodline" class="col-sm-2 col-form-label">Bloodline</label>
                                             <div class="col-sm-10">
                                                 <select class="form-control select2" name="bloodline"
-                                                    style="width: 100%;" >
+                                                    style="width: 100%;">
                                                     <option selected="selected">Selected Bloodline</option>
                                                     @foreach ($bloodline as $b)
                                                         <option value="{{ $b->id }}">{{ $b->name }}
@@ -428,8 +191,7 @@
                                         <div class="form-group row">
                                             <label for="gender" class="col-sm-2 col-form-label">Gender</label>
                                             <div class="col-sm-10">
-                                                <select class="form-control select2" name="gender" style="width: 100%;"
-                                                    >
+                                                <select class="form-control select2" name="gender" style="width: 100%;">
                                                     <option value="" selected="selected">Selected Gender</option>
                                                     <option value="Male">Male</option>
                                                     <option value="Female">Female</option>
@@ -444,24 +206,8 @@
                                             <label for="birth" class="col-sm-2 col-form-label">Birthdate</label>
                                             <div class="col-sm-10">
                                                 <input type="month" class="form-control" name="birth"
-                                                    value="{{ old("birth") }}" id="birth" >
+                                                    value="{{ old("birth") }}" id="birth">
                                             </div>
-                                        </div>
-                                    </div>
-
-                            
-
-
-                                    <div class="col-sm-12" style="margin-top: 10px">
-
-                                        <div class="form-group row">
-                                            <label for="purchase_date" class="col-sm-2 col-form-label">Purchase
-                                                Date</label>
-                                            <div class="col-sm-10">
-                                                <input type="month" class="form-control" name="purchase_date"
-                                                    value="{{ old("purchase_date") }}" id="purchase_date" >
-                                            </div>
-
                                         </div>
                                     </div>
                                     <div class="col-sm-12" style="margin-top: 10px">
@@ -475,10 +221,19 @@
                                     </div>
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="form-group row">
+                                            <label for="purchase_date" class="col-sm-2 col-form-label">Purchase
+                                                Date</label>
+                                            <div class="col-sm-10">
+                                                <input type="month" class="form-control" name="purchase_date"
+                                                    value="{{ old("purchase_date") }}" id="purchase_date" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" style="margin-top: 10px">
+                                        <div class="form-group row">
                                             <label for="seller" class="col-sm-2 col-form-label">Seller Agent</label>
                                             <div class="col-sm-10">
-                                                <select class="form-control select2" name="seller"
-                                                    style="width: 100%;" >
+                                                <select class="form-control select2" name="seller" style="width: 100%;">
                                                     <option selected="selected">Selected Seller Agent</option>
                                                     @foreach ($agent as $a)
                                                         <option value="{{ $a->id }}">
@@ -494,8 +249,7 @@
                                         <div class="form-group row">
                                             <label for="handler" class="col-sm-2 col-form-label">Handling Agent</label>
                                             <div class="col-sm-10">
-                                                <select class="form-control select2" name="seller"
-                                                    style="width: 100%;" >
+                                                <select class="form-control select2" name="seller" style="width: 100%;">
                                                     <option selected="selected">Selected Handling Agent</option>
                                                     @foreach ($agent as $a)
                                                         <option value="{{ $a->id }}">
@@ -509,21 +263,28 @@
 
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="form-group row" style="margin-top: 10px">
-                                            <label for="pricebuy_idr" class="col-sm-2 col-form-label">Price Buy (IDR)</label>
+                                            <label for="pricebuy_idr" class="col-sm-2 col-form-label">Price Buy
+                                                (IDR)</label>
                                             <div class="col-sm-4">
-                                                <input type="hidden" id="pricebuy_idr" class="form-control" name="pricebuy_idr" value="{{ old('pricebuy_idr') }}" >
-                                                <input type="text" id="pricebuy_idr_display" class="form-control" name="pricebuy_idr_display" value="{{ old('pricebuy_idr_display') }}" >
+                                                <input type="hidden" id="pricebuy_idr" class="form-control"
+                                                    name="pricebuy_idr" value="{{ old("pricebuy_idr") }}">
+                                                <input type="text" id="pricebuy_idr_display" class="form-control"
+                                                    name="pricebuy_idr_display"
+                                                    value="{{ old("pricebuy_idr_display") }}">
                                             </div>
-                                            
-                                            <label for="pricebuy_jpy" class="col-sm-2 col-form-label">Price Buy (JPY)</label>
+
+                                            <label for="pricebuy_jpy" class="col-sm-2 col-form-label">Price Buy
+                                                (JPY)</label>
                                             <div class="col-sm-4">
-                                                <input type="hidden" id="pricebuy_jpy" class="form-control" name="pricebuy_jpy" value="{{ old('pricebuy_jpy') }}" >
-                                                <input type="text" id="pricebuy_jpy_display" class="form-control" name="pricebuy_jpy_display" value="{{ old('pricebuy_jpy_display') }}" >
+                                                <input type="hidden" id="pricebuy_jpy" class="form-control"
+                                                    name="pricebuy_jpy" value="{{ old("pricebuy_jpy") }}">
+                                                <input type="text" id="pricebuy_jpy_display" class="form-control"
+                                                    name="pricebuy_jpy_display"
+                                                    value="{{ old("pricebuy_jpy_display") }}">
                                             </div>
-                                        </div>                                        
+                                        </div>
                                     </div>
 
-   
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="form-group row">
                                             <label for="location" class="col-sm-2 col-form-label">Keeping Location</label>
@@ -537,50 +298,30 @@
 
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="form-group row" style="margin-top: 10px">
-                                            <label for="pricesell_idr" class="col-sm-2 col-form-label">Sell Price (IDR)</label>
+                                            <label for="pricesell_idr" class="col-sm-2 col-form-label">Sell Price
+                                                (IDR)</label>
                                             <div class="col-sm-4">
-                                                <input type="hidden" id="pricesell_idr" class="form-control" name="pricesell_idr" value="{{ old('pricesell_idr') }}">
-                                                <input type="text" id="pricesell_idr_display" class="form-control" name="pricesell_idr_display" value="{{ old('pricesell_idr_display') }}">
+                                                <input type="hidden" id="pricesell_idr" class="form-control"
+                                                    name="pricesell_idr" value="{{ old("pricesell_idr") }}">
+                                                <input type="text" id="pricesell_idr_display" class="form-control"
+                                                    name="pricesell_idr_display"
+                                                    value="{{ old("pricesell_idr_display") }}">
                                             </div>
-                                            <label for="pricesell_jpy" class="col-sm-2 col-form-label">Sell Price (JPY)</label>
+                                            <label for="pricesell_jpy" class="col-sm-2 col-form-label">Sell Price
+                                                (JPY)</label>
                                             <div class="col-sm-4">
-                                                <input type="hidden" id="pricesell_jpy" class="form-control" name="pricesell_jpy" value="{{ old('pricesell_jpy') }}">
-                                                <input type="text" id="pricesell_jpy_display" class="form-control" name="pricesell_jpy_display" value="{{ old('pricesell_jpy_display') }}">
-                                            </div>
-                                        </div>
-                                        
-                                    </div>
-
-
-
-                                    {{-- <div class="col-sm-12" style="margin-top: 10px">
-                                    <div class="input-group row">
-                                        <label for="photo_highlight" class="col-sm-2 col-form-label">Photo Highlight</label>
-                                        <div class="col-sm-10">
-                                            <div class="form-group">
-                                                <img width="125" id="photo_highlight" class="img-thumbnailh">
-                                                <div class="input-group realprocodePH control-group lst incrementPH">
-                                                    <input type="file" name="photo_highlight[]" class="myfrm form-control" onchange="photohighlight(event)" >
-                                                    <div class="input-group-btn">
-                                                        <button class="btn btn-success btn-clickPH" type="button"><i class="fldemo glyphicon glyphicon-plus"></i>Add</button>
-                                                    </div>
-                                                </div>
-                                                <div class="clonePH hide" style="display: none;">
-                                                    <div class="realprocodePH control-group lst input-group" style="margin-top:10px">
-                                                        <input type="file" name="photo_highlight[]" class="myfrm form-control" onchange="photohighlight(event)">
-                                                        <div class="input-group-btn">
-                                                            <button class="btn btn-danger" type="button"><i class="fldemo glyphicon glyphicon-remove"></i> Remove</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <input type="hidden" id="pricesell_jpy" class="form-control"
+                                                    name="pricesell_jpy" value="{{ old("pricesell_jpy") }}">
+                                                <input type="text" id="pricesell_jpy_display" class="form-control"
+                                                    name="pricesell_jpy_display"
+                                                    value="{{ old("pricesell_jpy_display") }}">
                                             </div>
                                         </div>
                                     </div>
-                                </div> --}}
 
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <h2>Koi Media</h2>
-                                         <hr>    
+                                        <hr>
                                         <div class="input-group row" style="align-items: center;">
                                             <label for="link_photo" class="col-sm-2 col-form-label">Link Photo</label>
                                             <div class="col-sm-10" id="satu">
@@ -588,56 +329,36 @@
                                                     <img width="125" id="link_photo" class="img-thumbnailp">
                                                     <div class="input-group realprocodeLP control-group lst incrementLP">
                                                         <input type="file" name="link_photo[]"
-                                                                class="myfrm form-control" onchange="Imagelinkphoto(event)"
-                                                             >
+                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)">
                                                         <div class="input-group-btn">
                                                             <button class="btn btn-success btn-clickLP" type="button"><i
                                                                     class="fldemo glyphicon glyphicon-plus"></i>Add</button>
                                                         </div>
                                                     </div>
-
                                                     <div class="cloneLP hide" style="display: none;">
-
                                                         <div class="realprocodeLP control-group lst input-group"
                                                             style="margin-top:10px">
-
                                                             <input type="file" name="link_photo[]"
                                                                 class="myfrm form-control"
                                                                 onchange="Imagelinkphoto(event)">
-
                                                             <div class="input-group-btn">
-
                                                                 <button class="btn btn-danger" type="button"><i
                                                                         class="fldemo glyphicon glyphicon-remove"></i>
-
                                                                     Remove</button>
-
                                                             </div>
-
                                                         </div>
-
                                                     </div>
-
                                                 </div>
-
                                             </div>
-
                                         </div>
-
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="input-group row" style="align-items: center;">
-
                                             <label for="link_video" class="col-sm-2 col-form-label">Link Video</label>
-
                                             <div class="col-sm-10">
-
                                                 <div class="form-group">
-
                                                     <img width="125" id="link_video" class="img-thumbnailv">
-
                                                     <div class="input-group realprocodeLV control-group lst incrementLV">
                                                         <input type="file" name="link_video[]"
                                                             class="myfrm form-control" onchange="link_video(event)"
@@ -647,7 +368,6 @@
                                                                     class="fldemo glyphicon glyphicon-plus"></i>Add</button>
                                                         </div>
                                                     </div>
-
                                                     <div class="cloneLV hide" style="display: none;">
                                                         <div class="realprocodeLV control-group lst input-group"
                                                             style="margin-top:10px">
@@ -658,7 +378,6 @@
                                                                 <button class="btn btn-danger" type="button"><i
                                                                         class="fldemo glyphicon glyphicon-remove"></i>
                                                                     Remove</button>
-
                                                             </div>
                                                         </div>
                                                     </div>
@@ -685,8 +404,6 @@
                                         </div>
                                     </div>
 
-                            
-
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="input-group row">
                                             <label for="link_certificate" class="col-sm-2 col-form-label">
@@ -704,18 +421,17 @@
                                                     placeholder="Nama Event">
                                             </div>
                                         </div>
-                                        </div>
-                                    
+                                    </div>
 
                                     <div class="col-sm-12" style="margin-top: 15px">
                                         <h2>Additional Information</h2>
                                         <hr>
-                                            <div class="form-group row">
-                                                <label for="date_sell" class="col-sm-2 col-form-label">Date Of Sell</label>
-                                                <div class="col-sm-10">
-                                                    <input type="month" class="form-control" name="date_sell"
-                                                        value="{{ old("date_sell") }}" id="date_sell">
-                                                </div>
+                                        <div class="form-group row">
+                                            <label for="date_sell" class="col-sm-2 col-form-label">Date Of Sell</label>
+                                            <div class="col-sm-10">
+                                                <input type="month" class="form-control" name="date_sell"
+                                                    value="{{ old("date_sell") }}" id="date_sell">
+                                            </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="buyer_name" class="col-sm-2 col-form-label">Buyer Name</label>
@@ -799,6 +515,11 @@
     <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
 
     <script>
+        $('#variety-select').select2();
+        $('#variety-select').attr("required", "required");
+    </script>
+
+    <script>
         $(document).ready(function() {
             $('#image').on('change', function() {
                 //get the file name
@@ -841,32 +562,33 @@
             });
 
             $('.select2').select2()
+
             function convertDateFormat(date) {
                 if (date) {
-                let parts = date.split('-');
-                if (parts.length === 2) {
-                    let year = parts[0].slice(-2);
-                    let month = parts[1];
-                    return `${month}${year}`;
+                    let parts = date.split('-');
+                    if (parts.length === 2) {
+                        let year = parts[0].slice(-2);
+                        let month = parts[1];
+                        return `${month}${year}`;
                     }
                 }
-                    return '';
+                return '';
             }
 
-                function updateKoiCode(){
-                    let selectedBreeder = $('#breeder-select').find('option:selected');
-                    let selectedVariety = $('#variety-select').find('option:selected');
-                    let date = $('#purchase_date').val()
-                    let convertedDate = convertDateFormat(date);
-                    let breederCode = selectedBreeder.data('code') || '';
-                    let varietyCode = selectedVariety.data('code') || '';
-                    let combine = varietyCode + breederCode + convertedDate
-                    $('#koicode').val(combine)
-                    $('#koicode_display').val(combine)
-                }
-                $('#variety-select, #breeder-select, #purchase_date').change(function() {
-                    updateKoiCode();
-                 });
+            function updateKoiCode() {
+                let selectedBreeder = $('#breeder-select').find('option:selected');
+                let selectedVariety = $('#variety-select').find('option:selected');
+                let date = $('#purchase_date').val()
+                let convertedDate = convertDateFormat(date);
+                let breederCode = selectedBreeder.data('code') || '';
+                let varietyCode = selectedVariety.data('code') || '';
+                let combine = varietyCode + breederCode + convertedDate
+                $('#koicode').val(combine)
+                $('#koicode_display').val(combine)
+            }
+            $('#variety-select, #breeder-select, #purchase_date').change(function() {
+                updateKoiCode();
+            });
 
             //Initialize Select2 Elements
             $('.select2bs4').select2({
@@ -930,8 +652,7 @@
             // Format the value for display using formatRupiah function
             let formattedValue = formatRupiah(rawValue, 'Rp. ');
             buyIdrDisplay.value = formattedValue;
-        }
-    );
+        });
         let buyJpy = document.getElementById('pricebuy_jpy');
         let buyJpyDisplay = document.getElementById('pricebuy_jpy_display');
         buyJpyDisplay.addEventListener('input', function(e) {
@@ -975,8 +696,6 @@
         //     })
         // })
     </script>
-
-    <script type="text/javascript"></script>
 
     <script type="text/javascript">
         function photohighlight(event) {

@@ -374,17 +374,14 @@
                             <div class="content tab">
 
                                 <section id="section-1" class="content-current">
-
+                                    <h1>Breeder Information</h1>
+                                    <hr>
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="form-group row">
-
-                                            <label for="breeder_name" class="col-sm-2 col-form-label">breeder_name</label>
-
+                                            <label for="name" class="col-sm-2 col-form-label">Name</label>
                                             <div class="col-sm-10">
-
-                                                <input type="text" class="form-control" name="breeder_name"
-                                                    value="{{ old("breeder_name") }}" id="breeder_name">
+                                                <input type="text" class="form-control" name="name"
+                                                    value="{{ old("name") }}" id="name">
 
                                             </div>
 
@@ -396,13 +393,13 @@
 
                                         <div class="form-group row">
 
-                                            <label for="breeder_location"
-                                                class="col-sm-2 col-form-label">breeder_location</label>
+                                            <label for="location"
+                                                class="col-sm-2 col-form-label">Location</label>
 
                                             <div class="col-sm-10">
 
-                                                <input type="text" class="form-control" name="breeder_location"
-                                                    value="{{ old("breeder_location") }}" id="breeder_location">
+                                                <input type="text" class="form-control" name="location"
+                                                    value="{{ old("location") }}" id="location">
 
                                             </div>
 
@@ -414,77 +411,50 @@
 
                                         <div class="form-group row">
 
-                                            <label for="breeder_contact"
-                                                class="col-sm-2 col-form-label">breeder_contact</label>
-
+                                            <label for="contact"
+                                                class="col-sm-2 col-form-label">Contact</label>
                                             <div class="col-sm-10">
-
-                                                <input type="text" class="form-control" name="breeder_contact"
-                                                    value="{{ old("breeder_contact") }}" id="breeder_contact">
-
+                                                <input type="text" class="form-control" name="contact"
+                                                    value="{{ old("contact") }}" id="contact">
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                     <div class="col-sm-12" style="margin-top: 10px">
 
                                         <div class="form-group row">
 
-                                            <label for="breeder_code" class="col-sm-2 col-form-label">breeder_code</label>
+                                            <label for="code" class="col-sm-2 col-form-label">Code</label>
 
                                             <div class="col-sm-10">
 
-                                                <input type="text" class="form-control" name="breeder_code"
-                                                    value="{{ old("breeder_code") }}" id="breeder_code">
+                                                <input type="text" class="form-control" name="code"
+                                                    value="{{ old("code") }}" id="code">
 
                                             </div>
 
                                         </div>
-
                                     </div>
-
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="form-group row">
-
-                                            <label for="breeder_website"
-                                                class="col-sm-2 col-form-label">breeder_website</label>
-
+                                            <label for="website"
+                                                class="col-sm-2 col-form-label">Website</label>
                                             <div class="col-sm-10">
-
-                                                <input type="text" class="form-control" name="breeder_website"
-                                                    value="{{ old("breeder_website") }}" id="breeder_website">
-
+                                                <input type="text" class="form-control" name="website"
+                                                    value="{{ old("website") }}" id="website">
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                     <div class="col-sm-12" style="margin-top: 50px">
-
                                         <div class="float-right">
-
                                             <button type="submit" class="btn btn-success">Save</button>
-
                                         </div>
-
                                     </div>
-
                                 </section>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
     </div>
-
     </form>
 
     <!-- ./row -->

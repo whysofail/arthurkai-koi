@@ -69,214 +69,6 @@
 
     <!-- Main Sidebar Container -->
 
-    <aside class="main-sidebar sidebar-dark-primary elevation-4"
-        style="background: #2c7abe; overflow-y: scroll; overflow-x: hidden;">
-
-        <!-- Brand Logo -->
-
-        <a href="{{ route("dashboard") }}" class="brand-link"
-            style="text-align: center; padding-top: 22px; padding-bottom: 22px;">
-
-            <img width="55" src="{{ asset("images/logo/koilogo.png") }}">
-
-        </a>
-
-        <!-- Sidebar -->
-
-        <div class="sidebar" style="background: #2c7abe">
-
-            <!-- Sidebar Menu -->
-
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-
-                <li class="nav-item" style="border-bottom: 3px solid #0186fc; display:flex;">
-
-                    <a href="{{ route("cmskoi") }}" class="nav-link" style="height: 50px;">
-
-                        <i class="whitefont nav-icon far fa-image" style="font-size: 18px !important;"></i>
-
-                        <p class="whitefont" style="font-size: 18px !important;">
-
-                            Koi
-
-                        </p>
-
-                    </a>
-
-                    <a href="{{ route("cmskoigrid") }}" class="nav-link" style="text-align: right; height: 50px;">
-
-                        <i class="fa-solid fa-table-cells" style="font-size: 18px !important; color: white"></i>
-
-                        <p class="whitefont" style="font-size: 18px !important;">
-
-                            Koi<span> Grid</span>
-
-                        </p>
-
-                    </a>
-
-                </li>
-
-            </ul>
-
-            <nav class="mt-2">
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Setting
-
-                            Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; background: black;">
-
-                        <a href="{{ route("cmsvariety") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Variety
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbloodline") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Bloodline
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbreeder") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Breeder
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmsagent") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Agent
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Live
-
-                            Website Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsourcollection") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Our Collection
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsnews") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                News
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsaboutus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                About Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmscontactus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Contact Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-            </nav>
-
-            <!-- /.sidebar-menu -->
-
-        </div>
-
-        <!-- /.sidebar -->
-
-    </aside>
-
     <!-- Content Wrapper. Contains page content -->
 
     <div class="content-wrapper" style="background: white;">
@@ -360,7 +152,7 @@
 
                         <i class="fas fa-arrow-circle-left" style="position: relative; right: 3%; top: 1px;"></i>
 
-                        back
+                        Back
 
                     </a>
 
@@ -376,12 +168,12 @@
 
                                         <div class="form-group row">
 
-                                            <label for="variety_name" class="col-sm-2 col-form-label">Variety Name</label>
+                                            <label for="name" class="col-sm-2 col-form-label">Variety Name</label>
 
                                             <div class="col-sm-10">
 
-                                                <input type="text" class="form-control" name="variety_name"
-                                                    value="{{ old("variety_name") }}" id="variety_name">
+                                                <input type="text" class="form-control" name="name"
+                                                    value="{{ old("name") }}" id="name">
 
                                             </div>
 
@@ -393,12 +185,12 @@
 
                                         <div class="form-group row">
 
-                                            <label for="variety_code" class="col-sm-2 col-form-label">Variety Code</label>
+                                            <label for="code" class="col-sm-2 col-form-label">Variety Code</label>
 
                                             <div class="col-sm-10">
 
-                                                <input type="text" class="form-control" name="variety_code"
-                                                    value="{{ old("variety_code") }}" id="variety_code">
+                                                <input type="text" class="form-control" name="code"
+                                                    value="{{ old("code") }}" id="code">
 
                                             </div>
 

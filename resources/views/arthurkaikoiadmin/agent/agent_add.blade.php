@@ -66,259 +66,25 @@
 @endsection
 
 @section("content")
-
-    <!-- Main Sidebar Container -->
-
-    <!-- Main Sidebar Container -->
-
-    <aside class="main-sidebar sidebar-dark-primary elevation-4"
-        style="background: #2c7abe; overflow-y: scroll; overflow-x: hidden;">
-
-        <!-- Brand Logo -->
-
-        <a href="{{ route("dashboard") }}" class="brand-link"
-            style="text-align: center; padding-top: 22px; padding-bottom: 22px;">
-
-            <img width="55" src="{{ asset("images/logo/koilogo.png") }}">
-
-        </a>
-
-        <!-- Sidebar -->
-
-        <div class="sidebar" style="background: #2c7abe">
-
-            <!-- Sidebar Menu -->
-
-            <nav class="mt-2">
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
-
-                    <li class="nav-item" style="border-bottom: 3px solid #0186fc; display:flex;">
-
-                        <a href="{{ route("cmskoi") }}" class="nav-link" style="height: 50px;">
-
-                            <i class="whitefont nav-icon far fa-image" style="font-size: 18px !important;"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi
-
-                            </p>
-
-                        </a>
-
-                        <a href="{{ route("cmskoigrid") }}" class="nav-link" style="text-align: right; height: 50px;">
-
-                            <i class="fa-solid fa-table-cells" style="font-size: 18px !important; color: white"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi<span> Grid</span>
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Setting
-
-                            Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsvariety") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Variety
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbloodline") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Bloodline
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbreeder") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Breeder
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item"
-                        style="border-top: 0.6px solid white; border-bottom: 0.6px solid white; background: black;">
-
-                        <a href="{{ route("cmsagent") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Agent
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Live
-
-                            Website Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsourcollection") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Our Collection
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsnews") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                News
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsaboutus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                About Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmscontactus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Contact Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-            </nav>
-
-            <!-- /.sidebar-menu -->
-
-        </div>
-
-        <!-- /.sidebar -->
-
-    </aside>
-
     <!-- Content Wrapper. Contains page content -->
-
     <div class="content-wrapper" style="background: white;">
-
         <!-- /.content-header -->
-
         <div class="content-header">
-
             <div class="container-fluid">
-
                 <div class="row mb-2">
-
                     <div class="col-sm-6">
-
                         <h1 class="m-0"></h1>
-
                     </div><!-- /.col -->
-
                     <div class="col-sm-6">
-
                         <ol class="breadcrumb float-sm-right">
-
                             <li class="breadcrumb-item"></li>
-
                             <li class="breadcrumb-item active"> </li>
-
                         </ol>
-
                     </div><!-- /.col -->
-
                 </div><!-- /.row -->
-
             </div><!-- /.container-fluid -->
-
         </div>
-
         <!-- /.content-header -->
-
         <section class="content-header">
 
             <div class="container-fluid">
@@ -364,7 +130,7 @@
 
                         <i class="fas fa-arrow-circle-left" style="position: relative; right: 3%; top: 1px;"></i>
 
-                        back
+                        Back
 
                     </a>
 
@@ -375,17 +141,18 @@
                             <div class="content tab">
 
                                 <section id="section-1" class="content-current">
-
+                                    <h1>Agent Infomation</h1>
+                                    <hr>
                                     <div class="col-sm-12" style="margin-top: 10px">
 
                                         <div class="form-group row">
 
-                                            <label for="agent_name" class="col-sm-2 col-form-label">agent_name</label>
+                                            <label for="name" class="col-sm-2 col-form-label">Name</label>
 
                                             <div class="col-sm-10">
 
-                                                <input type="text" class="form-control" name="agent_name"
-                                                    value="{{ old("agent_name") }}" id="agent_name">
+                                                <input type="text" class="form-control" name="name"
+                                                    value="{{ old("name") }}" id="name" required>
 
                                             </div>
 
@@ -397,13 +164,12 @@
 
                                         <div class="form-group row">
 
-                                            <label for="agent_location"
-                                                class="col-sm-2 col-form-label">agent_location</label>
+                                            <label for="location" class="col-sm-2 col-form-label">Location</label>
 
                                             <div class="col-sm-10">
 
-                                                <input type="text" class="form-control" name="agent_location"
-                                                    value="{{ old("agent_location") }}" id="agent_location">
+                                                <input type="text" class="form-control" name="location"
+                                                    value="{{ old("location") }}" id="location">
 
                                             </div>
 
@@ -415,13 +181,12 @@
 
                                         <div class="form-group row">
 
-                                            <label for="agent_website"
-                                                class="col-sm-2 col-form-label">agent_website</label>
+                                            <label for="website" class="col-sm-2 col-form-label">Website</label>
 
                                             <div class="col-sm-10">
 
-                                                <input type="text" class="form-control" name="agent_website"
-                                                    value="{{ old("agent_website") }}" id="agent_website">
+                                                <input type="text" class="form-control" name="website"
+                                                    value="{{ old("website") }}" id="website">
 
                                             </div>
 
@@ -433,12 +198,12 @@
 
                                         <div class="form-group row">
 
-                                            <label for="agent_owner" class="col-sm-2 col-form-label">agent_owner</label>
+                                            <label for="owner" class="col-sm-2 col-form-label">Owner</label>
 
                                             <div class="col-sm-10">
 
-                                                <input type="text" class="form-control" name="agent_owner"
-                                                    value="{{ old("agent_owner") }}" id="agent_owner">
+                                                <input type="text" class="form-control" name="owner"
+                                                    value="{{ old("owner") }}" id="owner">
 
                                             </div>
 
@@ -450,12 +215,12 @@
 
                                         <div class="form-group row">
 
-                                            <label for="agent_code" class="col-sm-2 col-form-label">agent_code</label>
+                                            <label for="code" class="col-sm-2 col-form-label">Code</label>
 
                                             <div class="col-sm-10">
 
-                                                <input type="text" class="form-control" name="agent_code"
-                                                    value="{{ old("agent_code") }}" id="agent_code">
+                                                <input type="text" class="form-control" name="code"
+                                                    value="{{ old("code") }}" id="code">
 
                                             </div>
 

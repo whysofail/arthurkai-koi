@@ -239,236 +239,14 @@
 @endsection
 
 @section("content")
-
-    <!-- Main Sidebar Container -->
-
-    <!-- Main Sidebar Container -->
-
-    <aside class="main-sidebar sidebar-dark-primary elevation-4"
-        style="background: #2c7abe; overflow-y: scroll; overflow-x: hidden;">
-
-        <!-- Brand Logo -->
-
-        <a href="{{ route("dashboard") }}" class="brand-link"
-            style="text-align: center; padding-top: 22px; padding-bottom: 22px;">
-
-            <img width="55" src="{{ asset("images/logo/koilogo.png") }}">
-
-        </a>
-
-        <!-- Sidebar -->
-
-        <div class="sidebar" style="background: #2c7abe">
-
-            <!-- Sidebar Menu -->
-
-            <nav class="mt-2">
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
-
-                    <li class="nav-item" style="border-bottom: 3px solid #0186fc; display:flex;">
-
-                        <a href="{{ route("cmskoi") }}" class="nav-link" style="height: 50px; background:black;">
-
-                            <i class="whitefont nav-icon far fa-image" style="font-size: 16px !important;"></i>
-
-                            <p class="whitefont" style="font-size: 16px !important;">
-
-                                Koi
-
-                            </p>
-
-                        </a>
-
-                        <a href="{{ route("cmskoigrid") }}" class="nav-link" style="text-align: right; height: 50px;">
-
-                            <i class="fa-solid fa-table-cells" style="font-size: 16px !important; color: white"></i>
-
-                            <p class="whitefont" style="font-size: 16px !important;">
-
-                                Koi<span> Grid</span>
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Setting
-
-                            Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsvariety") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Variety
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbloodline") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Bloodline
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbreeder") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Breeder
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmsagent") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Agent
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Live
-
-                            Website Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsourcollection") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Our Collection
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsnews") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                News
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsaboutus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                About Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmscontactus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Contact Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-            </nav>
-
-            <!-- /.sidebar-menu -->
-
-        </div>
-
-        <!-- /.sidebar -->
-
-    </aside>
-
     <!-- Content Wrapper. Contains page content -->
-
     <div class="content-wrapper" style="background: white;">
-
         <!-- /.content-header -->
-
         <div class="content-header">
-
             <div class="container-fluid">
-
                 <div class="row mb-2">
-
                     <div class="col-sm-6">
-
-                        <h1 class="m-0"></h1>
-
+                        <h1 class="m-0">Koi Detail</h1>
                     </div><!-- /.col -->
 
                     <div class="col-sm-6">
@@ -646,9 +424,9 @@
                                                 href="#product-comments" role="tab" aria-controls="product-comments"
                                                 aria-selected="false">Detail Information</a>
 
-                                            <a class="nav-item nav-link" id="trophy-tab" data-toggle="tab"
-                                                href="#trophy" role="tab" aria-controls="trophy"
-                                                aria-selected="false">Certification and
+                                            <a class="nav-item nav-link" id="trophy-tab" data-toggle="tab" href="#trophy"
+                                                role="tab" aria-controls="trophy" aria-selected="false">Certification
+                                                and
 
                                                 Trophy</a>
 
@@ -807,57 +585,36 @@
 
                                                             <td style="padding: 10px">
 
-                                                                {{ $k->bloodline ? $k->bloodline : "-" }}</td>
+                                                                {{ $k->bloodline ? $k->bloodline->name : "-" }}</td>
 
                                                         </tr>
-
                                                         <tr>
-
                                                             <td><strong>Breeder</strong></td>
-
                                                             <td>:</td>
-
                                                             <td style="padding: 10px">
-
                                                                 {{ $k->breeder ? $k->breeder->name : "-" }}</td>
-
                                                         </tr>
 
                                                         <tr>
-
                                                             <td><strong>Size</strong></td>
-
                                                             <td>:</td>
-
                                                             <td style="padding: 10px">{{ $k->size ? $k->size : "-" }}
-
                                                             </td>
-
                                                         </tr>
 
                                                         <tr>
-
                                                             <td><strong>Birthday Year & Month</strong></td>
-
                                                             <td>:</td>
-
                                                             <td style="padding: 10px">
-
                                                                 {{ $k->birthdate ? $k->birthdate : "-" }}
-
                                                             </td>
 
                                                         </tr>
-
                                                         @foreach ($koi as $k)
                                                             <tr>
-
                                                                 <td><strong>Age</strong></td>
-
                                                                 <td>:</td>
-
                                                                 <td style="padding: 10px">
-
                                                                     @if ($k->birthdate)
                                                                         @php
                                                                             $umur = \Carbon\Carbon::parse(
@@ -870,69 +627,42 @@
                                                                     @else
                                                                         -
                                                                     @endif
-
                                                                 </td>
-
                                                             </tr>
-
                                                             <tr>
-
                                                                 <td><strong>Date Of Ownership</strong></td>
-
                                                                 <td>:</td>
-
                                                                 <td style="padding: 10px">
-
                                                                     {{ $k->purchase_date ? $k->purchase_date : "-" }}</td>
-
                                                             </tr>
                                                         @endforeach
 
                                                         <tr>
-
                                                             <td><strong>Price Buy (IDR)</strong></td>
-
                                                             <td>:</td>
-
                                                             <td style="padding: 10px">
-
                                                                 {{ $k->price_buy_idr ? $k->price_buy_idr : "-" }}</td>
-
                                                         </tr>
-
                                                         <tr>
-
                                                             <td><strong>Price Buy (JPY)</strong></td>
-
                                                             <td>:</td>
-
                                                             <td style="padding: 10px">
-
                                                                 {{ $k->price_buy_jpy ? $k->price_buy_jpy : "-" }}</td>
-
                                                         </tr>
 
                                                         <tr>
-
                                                             <td><strong>Sell Price (IDR)</strong></td>
-
                                                             <td>:</td>
-
                                                             <td style="padding: 10px">
-
                                                                 @foreach ($k->history as $h)
                                                                     @if ($loop->first)
                                                                         {{ $h->pricesell_idr ? $h->pricesell_idr : "-" }}
                                                                     @else
                                                                     @endif
                                                                 @endforeach
-
                                                             </td>
-
                                                         </tr>
-
                                                         <tr>
-
                                                             <td><strong>Sell Price (JPY)</strong></td>
 
                                                             <td>:</td>

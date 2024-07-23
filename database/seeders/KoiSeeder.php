@@ -35,6 +35,7 @@ class KoiSeeder extends Seeder
                     'birthdate' => $this->nullIfEmpty($this->parseDate($record['Birth Year & Month'], 'M Y')),
                     'purchase_date' => $this->nullIfEmpty($this->parseDate($record['Purchase Date'])),
                     'seller' => $this->nullIfEmpty($record['Seller Agent']),
+                    'size' => $this->nullIfEmpty($record['Size']),
                     'handler' => $this->nullIfEmpty($record['Handling Agent']),
                     'price_buy_jpy' => $this->nullIfEmpty($this->convertToInt($record['Price Buy ( JPY )'])),
                     'price_buy_idr' => $this->nullIfEmpty($this->convertToInt($record['Price Buy ( IDR )'])),
