@@ -1,10 +1,10 @@
-@extends('layouts.apparthur')
-@section('title', 'Arthurkai - KOI')
-@section('css')
+@extends("layouts.apparthur")
+@section("title", "Arthurkai - KOI")
+@section("css")
 @endsection
-@section('content')
+@section("content")
 
 @endsection
 
-@section('script')
+@section("script")
 @endsection

@@ -393,8 +393,7 @@
 
                                         <div class="form-group row">
 
-                                            <label for="location"
-                                                class="col-sm-2 col-form-label">Location</label>
+                                            <label for="location" class="col-sm-2 col-form-label">Location</label>
 
                                             <div class="col-sm-10">
 
@@ -411,8 +410,7 @@
 
                                         <div class="form-group row">
 
-                                            <label for="contact"
-                                                class="col-sm-2 col-form-label">Contact</label>
+                                            <label for="contact" class="col-sm-2 col-form-label">Contact</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="contact"
                                                     value="{{ old("contact") }}" id="contact">
@@ -436,8 +434,7 @@
                                     </div>
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="form-group row">
-                                            <label for="website"
-                                                class="col-sm-2 col-form-label">Website</label>
+                                            <label for="website" class="col-sm-2 col-form-label">Website</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="website"
                                                     value="{{ old("website") }}" id="website">

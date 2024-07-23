@@ -31,7 +31,8 @@
 
             <div class="modal-body">
 
-                <p>Apakah kamu yakin ingin hapus?&hellip;</p>
+                <p>You are about to delete this item</p>
+                <p>Delete this item?</p>
 
             </div>
 
@@ -250,41 +251,27 @@
     </button>
 
     <div class="dropdown-menu" role="menu">
-
         <form action="{{ route("cmsstatusupdate") }}" method="POST">
-
             @csrf
-
             <input type="hidden" name="id_koi" value="{{ $k->id }}">
-
             <input type="hidden" name="n_status" value="Available">
-
             <button class="dropdown-item">Available</button>
-
         </form>
 
         <form action="{{ route("cmsstatusupdate") }}" method="POST">
-
             @csrf
-
             <input type="hidden" name="id_koi" value="{{ $k->id }}">
 
             <input type="hidden" name="n_status" value="Sold">
 
             <button class="dropdown-item">Sold</button>
-
         </form>
 
         <form action="{{ route("cmsstatusupdate") }}" method="POST">
-
             @csrf
-
             <input type="hidden" name="id_koi" value="{{ $k->id }}">
-
             <input type="hidden" name="n_status" value="Death">
-
             <button class="dropdown-item">Death</button>
-
         </form>
 
     </div>

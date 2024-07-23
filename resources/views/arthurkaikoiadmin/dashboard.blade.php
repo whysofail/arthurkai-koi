@@ -312,9 +312,9 @@
 
                                                 <th>Nickname</th>
 
-                                                <th>Breeder</th>
-
                                                 <th>Variety</th>
+
+                                                <th>Breeder</th>
 
                                                 <th>Gender</th>
 

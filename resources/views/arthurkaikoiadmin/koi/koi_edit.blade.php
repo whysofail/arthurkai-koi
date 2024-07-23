@@ -1,6 +1,6 @@
 @extends("layouts.apparthuradm")
 
-@section("title", "Add")
+@section("title", "Edit")
 
 @section("css")
     <!-- Select2 -->
@@ -75,23 +75,14 @@
                     <div class="col-sm-6">
                         <h1 class="m-0">Edit Koi</h1>
                     </div><!-- /.col -->
-
                     <div class="col-sm-6">
-
                         <ol class="breadcrumb float-sm-right">
-
                             <li class="breadcrumb-item"><a style="color: black"></a></li>
-
                             <li class="breadcrumb-item active" style="color: #a38b0c"> </li>
-
                         </ol>
-
                     </div><!-- /.col -->
-
                 </div><!-- /.row -->
-
             </div><!-- /.container-fluid -->
-
         </div>
 
         <!-- /.content-header -->
@@ -102,19 +93,12 @@
                     <div class="col-sm-6">
                         <h1>Edit Koi</h1>
                     </div>
-
                     <div class="col-sm-6">
-
                         <ol class="breadcrumb float-sm-right">
-
                         </ol>
-
                     </div>
-
                 </div>
-
             </div><!-- /.container-fluid -->
-
         </section>
 
         <!-- Main content -->
@@ -122,7 +106,7 @@
         <section class="content">
 
             @foreach ($koi as $k)
-                <form action="{{ route("cmskoiUpdate") }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route("cmskoiUpdate") }}" method="POST" enctype="multipart/form-data" id='koiForm'>
                     @csrf
                     <input type="hidden" name="id" id="id" value="{{ $k->id }}">
                     <input type="hidden" name="status" value="{{ $k->status }}">
@@ -275,7 +259,7 @@
                                                 <div class="col-sm-10">
                                                     <select class="form-control select2" name="seller"
                                                         style="width: 100%;">
-                                                        <option value="{{ $k->seller_id }}"
+                                                        <option value="{{ $k->seller }}"
                                                             {{ $k->seller == $k->seller ? "selected" : "" }}>
                                                             {{ $k->seller }}</option>
                                                         @foreach ($agent as $a)
@@ -380,21 +364,33 @@
                                                     <div class="col-sm-10">
                                                         @if (!empty($k->photo))
                                                             @php
-                                                                // Split the photo field by '|' delimiter
                                                                 $photos = explode("|", $k->photo);
                                                             @endphp
                                                             <div id="existing-photos">
                                                                 @foreach ($photos as $photo)
                                                                     @if (!empty($photo))
-                                                                        <div class="photo-item">
-                                                                            <img width="125"
-                                                                                src="{{ asset("img/koi/photo/" . $photo) }}"
-                                                                                class="img-thumbnail">
-                                                                            <span>{{ $photo }}</span>
-                                                                            <!-- Optionally add a remove button for each photo -->
-                                                                            <button type="button"
-                                                                                class="btn btn-danger btn-sm remove-photo"
-                                                                                data-photo="{{ $photo }}">Remove</button>
+                                                                        <div class="photo-item"
+                                                                            style="margin-bottom: 10px;">
+                                                                            <div
+                                                                                style="display: flex; justify-content: space-between; align-items: center;">
+                                                                                <img width="125"
+                                                                                    src="{{ asset("img/koi/photo/" . $photo) }}"
+                                                                                    class="img-thumbnail">
+                                                                                <div>
+                                                                                    <input type="file"
+                                                                                        class="form-control-file edit-photo"
+                                                                                        name="edit_photo_{{ $photo }}"
+                                                                                        style="display: none;">
+                                                                                    <button type="button"
+                                                                                        class="btn btn-primary btn-sm edit-photo-button"
+                                                                                        data-target="input[name='edit_photo_{{ $photo }}']">Edit</button>
+                                                                                    <button type="button"
+                                                                                        class="btn btn-danger btn-sm remove-photo"
+                                                                                        data-photo="{{ $photo }}">Remove</button>
+                                                                                </div>
+                                                                            </div>
+                                                                            <span
+                                                                                class="photo-filename">{{ $photo }}</span>
                                                                         </div>
                                                                     @endif
                                                                 @endforeach
@@ -403,272 +399,269 @@
                                                             <p>No photos available</p>
                                                         @endif
                                                     </div>
+
                                                     <div class="input-group realprocodeLP control-group lst incrementLP">
                                                     </div>
 
                                                     <!-- Input for uploading new photos -->
-                                                </div>
 
+                                                    @foreach ($k->history as $history)
+                                                        @if ($loop->first)
+                                                            @foreach (explode("|", $history->link_photo) as $image)
+                                                                @if ($image == null)
+                                                                    <input type="file" name="link_photo[]"
+                                                                        class="myfrm form-control"
+                                                                        onchange="Imagelinkphoto(event)">
+
+                                                                    <input type="hidden" name="link_photos">
+                                                                @else
+                                                                    <input type="file" name="link_photo[]"
+                                                                        class="myfrm form-control"
+                                                                        onchange="Imagelinkphoto(event)">
+
+                                                                    <input type="hidden" name="link_photos"
+                                                                        value="{{ $history->link_photo }}">
+                                                                @endif
+                                                            @endforeach
+                                                        @else
+                                                        @endif
+                                                    @endforeach
+
+                                                    @if ($k->history == null)
+                                                        <input type="file" name="photo_highlight[]"
+                                                            class="myfrm form-control" onchange="photohighlight(event)">
+
+                                                        <input type="hidden" name="photo_highlights" value="">
+                                                    @else
+                                                    @endif
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-success btn-clickLP" type="button"><i
+                                                                class="fldemo glyphicon glyphicon-plus"></i>Add</button>
+                                                    </div>
+                                                </div>
+                                                <div class="cloneLP hide" style="display: none;">
+                                                    <div class="realprocodeLP control-group lst input-group"
+                                                        style="margin: 1em 0 1em;">
+                                                        <input type="file" name="link_photo[]"
+                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)">
+                                                        <div class="input-group-btn">
+                                                            <button class="btn btn-danger" type="button"><i
+                                                                    class="fldemo glyphicon glyphicon-remove"></i>
+                                                                Remove</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 mt-3">
+                                            <label>Link_Video</label><br>
+                                            <div class="form-group">
+                                                <img width="125" id="link_video" class="img-thumbnailv">
                                                 @foreach ($k->history as $history)
                                                     @if ($loop->first)
-                                                        @foreach (explode("|", $history->link_photo) as $image)
+                                                        @foreach (explode("|", $history->link_video) as $image)
                                                             @if ($image == null)
-                                                                <input type="file" name="link_photo[]"
-                                                                    class="myfrm form-control"
-                                                                    onchange="Imagelinkphoto(event)">
-
-                                                                <input type="hidden" name="link_photos">
                                                             @else
-                                                                <input type="file" name="link_photo[]"
-                                                                    class="myfrm form-control"
-                                                                    onchange="Imagelinkphoto(event)">
+                                                                <video src="{{ asset("img/koi/video/" . $image) }}"
+                                                                    type="video/mp4" width="130px" id="link_video"
+                                                                    controls></video><br>
 
-                                                                <input type="hidden" name="link_photos"
-                                                                    value="{{ $history->link_photo }}">
+                                                                <span id="spanLinkVideo"
+                                                                    style="font-size: 0.8rem; color: #62200a;">{{ $image }}</span>
+
+                                                                <br />
                                                             @endif
                                                         @endforeach
                                                     @else
                                                     @endif
                                                 @endforeach
-
-                                                @if ($k->history == null)
-                                                    <input type="file" name="photo_highlight[]"
-                                                        class="myfrm form-control" onchange="photohighlight(event)">
-
-                                                    <input type="hidden" name="photo_highlights" value="">
-                                                @else
-                                                @endif
-                                                <div class="input-group-btn">
-                                                    <button class="btn btn-success btn-clickLP" type="button"><i
-                                                            class="fldemo glyphicon glyphicon-plus"></i>Add</button>
-                                                </div>
-                                            </div>
-                                            <div class="cloneLP hide" style="display: none;">
-                                                <div class="realprocodeLP control-group lst input-group"
-                                                    style="margin-top:10px">
-                                                    <input type="file" name="link_photo[]" class="myfrm form-control"
-                                                        onchange="Imagelinkphoto(event)">
+                                                </span>
+                                                <div class="input-group realprocodeLV control-group lst incrementLV">
+                                                    <input type="file" name="link_video[]" class="myfrm form-control"
+                                                        onchange="link_video(event)"
+                                                        accept="video/mp4,video/x-m4v,video/*">
                                                     <div class="input-group-btn">
-                                                        <button class="btn btn-danger" type="button"><i
-                                                                class="fldemo glyphicon glyphicon-remove"></i>
-                                                            Remove</button>
+                                                        <button class="btn btn-success btn-clickLV" type="button"><i
+                                                                class="fldemo glyphicon glyphicon-plus"></i>Add</button>
+                                                    </div>
+                                                </div>
+                                                <div class="cloneLV hide" style="display: none;">
+                                                    <div class="realprocodeLV control-group lst input-group"
+                                                        style="margin-top:10px">
+                                                        <input type="file" name="link_video[]"
+                                                            class="myfrm form-control" onchange="link_video(event)"
+                                                            accept="video/mp4,video/x-m4v,video/*">
+                                                        <div class="input-group-btn">
+                                                            <button class="btn btn-danger" type="button"><i
+                                                                    class="fldemo glyphicon glyphicon-remove"></i>
+                                                                Remove</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 mt-3">
-                                <label>Link_Video</label><br>
-                                <div class="form-group">
-                                    <img width="125" id="link_video" class="img-thumbnailv">
-                                    @foreach ($k->history as $history)
-                                        @if ($loop->first)
-                                            @foreach (explode("|", $history->link_video) as $image)
-                                                @if ($image == null)
+
+                                        <div class="col-sm-12 mt-3">
+                                            <label>Link Trophy</label><br>
+                                            @foreach ($k->history as $history)
+                                                @if ($loop->first)
+                                                    @if ($history->link_trophy == null)
+                                                        -
+                                                    @else
+                                                        <img width="125" id="link_trophy" class="img-thumbnail"
+                                                            src="{{ asset("img/koi/trophy/" . $history->link_trophy) }}">
+                                                    @endif
+
+                                                    <div class="input-group">
+                                                        <div class="custom-file">
+                                                            <input type="file" name="link_trophy" accept="image/*"
+                                                                class="custom-file-input" id="link_trophy"
+                                                                onchange="Imagelinktrophy(event)">
+                                                            <label class="custom-file-label" for="link_trophy"
+                                                                id="labelLinkTrophy">{{ $history->link_trophy }}</label>
+                                                            <input type="hidden" name="link_trophys"
+                                                                value="{{ $history->link_trophy }}">
+                                                        </div>
+                                                    </div>
                                                 @else
-                                                    <video src="{{ asset("img/koi/video/" . $image) }}" type="video/mp4"
-                                                        width="130px" id="link_video" controls></video><br>
-
-                                                    <span id="spanLinkVideo"
-                                                        style="font-size: 0.8rem; color: #62200a;">{{ $image }}</span>
-
-                                                    <br />
                                                 @endif
                                             @endforeach
-                                        @else
-                                        @endif
-                                    @endforeach
-                                    </span>
-                                    <div class="input-group realprocodeLV control-group lst incrementLV">
-                                        <input type="file" name="link_video[]" class="myfrm form-control"
-                                            onchange="link_video(event)" accept="video/mp4,video/x-m4v,video/*">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-success btn-clickLV" type="button"><i
-                                                    class="fldemo glyphicon glyphicon-plus"></i>Add</button>
                                         </div>
-                                    </div>
-                                    <div class="cloneLV hide" style="display: none;">
-                                        <div class="realprocodeLV control-group lst input-group" style="margin-top:10px">
-                                            <input type="file" name="link_video[]" class="myfrm form-control"
-                                                onchange="link_video(event)" accept="video/mp4,video/x-m4v,video/*">
-                                            <div class="input-group-btn">
-                                                <button class="btn btn-danger" type="button"><i
-                                                        class="fldemo glyphicon glyphicon-remove"></i>
-                                                    Remove</button>
+
+                                        <div class="col-sm-12" style="margin-top: 10px">
+                                            <div class="form-group row">
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control" name="name_trophy"
+                                                        value="@foreach ($k->history as $history)@if ($loop->first){{ old("name_trophy") ? old("name_trophy") : $history->name_trophy }}@else @endif @endforeach"
+                                                        id="name_trophy" placeholder="Nama Event">
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div class="col-sm-12 mt-3">
-                                <label>Link Trophy</label><br>
-                                @foreach ($k->history as $history)
-                                    @if ($loop->first)
-                                        @if ($history->link_trophy == null)
-                                            -
-                                        @else
-                                            <img width="125" id="link_trophy" class="img-thumbnail"
-                                                src="{{ asset("img/koi/trophy/" . $history->link_trophy) }}">
-                                        @endif
+                                        <div class="col-sm-12 mt-3">
+                                            <label>Link Certificate</label><br>
+                                            @foreach ($k->history as $history)
+                                                @if ($loop->first)
+                                                    @if ($history->link_certificate == null)
+                                                        -
+                                                    @else
+                                                        <img width="125" class="img-thumbnail"
+                                                            src="{{ asset("img/koi/certificate/" . $history->link_certificate) }}"
+                                                            id="link_certificate">
+                                                    @endif
 
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <input type="file" name="link_trophy" accept="image/*"
-                                                    class="custom-file-input" id="link_trophy"
-                                                    onchange="Imagelinktrophy(event)">
-                                                <label class="custom-file-label" for="link_trophy"
-                                                    id="labelLinkTrophy">{{ $history->link_trophy }}</label>
-                                                <input type="hidden" name="link_trophys"
-                                                    value="{{ $history->link_trophy }}">
-                                            </div>
-                                        </div>
-                                    @else
-                                    @endif
-                                @endforeach
-                            </div>
+                                                    <div class="input-group">
 
-                            <div class="col-sm-12" style="margin-top: 10px">
-                                <div class="form-group row">
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" name="name_trophy"
-                                            value="@foreach ($k->history as $history)@if ($loop->first){{ old("name_trophy") ? old("name_trophy") : $history->name_trophy }}@else @endif @endforeach"
-                                            id="name_trophy" placeholder="Nama Event">
-                                    </div>
-                                </div>
-                            </div>
+                                                        <div class="custom-file">
 
-                            <div class="col-sm-12 mt-3">
-                                <label>Link Certificate</label><br>
-                                @foreach ($k->history as $history)
-                                    @if ($loop->first)
-                                        @if ($history->link_certificate == null)
-                                            -
-                                        @else
-                                            <img width="125" class="img-thumbnail"
-                                                src="{{ asset("img/koi/certificate/" . $history->link_certificate) }}"
-                                                id="link_certificate">
-                                        @endif
+                                                            <input type="file" name="link_certificate"
+                                                                accept="image/*" class="custom-file-input"
+                                                                id="link_certificate"
+                                                                onchange="Imagelinkcertificate(event)">
 
-                                        <div class="input-group">
+                                                            <label class="custom-file-label"
+                                                                for="link_certificate">{{ $history->link_certificate }}</label>
 
-                                            <div class="custom-file">
+                                                            <input type="hidden" name="link_certificates"
+                                                                value="{{ $history->link_certificate }}">
 
-                                                <input type="file" name="link_certificate" accept="image/*"
-                                                    class="custom-file-input" id="link_certificate"
-                                                    onchange="Imagelinkcertificate(event)">
+                                                        </div>
 
-                                                <label class="custom-file-label"
-                                                    for="link_certificate">{{ $history->link_certificate }}</label>
-
-                                                <input type="hidden" name="link_certificates"
-                                                    value="{{ $history->link_certificate }}">
-
-                                            </div>
+                                                    </div>
+                                                @else
+                                                @endif
+                                            @endforeach
 
                                         </div>
-                                    @else
-                                    @endif
-                                @endforeach
 
-                            </div>
+                                        <div class="col-sm-12" style="margin-top: 10px">
 
-                            <div class="col-sm-12" style="margin-top: 10px">
+                                            <div class="form-group row">
+                                                <div class="col-sm-12">
+                                                    <input type="text" class="form-control" name="name_certificate"
+                                                        value="@foreach ($k->history as $history)@if ($loop->first){{ old("name_certificate") ? old("name_certificate") : $history->name_certificate }}@else @endif @endforeach"
+                                                        id="name_certificate" placeholder="Nama Event">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h2>Additional Information</h2>
+                                        <hr>
+                                        <div class="col-sm-12" style="margin-top: 10px">
+                                            <div class="form-group row">
+                                                <label for="date_sell" class="col-sm-2 col-form-label">Date of
+                                                    Sell</label>
+                                                <div class="col-sm-10">
+                                                    <input type="month" class="form-control" name="date_sell"
+                                                        value="@foreach ($k->history as $history)@if ($loop->first){{ old("date_sell") ? old("date_sell") : $history->date_sell }}@else @endif @endforeach"
+                                                        id="date_sell">
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                <div class="form-group row">
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" name="name_certificate"
-                                            value="@foreach ($k->history as $history)@if ($loop->first){{ old("name_certificate") ? old("name_certificate") : $history->name_certificate }}@else @endif @endforeach"
-                                            id="name_certificate" placeholder="Nama Event">
-                                    </div>
-                                </div>
-                            </div>
-                            <h2>Additional Information</h2>
-                            <hr>
-                            <div class="col-sm-12" style="margin-top: 10px">
-                                <div class="form-group row">
-                                    <label for="date_sell" class="col-sm-2 col-form-label">Date of
-                                        Sell</label>
-                                    <div class="col-sm-10">
-                                        <input type="month" class="form-control" name="date_sell"
-                                            value="@foreach ($k->history as $history)@if ($loop->first){{ old("date_sell") ? old("date_sell") : $history->date_sell }}@else @endif @endforeach"
-                                            id="date_sell">
-                                    </div>
-                                </div>
-                            </div>
+                                        <div class="col-sm-12" style="margin-top: 10px">
+                                            <div class="form-group row">
+                                                <label for="buyer_name" class="col-sm-2 col-form-label">Buyer Name</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" name="buyer_name"
+                                                        value="@foreach ($k->history as $history)@if ($loop->first){{ old("buyer_name") ? old("buyer_name") : $history->buyer_name }}@else @endif @endforeach"
+                                                        id="buyer_name">
+                                                </div>
+                                            </div>
+                                        </div>
 
-                            <div class="col-sm-12" style="margin-top: 10px">
-                                <div class="form-group row">
-                                    <label for="buyer_name" class="col-sm-2 col-form-label">Buyer Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="buyer_name"
-                                            value="@foreach ($k->history as $history)@if ($loop->first){{ old("buyer_name") ? old("buyer_name") : $history->buyer_name }}@else @endif @endforeach"
-                                            id="buyer_name">
-                                    </div>
-                                </div>
-                            </div>
+                                        <div class="col-sm-12" style="margin-top: 10px">
+                                            <div class="form-group row">
+                                                <label for="death_date" class="col-sm-2 col-form-label">Date of
+                                                    Death</label>
+                                                <div class="col-sm-10">
+                                                    <input type="date" class="form-control" name="death_date"
+                                                        value="@foreach ($k->history as $history)@if ($loop->first){{ old("death_date") ? old("death_date") : $history->death_date }}@else @endif @endforeach"
+                                                        id="death_date">
+                                                </div>
+                                            </div>
 
-                            <div class="col-sm-12" style="margin-top: 10px">
-                                <div class="form-group row">
-                                    <label for="death_date" class="col-sm-2 col-form-label">Date of
-                                        Death</label>
-                                    <div class="col-sm-10">
-                                        <input type="date" class="form-control" name="death_date"
-                                            value="@foreach ($k->history as $history)@if ($loop->first){{ old("death_date") ? old("death_date") : $history->death_date }}@else @endif @endforeach"
-                                            id="death_date">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="col-sm-12" style="margin-top: 10px">
-                                <div class="form-group row">
-                                    <label for="death_note" class="col-sm-2 col-form-label">Death Note</label>
-                                    <div class="col-sm-10">
-                                        <textarea name="death_note" class="form-control" id="death_note" rows="3">
-                                                        @foreach ($k->history as $history)
+                                        </div>
+                                        <div class="col-sm-12" style="margin-top: 10px">
+                                            <div class="form-group row">
+                                                <label for="death_note" class="col-sm-2 col-form-label">Death Note</label>
+                                                <div class="col-sm-10">
+                                                    <textarea name="death_note" class="form-control" id="death_note" rows="3">
+                                        @foreach ($k->history as $history)
 @if ($loop->first)
 {{ old("death_note") ? old("death_note") : $history->death_note }}
 @else
 @endif
 @endforeach
-                                                        </textarea>
-                                    </div>
+                                        </textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 mt-3" style="margin-top: 50px">
+                                            <div class="float-right">
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+                                        </div>
+
+                                    </section>
                                 </div>
                             </div>
-                            <div class="col-sm-12 mt-3" style="margin-top: 50px">
-                                <div class="float-right">
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
+                </form>
+            @endforeach
         </section>
     </div>
-    </div>
-    </div>
-    </div>
-    </form>
-    @endforeach
-    </section>
-    </div>
-
     <!-- Control Sidebar -->
-
     <aside class="control-sidebar control-sidebar-dark">
-
         <!-- Control sidebar content goes here -->
-
     </aside>
-
     <!-- /.control-sidebar -->
 
 @endsection
 
 @section("script")
-
     <!-- Select2 -->
-
     <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
-
     <script>
         // Function to format Rupiah
         function formatRupiah(angka, prefix) {
@@ -757,45 +750,53 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Function to update the display of selected file names
-            function updateFileNames(input) {
-                const fileNamesContainer = document.getElementById('file-names');
-                const files = input.files;
-                fileNamesContainer.innerHTML = ''; // Clear previous filenames
-
-                if (files.length > 0) {
-                    const fileNames = Array.from(files).map(file => file.name).join(', ');
-                    fileNamesContainer.textContent = fileNames;
-                }
-            }
-
-            // Event listener for file input changes
-            document.getElementById('photo-input').addEventListener('change', function() {
-                updateFileNames(this);
-            });
-
-            // Handle adding more photo inputs
-            document.querySelector('.btn-clickLP').addEventListener('click', function() {
-                const html = `
-            <div class="input-group control-group lst incrementLP">
-                <input type="file" name="photos[]" class="form-control" multiple>
-                <div class="mt-2"></div> <!-- Area to display filenames -->
-                <button type="button" class="btn btn-danger btn-sm remove-input">Remove</button>
-            </div>`;
-                document.querySelector('.realprocodeLP').insertAdjacentHTML('beforeend', html);
-
-                // Add event listener for new file inputs
-                document.querySelector('.realprocodeLP').lastElementChild.querySelector(
-                    'input[type="file"]').addEventListener('change', function() {
-                    updateFileNames(this);
+            // Handle "Edit" button click to trigger file input
+            document.querySelectorAll('.edit-photo-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Find the associated file input
+                    const targetSelector = this.getAttribute('data-target');
+                    const fileInput = document.querySelector(targetSelector);
+                    if (fileInput) {
+                        fileInput.click(); // Trigger the file input click
+                    }
                 });
             });
 
-            // Handle removal of dynamically added photo inputs
-            document.querySelector('.realprocodeLP').addEventListener('click', function(event) {
-                if (event.target.classList.contains('remove-input')) {
-                    event.target.parentElement.remove();
-                }
+            // Handle file input change to update photo preview
+            document.querySelectorAll('.edit-photo').forEach(input => {
+                input.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const photoItem = input.closest('.photo-item');
+                            const img = photoItem.querySelector('img');
+                            const filenameSpan = photoItem.querySelector('.photo-filename');
+
+                            img.src = e.target.result; // Update image preview
+                            filenameSpan.textContent = file.name; // Update filename
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+
+            // Handle photo removal
+            document.querySelectorAll('.remove-photo').forEach(button => {
+                button.addEventListener('click', function() {
+                    const photoItem = this.closest('.photo-item');
+                    const photo = this.getAttribute('data-photo');
+
+                    // Add hidden input to mark this photo for removal
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'remove_photos[]';
+                    input.value = photo;
+                    document.getElementById('koiForm').appendChild(input);
+
+                    // Remove the photo item from the DOM
+                    photoItem.remove();
+                });
             });
         });
     </script>
@@ -847,6 +848,14 @@
                 $(this).parents(".realprocodeLP").remove();
             });
         });
+
+        $(document).ready(function() {
+            $("body").on("click", ".remove-photo", function() {
+                console.log("clicked");
+                $(this).parents(".photo-item").remove();
+            });
+        });
+
 
         $(document).ready(function() {
             $(".btn-clickLV").click(function() {
