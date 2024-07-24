@@ -65,244 +65,18 @@
 @endsection
 
 @section("content")
-
-    <!-- Main Sidebar Container -->
-
-    <!-- Main Sidebar Container -->
-
-    <aside class="main-sidebar sidebar-dark-primary elevation-4"
-        style="background: #2c7abe; overflow-y: scroll; overflow-x: hidden;">
-
-        <!-- Brand Logo -->
-
-        <a href="{{ route("dashboard") }}" class="brand-link"
-            style="text-align: center; padding-top: 22px; padding-bottom: 22px;">
-
-            <img width="55" src="{{ asset("images/logo/koilogo.png") }}">
-
-        </a>
-
-        <!-- Sidebar -->
-
-        <div class="sidebar" style="background: #2c7abe">
-
-            <!-- Sidebar Menu -->
-
-            <nav class="mt-2">
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
-
-                    <li class="nav-item" style="border-bottom: 3px solid #0186fc; display:flex;">
-
-                        <a href="{{ route("cmskoi") }}" class="nav-link" style="height: 50px;">
-
-                            <i class="whitefont nav-icon far fa-image" style="font-size: 18px !important;"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi
-
-                            </p>
-
-                        </a>
-
-                        <a href="{{ route("cmskoigrid") }}" class="nav-link" style="text-align: right; height: 50px;">
-
-                            <i class="fa-solid fa-table-cells" style="font-size: 18px !important; color: white"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi<span> Grid</span>
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Setting
-
-                            Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsvariety") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Variety
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; background: black;">
-
-                        <a href="{{ route("cmsbloodline") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Bloodline
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbreeder") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Breeder
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmsagent") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Agent
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Live
-
-                            Website Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsourcollection") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Our Collection
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsnews") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                News
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsaboutus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                About Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmscontactus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Contact Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-            </nav>
-
-            <!-- /.sidebar-menu -->
-
-        </div>
-
-        <!-- /.sidebar -->
-
-    </aside>
-
     <!-- Content Wrapper. Contains page content -->
-
     <div class="content-wrapper" style="background: white;">
-
         <!-- /.content-header -->
-
         <div class="content-header">
-
             <div class="container-fluid">
-
                 <div class="row mb-2">
-
                     <div class="col-sm-6">
-
-                        <h1 class="m-0">Variety</h1>
-
+                        <h1 class="m-0">Bloodline</h1>
                     </div><!-- /.col -->
-
                     <div class="col-sm-6">
-
                         <ol class="breadcrumb float-sm-right">
-
                             <li class="breadcrumb-item"><a style="color: black"></a></li>
-
                             <li class="breadcrumb-item active" style="color: #a38b0c"> </li>
 
                         </ol>
@@ -352,7 +126,7 @@
 
                     @csrf
 
-                    <input type="hidden" name="id" value="{{ $b->id_bloodline }}">
+                    <input type="hidden" name="id" value="{{ $b->id }}">
 
                     <div class="col-sm-12">
 
@@ -368,24 +142,15 @@
                         <div class="card">
 
                             <div class="card-body">
-
                                 <div class="content tab">
-
                                     <section id="section-1" class="content-current">
-
                                         <div class="col-sm-12" style="margin-top: 10px">
-
                                             <div class="form-group row">
-
-                                                <label for="bloodline_name" class="col-sm-2 col-form-label">Bloodline
-
+                                                <label for="name" class="col-sm-2 col-form-label">Bloodline
                                                     Name</label>
-
                                                 <div class="col-sm-10">
-
-                                                    <input type="text" class="form-control" name="bloodline_name"
-                                                        value="{{ old("bloodline_name") ? old("bloodline_name") : $b->bloodline_name }}"
-                                                        id="bloodline_name">
+                                                    <input type="text" class="form-control" name="name"
+                                                        value="{{ old("name") ? old("name") : $b->name }}" id="name">
 
                                                 </div>
 
@@ -397,15 +162,14 @@
 
                                             <div class="form-group row">
 
-                                                <label for="bloodline_code" class="col-sm-2 col-form-label">Bloodline
+                                                <label for="code" class="col-sm-2 col-form-label">Bloodline
 
                                                     Code</label>
 
                                                 <div class="col-sm-10">
 
-                                                    <input type="text" class="form-control" name="bloodline_code"
-                                                        value="{{ old("bloodline_code") ? old("bloodline_code") : $b->bloodline_code }}"
-                                                        id="bloodline_code">
+                                                    <input type="text" class="form-control" name="code"
+                                                        value="{{ old("code") ? old("code") : $b->code }}" id="code">
 
                                                 </div>
 
@@ -413,23 +177,16 @@
 
                                         </div>
 
-                                        <div class="col-sm-12" style="margin-top: 10px">
-
+                                        {{-- <div class="col-sm-12" style="margin-top: 10px">
                                             <div class="form-group row">
-
                                                 <label for="variety" class="col-sm-2 col-form-label">Variety</label>
-
                                                 <div class="col-sm-10">
-
                                                     <input type="text" class="form-control" name="variety"
                                                         value="{{ old("variety") ? old("variety") : $b->variety }}"
                                                         id="variety">
-
                                                 </div>
-
                                             </div>
-
-                                        </div>
+                                        </div> --}}
 
                                         <div class="col-sm-12 mt-3" style="margin-top: 50px">
 
@@ -477,155 +234,5 @@
     <!-- Select2 -->
 
     <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
-
-    <script>
-        $(document).ready(function() {
-            $('#link_video').on('change', function() {
-                //get the file name
-                var fileName = $(this).val();
-                //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            var promoImagelinkvideo = function(event) {
-                var outputourBrands = document.getElementById('link_video');
-                outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-                outputourBrands.onload = function() {
-                    URL.revokeObjectURL(outputourBrands.src) // free memory
-                }
-            };
-
-            $('#photo_highlight').on('change', function() {
-                //get the file name
-                var fileName = $(this).val();
-                //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            var Imagephotohighlight = function(event) {
-                var outputourBrands = document.getElementById('photo_highlight');
-                outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-                outputourBrands.onload = function() {
-                    URL.revokeObjectURL(outputourBrands.src) // free memory
-                }
-            };
-
-            $('#link_photo').on('change', function() {
-                //get the file name
-                var fileName = $(this).val();
-                //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            var Imagelinkphoto = function(event) {
-                var outputourBrands = document.getElementById('link_photo');
-                outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-                outputourBrands.onload = function() {
-                    URL.revokeObjectURL(outputourBrands.src) // free memory
-                }
-            };
-
-            $('#link_trophy').on('change', function() {
-                //get the file name
-                var fileName = $(this).val();
-                //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            var Imagelinktrophy = function(event) {
-                var outputourBrands = document.getElementById('link_trophy');
-                outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-                outputourBrands.onload = function() {
-                    URL.revokeObjectURL(outputourBrands.src) // free memory
-                }
-            };
-
-            $('#link_certificate').on('change', function() {
-                //get the file name
-                var fileName = $(this).val();
-                //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            var Imagelinkcertificate = function(event) {
-                var outputourBrands = document.getElementById('link_certificate');
-                outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-                outputourBrands.onload = function() {
-                    URL.revokeObjectURL(outputourBrands.src) // free memory
-                }
-            };
-
-            $('#description').summernote({
-                height: 635,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear']],
-                    ['font', ['strikethrough', 'superscript', 'subscript']],
-                    ['font', ['fontsize', 'color']],
-                    ['font', ['fontname']],
-                    ['para', ['ul', 'ol', 'listStyles', 'paragraph']],
-                    ['height', ['height']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['history', ['undo', 'redo']],
-                    ['view', ['codeview', 'fullscreen', 'findnreplace']],
-                    ['help', ['help']]
-                ],
-            });
-
-            $('.select2').select2()
-
-            //Initialize Select2 Elements
-            $('.select2bs4').select2({
-                theme: 'bootstrap4'
-            })
-
-        });
-
-
-        var rupiah = document.getElementById('pricesell_idr');
-        rupiah.addEventListener('keyup', function(e) {
-            rupiah.value = formatRupiah(this.value, 'Rp. ');
-        });
-
-        /* Fungsi */
-        function formatRupiah(angka, prefix) {
-            var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
-        }
-
-        var yen = document.getElementById('pricesell_jpy');
-        yen.addEventListener('keyup', function(e) {
-            yen.value = formatYen(this.value, '¥ ');
-        });
-
-        /* Fungsi */
-        function formatYen(angka, prefix) {
-            var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? '¥ ' + rupiah : '');
-        }
-    </script>
 
 @endsection

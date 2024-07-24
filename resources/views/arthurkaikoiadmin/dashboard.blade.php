@@ -22,7 +22,7 @@
         }
 
         .swiper {
-            width: 300px;
+            width: 500px;
             height: 100%;
         }
 
@@ -93,216 +93,6 @@
 @section("content")
 
     <!-- Main Sidebar Container -->
-
-    <aside class="main-sidebar sidebar-dark-primary elevation-4"
-        style="background: #2c7abe; overflow-y: scroll; overflow-x: hidden;">
-
-        <!-- Brand Logo -->
-
-        <a href="{{ route("dashboard") }}" class="brand-link"
-            style="text-align: center; padding-top: 22px; padding-bottom: 22px;">
-
-            <img width="55" src="{{ asset("images/logo/koilogo.png") }}">
-
-        </a>
-
-        <!-- Sidebar -->
-
-        <div class="sidebar" style="background: #2c7abe">
-
-            <!-- Sidebar Menu -->
-
-            <nav class="mt-2">
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
-
-                    <li class="nav-item" style="border-bottom: 3px solid #0186fc; display:flex;">
-
-                        <a href="{{ route("cmskoi") }}" class="nav-link" style="background: black; height: 50px;">
-
-                            <i class="whitefont nav-icon far fa-image" style="font-size: 18px !important;"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi
-
-                            </p>
-
-                        </a>
-
-                        <a href="{{ route("cmskoigrid") }}" class="nav-link" style="text-align: right; height: 50px;">
-
-                            <i class="fa-solid fa-table-cells" style="font-size: 18px !important; color: white"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi<span> Grid</span>
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Setting
-
-                            Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsvariety") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Variety
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbloodline") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Bloodline
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbreeder") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Breeder
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmsagent") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Agent
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Live
-
-                            Website Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsourcollection") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Our Collection
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsnews") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                News
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsaboutus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                About Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmscontactus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Contact Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-            </nav>
-
-            <!-- /.sidebar-menu -->
-
-        </div>
-
-        <!-- /.sidebar -->
-
-    </aside>
-
     <!-- Content Wrapper. Contains page content -->
 
     <div class="content-wrapper" style="background: white;">
@@ -483,8 +273,7 @@
                                             class="btn btn-default btn-flat"><i class="fas fa-sort-numeric-down"></i></a>
 
                                         <a href="{{ route("cmskoifilter91") }}" type="button"
-                                            class="btn btn-default btn-flat"><i
-                                                class="fas fa-sort-numeric-up-alt"></i></a>
+                                            class="btn btn-default btn-flat"><i class="fas fa-sort-numeric-up-alt"></i></a>
 
                                         <a href="{{ route("cmskoifilterpricebuyhigh") }}" type="button"
                                             class="btn btn-default btn-flat"><i class="fas fa-money-bill"></i></a>
@@ -525,6 +314,8 @@
 
                                                 <th>Variety</th>
 
+                                                <th>Breeder</th>
+
                                                 <th>Gender</th>
 
                                                 <th>Birth</th>
@@ -552,9 +343,6 @@
                                                 <th>Date of Death</th>
 
                                                 <th>Death Note</th>
-
-                                                <th>Breeder</th>
-
                                                 <th>Bloodline</th>
 
                                             </tr>
@@ -618,7 +406,7 @@
                         type: 'GET'
                     },
                     columns: [{
-                            data: null,
+                            data: 'index',
                             name: 'index',
                             orderable: false,
                             searchable: false
@@ -631,7 +419,7 @@
                         },
                         {
                             data: 'code',
-                            name: 'koi_code'
+                            name: 'code'
                         },
                         {
                             data: 'nickname',
@@ -642,37 +430,43 @@
                             name: 'variety'
                         },
                         {
+                            data: 'breeder',
+                            name: 'breeder'
+                        },
+                        {
                             data: 'gender',
                             name: 'gender'
                         },
                         {
                             data: 'birth',
-                            name: 'birth'
+                            name: 'birthdate'
                         },
                         {
                             data: 'age',
-                            name: 'age'
+                            name: 'age',
+                            orderable: false,
+                            searchable: false
                         },
                         {
-                            data: 'date_purchase',
-                            name: 'date_purchase'
+                            data: 'purchase_date',
+                            name: 'purchase_date'
                         },
                         {
                             data: 'size',
                             name: 'size'
                         },
                         {
-                            data: 'selleragent',
+                            data: 'seller',
                             name: 'seller'
                         },
                         {
-                            data: 'handling_agent',
+                            data: 'handler',
                             name: 'handler'
                         },
                         {
                             data: 'price_buy',
                             name: 'price_buy',
-                            width: '12.5%'
+                            width: '15%'
                         },
                         {
                             data: 'price_sell',
@@ -680,8 +474,8 @@
                             width: '12.5%'
                         },
                         {
-                            data: 'kep_loc',
-                            name: 'kep_loc'
+                            data: 'location',
+                            name: 'location'
                         },
                         {
                             data: 'date_of_sell',
@@ -700,19 +494,32 @@
                             name: 'death_note'
                         },
                         {
-                            data: 'breeder',
-                            name: 'breeder'
-                        },
-                        {
                             data: 'bloodline',
                             name: 'bloodline'
                         }
                     ],
                     // order: [[2, 'asc']], // Urutkan berdasarkan kolom kedua (koi_code)
                     dom: 'lBfrtip', // This controls the layout of the table
-                    buttons: [
-                        'excel', 'pdf', 'print'
+                    buttons: [{
+                            extend: 'excel',
+                            exportOptions: {
+                                columns: [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            exportOptions: {
+                                columns: [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                            }
+                        },
+                        {
+                            extend: 'print',
+                            exportOptions: {
+                                columns: [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                            }
+                        }
                     ],
+
                     lengthMenu: [ // Custom lengthMenu options
                         [10, 25, 50, 100, 200, 500],
                         [10, 25, 50, 100, 200, 500] // labels for options

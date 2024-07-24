@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OurCollection;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,8 @@ class C_Arthurkaikoi extends Controller
 
     public function index()
     {
-        return view('arthurkaikoi.home');
+        $ourCollection = OurCollection::with('koi')->limit(4)->get();
+        return view('arthurkaikoi.home', compact('ourCollection'));
     }
 
     public function our()

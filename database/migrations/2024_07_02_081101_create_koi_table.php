@@ -23,6 +23,7 @@ class CreateKoiTable extends Migration
             $table->unsignedBigInteger('bloodline_id')->nullable();
             $table->unsignedBigInteger('variety_id')->nullable();
             $table->integer('sequence')->nullable();
+            $table->string('size')->nullable();
             $table->unsignedInteger('price_buy_idr')->nullable();
             $table->unsignedInteger('price_buy_jpy')->nullable();
             $table->unsignedInteger('price_sell_idr')->nullable();

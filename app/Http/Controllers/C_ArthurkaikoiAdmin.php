@@ -9,7 +9,6 @@ use Yajra\DataTables\Facades\DataTables;
 
 use App\Models\Koi;
 
-
 // Admin Master
 use App\Models\History;
 use App\Models\Variety;
@@ -46,11 +45,23 @@ class C_ArthurkaikoiAdmin extends Controller
 
     ### KOI ###
 
-    public function koi()
+    public function koi(Request $request)
     {
+        $layout = $request->query('layout');
+        $validLayouts = ['list', 'grid'];
+
+        if (!in_array($layout, $validLayouts)) {
+            $layout = 'list'; // Fallback layout
+        }
+
         $koitotal = Koi::count();
-        $koi = Koi::all();
-        return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi'));
+        if ($layout === 'list') {
+            $koi = Koi::all();
+            return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi'));
+        } else {
+            $koi = koi::latest()->paginate(8);
+            return view('arthurkaikoiadmin.koi.koi_grid', compact('koitotal', 'koi'));
+        }
     }
 
     public function getDataKoi(Request $request)
@@ -58,104 +69,122 @@ class C_ArthurkaikoiAdmin extends Controller
         $columns = [
             0 => 'id',
             1 => 'action',
-            2 => 'code',         
+            2 => 'code',
             3 => 'nickname',
             4 => 'variety',
-            5 => 'gender',
-            6 => 'birth',
-            7 => 'age',
-            8 => 'purchase_date',
+            5 => 'breeder',
+            6 => 'gender',
+            7 => 'birthdate',
+            8 => 'age',
+            9 => 'purchase_date',
             10 => 'size',
-            11 => 'selleragent',
-            12 => 'handling_agent',
+            11 => 'seller',
+            12 => 'handler',
             13 => 'price_buy',
             14 => 'price_sell',
-            15 => 'kep_loc',
+            15 => 'location',
             16 => 'date_of_sell',
             17 => 'buyer_name',
             18 => 'date_of_death',
             19 => 'death_note',
-            20 => 'breeder',
-            21 => 'bloodline'
+            20 => 'bloodline'
         ];
-
         $totalData = Koi::count();
         $totalFiltered = $totalData;
 
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
-        $dir = $request->input('order.0.dir');
+        $orderColumnIndex = $request->input('order.0.column');
+        $orderDir = $request->input('order.0.dir');
+        $orderColumn = $columns[$orderColumnIndex];
 
+        // Handle dynamic ordering for variety and price columns
+        switch ($orderColumn) {
+            case 'variety':
+                $order = 'variety.name';
+                break;
+            case 'breeder':
+                $order = 'breeder.name';
+                break;
+            case 'price_buy':
+                $order = ['koi.price_buy_idr', 'koi.price_buy_jpy'];
+                break;
+            case 'price_sell':
+                $order = ['koi.price_sell_idr', 'koi.price_sell_jpy'];
+                break;
+            default:
+                $order = "koi.$orderColumn";
+                break;
+        }
+
+        $query = Koi::select('koi.*')
+            ->leftJoin('variety', 'koi.variety_id', '=', 'variety.id')
+            ->leftJoin('breeder', 'koi.breeder_id', '=', 'breeder.id')
+            ->with(['history', 'breeder', 'variety']);
+        // Order by price columns if applicable
+        if (is_array($order)) {
+            foreach ($order as $col) {
+                $query->orderBy($col, $orderDir);
+            }
+        } else {
+            $query->orderBy($order, $orderDir);
+        }
         if (empty($request->input('search.value'))) {
-            $kois = Koi::with('history')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
+            $kois = $query->offset($start)
+                ->limit($limit)
+                ->get();
         } else {
             $search = $request->input('search.value');
+            $query->where(function ($query) use ($search) {
+                $query->where('koi.code', 'LIKE', "%{$search}%")
+                    ->orWhere('koi.nickname', 'LIKE', "%{$search}%")
+                    ->orWhere('koi.gender', 'LIKE', "%{$search}%")
+                    ->orWhereHas('variety', function ($query) use ($search) {
+                        $query->where('name', 'LIKE', "%{$search}%");
+                    });
+            });
 
-            $kois = Koi::with('history')
-                        ->where('code', 'LIKE', "%{$search}%")
-                        ->orWhere('nickname', 'LIKE', "%{$search}%")
-                        ->orWhere('gender', 'LIKE', "%{$search}%")
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
+            $kois = $query->offset($start)
+                ->limit($limit)
+                ->get();
 
-            $totalFiltered = Koi::with('history')
-                                ->where('code', 'LIKE', "%{$search}%")
-                                ->orWhere('nickname', 'LIKE', "%{$search}%")
-                                ->orWhere('gender', 'LIKE', "%{$search}%")                
-                                ->count();
+            $totalFiltered = $query->count();
         }
 
         $data = [];
         if (!empty($kois)) {
             foreach ($kois as $index => $koi) {
-                    $nestedData['index'] = $start + $index + 1;
-                    $nestedData['id'] = $koi->id;
-                    $nestedData['action'] = view('partials.koi_actions', ['k' => $koi])->render();
-                    $nestedData['code'] = $koi->code;
-                    $nestedData['nickname'] = $koi->nickname ?? '-';
-                    $nestedData['variety'] = $koi->variety->name;
-                    $nestedData['gender'] = $koi->gender;
-                    $nestedData['birth'] = $koi->birthdate;
-                    // Calculate the age using Carbon
-                    if ($koi->birthdate) {
-                        $birthDate = Carbon::createFromFormat('Y-m-d', $koi->birthdate);
-                        $now = Carbon::now();
-                        $age = $birthDate->diff($now);
-                        $umurTahun = $age->y;
-                        $umurBulan = $age->m;
-                        $nestedData['age'] = $umurTahun . 'yr ' . $umurBulan . 'm ';
-                    } else {
-                        $nestedData['age'] = '-';
-                    }
-                    $nestedData['date_purchase'] = $koi->purchase_date;
-                    $nestedData['size'] = $koi->size;
-                    $nestedData['selleragent'] = $koi->seller;
-                    $nestedData['handling_agent'] = $koi->handler;
-                    $idrPriceBuy = $koi->price_buy_idr !== null ? number_format($koi->price_buy_idr) : '-';
-                    $jpyPriceBuy = $koi->price_buy_jpy !== null ? number_format($koi->price_buy_jpy) : '-';
-                    $nestedData['price_buy'] = 'IDR: ' . $idrPriceBuy . '<br>JPY: ' . $jpyPriceBuy;
-                    $idrPriceSell = $koi->price_sell_idr !== null ? number_format($koi->price_sell_idr) : '-';
-                    $jpyPriceSell = $koi->price_sell_jpy !== null ? number_format($koi->price_sell_jpy) : '-';
-                    $nestedData['price_sell'] = 'IDR: ' . $idrPriceBuy . '<br>JPY: ' . $jpyPriceBuy;
-                    $nestedData['kep_loc'] = $koi->kep_loc;
-                    $nestedData['sell_price_idr'] = $koi->sell_price_idr;
-                    $nestedData['sell_price_jpy'] = $koi->sell_price_jpy;
-                    $nestedData['date_of_sell'] = $koi->date_of_sell;
-                    $nestedData['buyer_name'] = $koi->buyer_name;
-                    $nestedData['date_of_death'] = $koi->date_of_death;
-                    $nestedData['death_note'] = $koi->death_note;
-                    $nestedData['breeder'] = $koi->breeder->name;
-                    $nestedData['bloodline'] = $koi->bloodline;
-
-                    $data[] = $nestedData;
+                $nestedData['index'] = $start + $index + 1;
+                $nestedData['id'] = $koi->id;
+                $nestedData['action'] = view('partials.koi_actions', ['k' => $koi])->render();
+                $nestedData['code'] = $koi->code;
+                $nestedData['nickname'] = $koi->nickname ?? '-';
+                $nestedData['variety'] = optional($koi->variety)->name ?? '-';
+                $nestedData['gender'] = $koi->gender;
+                $nestedData['birth'] = $koi->birthdate;
+                if ($koi->birthdate) {
+                    $birthDate = Carbon::createFromFormat('Y-m-d', $koi->birthdate);
+                    $now = Carbon::now();
+                    $age = $birthDate->diff($now);
+                    $nestedData['age'] = $age->y . 'yr ' . $age->m . 'm ';
+                } else {
+                    $nestedData['age'] = '';
                 }
+                $nestedData['purchase_date'] = $koi->purchase_date;
+                $nestedData['size'] = $koi->size ?? '';
+                $nestedData['seller'] = $koi->seller;
+                $nestedData['handler'] = $koi->handler;
+                $nestedData['price_buy'] = 'IDR: ' . number_format($koi->price_buy_idr ?? 0) . '<br>JPY: ' . number_format($koi->price_buy_jpy ?? 0);
+                $nestedData['price_sell'] = 'IDR: ' . number_format($koi->price_sell_idr ?? 0) . '<br>JPY: ' . number_format($koi->price_sell_jpy ?? 0);
+                $nestedData['location'] = $koi->location;
+                $nestedData['date_of_sell'] = $koi->sell_date;
+                $nestedData['buyer_name'] = $koi->buyer_name;
+                $nestedData['date_of_death'] = $koi->date_of_death;
+                $nestedData['death_note'] = $koi->death_note;
+                $nestedData['breeder'] = optional($koi->breeder)->name ?? '';
+                $nestedData['bloodline'] = optional($koi->bloodline)->name ?? '';
+                $data[] = $nestedData;
+            }
         }
 
         $json_data = [
@@ -167,6 +196,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
         echo json_encode($json_data);
     }
+
 
     public function getDataKoiZA(Request $request)
     {
@@ -207,32 +237,32 @@ class C_ArthurkaikoiAdmin extends Controller
 
         if (empty($request->input('search.value'))) {
             $kois = Koi::with('history')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy('koi_code', 'desc')
-                        ->orderBy($order, $dir)
-                        ->get();
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy('koi_code', 'desc')
+                ->orderBy($order, $dir)
+                ->get();
         } else {
             $search = $request->input('search.value');
 
             $kois = Koi::with('history')
-                        ->where('koi_code', 'LIKE', "%{$search}%")
-                        ->orWhere('nickname', 'LIKE', "%{$search}%")
-                        ->orWhere('variety', 'LIKE', "%{$search}%")
-                        ->orWhere('gender', 'LIKE', "%{$search}%")
-                        // Add other search fields as necessary
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
+                ->where('koi_code', 'LIKE', "%{$search}%")
+                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                ->orWhere('variety', 'LIKE', "%{$search}%")
+                ->orWhere('gender', 'LIKE', "%{$search}%")
+                // Add other search fields as necessary
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
 
             $totalFiltered = Koi::with('history')
-                                ->where('koi_code', 'LIKE', "%{$search}%")
-                                ->orWhere('nickname', 'LIKE', "%{$search}%")
-                                ->orWhere('variety', 'LIKE', "%{$search}%")
-                                ->orWhere('gender', 'LIKE', "%{$search}%")
-                                // Add other search fields as necessary
-                                ->count();
+                ->where('koi_code', 'LIKE', "%{$search}%")
+                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                ->orWhere('variety', 'LIKE', "%{$search}%")
+                ->orWhere('gender', 'LIKE', "%{$search}%")
+                // Add other search fields as necessary
+                ->count();
         }
 
         $data = [];
@@ -292,7 +322,7 @@ class C_ArthurkaikoiAdmin extends Controller
     public function getDataKoi19(Request $request)
     {
         $columns = [
-            0 => 'id_koi',
+            0 => 'id',
             1 => 'action',
             2 => 'koi_code',
             3 => 'history_year',
@@ -328,32 +358,32 @@ class C_ArthurkaikoiAdmin extends Controller
 
         if (empty($request->input('search.value'))) {
             $kois = Koi::with('history')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy('koi_code', 'asc')
-                        ->orderBy($order, $dir)
-                        ->get();
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy('koi_code', 'asc')
+                ->orderBy($order, $dir)
+                ->get();
         } else {
             $search = $request->input('search.value');
 
             $kois = Koi::with('history')
-                        ->where('koi_code', 'LIKE', "%{$search}%")
-                        ->orWhere('nickname', 'LIKE', "%{$search}%")
-                        ->orWhere('variety', 'LIKE', "%{$search}%")
-                        ->orWhere('gender', 'LIKE', "%{$search}%")
-                        // Add other search fields as necessary
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
+                ->where('koi_code', 'LIKE', "%{$search}%")
+                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                ->orWhere('variety', 'LIKE', "%{$search}%")
+                ->orWhere('gender', 'LIKE', "%{$search}%")
+                // Add other search fields as necessary
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
 
             $totalFiltered = Koi::with('history')
-                                ->where('koi_code', 'LIKE', "%{$search}%")
-                                ->orWhere('nickname', 'LIKE', "%{$search}%")
-                                ->orWhere('variety', 'LIKE', "%{$search}%")
-                                ->orWhere('gender', 'LIKE', "%{$search}%")
-                                // Add other search fields as necessary
-                                ->count();
+                ->where('koi_code', 'LIKE', "%{$search}%")
+                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                ->orWhere('variety', 'LIKE', "%{$search}%")
+                ->orWhere('gender', 'LIKE', "%{$search}%")
+                // Add other search fields as necessary
+                ->count();
         }
 
         $data = [];
@@ -450,32 +480,32 @@ class C_ArthurkaikoiAdmin extends Controller
 
         if (empty($request->input('search.value'))) {
             $kois = Koi::with('history')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy('koi_code', 'desc')
-                        ->orderBy($order, $dir)
-                        ->get();
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy('koi_code', 'desc')
+                ->orderBy($order, $dir)
+                ->get();
         } else {
             $search = $request->input('search.value');
 
             $kois = Koi::with('history')
-                        ->where('koi_code', 'LIKE', "%{$search}%")
-                        ->orWhere('nickname', 'LIKE', "%{$search}%")
-                        ->orWhere('variety', 'LIKE', "%{$search}%")
-                        ->orWhere('gender', 'LIKE', "%{$search}%")
-                        // Add other search fields as necessary
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
+                ->where('koi_code', 'LIKE', "%{$search}%")
+                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                ->orWhere('variety', 'LIKE', "%{$search}%")
+                ->orWhere('gender', 'LIKE', "%{$search}%")
+                // Add other search fields as necessary
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
 
             $totalFiltered = Koi::with('history')
-                                ->where('koi_code', 'LIKE', "%{$search}%")
-                                ->orWhere('nickname', 'LIKE', "%{$search}%")
-                                ->orWhere('variety', 'LIKE', "%{$search}%")
-                                ->orWhere('gender', 'LIKE', "%{$search}%")
-                                // Add other search fields as necessary
-                                ->count();
+                ->where('koi_code', 'LIKE', "%{$search}%")
+                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                ->orWhere('variety', 'LIKE', "%{$search}%")
+                ->orWhere('gender', 'LIKE', "%{$search}%")
+                // Add other search fields as necessary
+                ->count();
         }
 
         $data = [];
@@ -572,32 +602,32 @@ class C_ArthurkaikoiAdmin extends Controller
 
         if (empty($request->input('search.value'))) {
             $kois = Koi::with('history')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy('pricebuy_idr', 'desc')
-                        ->orderBy($order, $dir)
-                        ->get();
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy('pricebuy_idr', 'desc')
+                ->orderBy($order, $dir)
+                ->get();
         } else {
             $search = $request->input('search.value');
 
             $kois = Koi::with('history')
-                        ->where('koi_code', 'LIKE', "%{$search}%")
-                        ->orWhere('nickname', 'LIKE', "%{$search}%")
-                        ->orWhere('variety', 'LIKE', "%{$search}%")
-                        ->orWhere('gender', 'LIKE', "%{$search}%")
-                        // Add other search fields as necessary
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
+                ->where('koi_code', 'LIKE', "%{$search}%")
+                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                ->orWhere('variety', 'LIKE', "%{$search}%")
+                ->orWhere('gender', 'LIKE', "%{$search}%")
+                // Add other search fields as necessary
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
 
             $totalFiltered = Koi::with('history')
-                                ->where('koi_code', 'LIKE', "%{$search}%")
-                                ->orWhere('nickname', 'LIKE', "%{$search}%")
-                                ->orWhere('variety', 'LIKE', "%{$search}%")
-                                ->orWhere('gender', 'LIKE', "%{$search}%")
-                                // Add other search fields as necessary
-                                ->count();
+                ->where('koi_code', 'LIKE', "%{$search}%")
+                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                ->orWhere('variety', 'LIKE', "%{$search}%")
+                ->orWhere('gender', 'LIKE', "%{$search}%")
+                // Add other search fields as necessary
+                ->count();
         }
 
         $data = [];
@@ -694,32 +724,31 @@ class C_ArthurkaikoiAdmin extends Controller
 
         if (empty($request->input('search.value'))) {
             $kois = Koi::with('history')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy('pricebuy_idr', 'asc')
-                        ->orderBy($order, $dir)
-                        ->get();
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy('pricebuy_idr', 'asc')
+                ->orderBy($order, $dir)
+                ->get();
         } else {
             $search = $request->input('search.value');
-
             $kois = Koi::with('history')
-                        ->where('koi_code', 'LIKE', "%{$search}%")
-                        ->orWhere('nickname', 'LIKE', "%{$search}%")
-                        ->orWhere('variety', 'LIKE', "%{$search}%")
-                        ->orWhere('gender', 'LIKE', "%{$search}%")
-                        // Add other search fields as necessary
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
+                ->where('koi_code', 'LIKE', "%{$search}%")
+                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                ->orWhere('variety', 'LIKE', "%{$search}%")
+                ->orWhere('gender', 'LIKE', "%{$search}%")
+                // Add other search fields as necessary
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
 
             $totalFiltered = Koi::with('history')
-                                ->where('koi_code', 'LIKE', "%{$search}%")
-                                ->orWhere('nickname', 'LIKE', "%{$search}%")
-                                ->orWhere('variety', 'LIKE', "%{$search}%")
-                                ->orWhere('gender', 'LIKE', "%{$search}%")
-                                // Add other search fields as necessary
-                                ->count();
+                ->where('koi_code', 'LIKE', "%{$search}%")
+                ->orWhere('nickname', 'LIKE', "%{$search}%")
+                ->orWhere('variety', 'LIKE', "%{$search}%")
+                ->orWhere('gender', 'LIKE', "%{$search}%")
+                // Add other search fields as necessary
+                ->count();
         }
 
         $data = [];
@@ -761,7 +790,6 @@ class C_ArthurkaikoiAdmin extends Controller
                     $nestedData['death_note'] = $history->death_note;
                     $nestedData['breeder'] = $koi->breeder;
                     $nestedData['bloodline'] = $koi->bloodline;
-
                     $data[] = $nestedData;
                 }
             }
@@ -790,13 +818,13 @@ class C_ArthurkaikoiAdmin extends Controller
         $koitotal = Koi::count();
         $search = $request->search;
         $koi = Koi::where('variety', 'like', "%" . $search . "%")
-        ->orWhere('koi_code', 'like', "%" . $search . "%")
-        ->orWhere('bloodline', 'like', "%" . $search . "%")
-        ->orWhere('variety', 'like', "%" . $search . "%")
-        ->orWhere('breeder', 'like', "%" . $search . "%")
-        ->orWhere('gender', 'like', "%" . $search . "%")
-        ->orWhere('n_status', 'like', "%" . $search . "%")
-        ->get();
+            ->orWhere('koi_code', 'like', "%" . $search . "%")
+            ->orWhere('bloodline', 'like', "%" . $search . "%")
+            ->orWhere('variety', 'like', "%" . $search . "%")
+            ->orWhere('breeder', 'like', "%" . $search . "%")
+            ->orWhere('gender', 'like', "%" . $search . "%")
+            ->orWhere('n_status', 'like', "%" . $search . "%")
+            ->get();
         return view('arthurkaikoiadmin.koi.koi_grid_search', compact('koitotal', 'koi'));
     }
 
@@ -828,7 +856,6 @@ class C_ArthurkaikoiAdmin extends Controller
         $year = $request->input('year');
         $history = History::where('koi_id', $koi_id)->where('year', $year)->get();
 
-
         return response()->json($history);
     }
 
@@ -841,169 +868,110 @@ class C_ArthurkaikoiAdmin extends Controller
         return view('arthurkaikoiadmin.koi.koig_add', compact('variety', 'bloodline', 'breeder', 'agent'));
     }
 
-    public function koistore(request $request)
+
+    public function parseDate($date, $format = 'M Y')
     {
-        $mmyy = Carbon::createFromFormat('Y-m', $request->date_purchese);
-        $date_purchese = $mmyy->format('my');
-        $code_variety = Variety::where('variety_name', $request->variety)->first();
-        $variety = $code_variety->variety_code;
-        $code_breeder = Breeder::where('breeder_name', $request->breeder)->first();
-        $breeder = $code_breeder->breeder_code;
-
-        $sequence_awal = '00001';
-
-        $code_koi_fill = $variety . $breeder . $date_purchese . $sequence_awal;
-
-        $koi_code_where = koi::where('koi_code', $code_koi_fill)->first();
-
-        // Jika kode koi belum ada dalam database
-        if ($koi_code_where == null) {
-            $sequence = '00001';
+        if ($date === ' ') {
+            return null;
         } else {
-            // Jika kode koi sudah ada dalam database
-            // Periksa apakah semua entitas sebelumnya memiliki nilai yang sama untuk variety, breeder, dan date_purchese
-            $previous_kois = Koi::where('code_variety', $variety)
-                                ->orWhere('code_breeder', $breeder)
-                                ->orWhere('code_purchasedate', $date_purchese)
-                                ->orderBy('code_sequence', 'desc')
-                                ->get();
+            return $date ? Carbon::createFromFormat($format, $date)->startOfMonth() : null;
+        }
+    }
 
-            if ($previous_kois->isEmpty()) {
-                // Jika tidak ada entitas sebelumnya yang memiliki nilai yang sama
-                $sequence = '00001';
-            } else {
-                // Jika ada entitas sebelumnya yang memiliki nilai yang sama
-                // Periksa nomor urutan terakhir
-                $last_sequence = intval($previous_kois->first()->code_sequence);
-                $next_sequence = $last_sequence + 1;
-                $sequence = str_pad($next_sequence, 5, '0', STR_PAD_LEFT);
-            }
-        }
+    public function koistore(Request $request)
+    {
+        $purchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : '';
 
-        $code_koi = $variety . $breeder . $date_purchese . $sequence;
+        // Retrieve related models
+        $variety = Variety::find($request->variety);
+        $breeder = Breeder::find($request->breeder);
 
+        // Generate koi code
+        $sequence = $this->generateSequence($variety, $breeder, $purchaseDate);
+        $koiCode = $variety->code . $breeder->code . $purchaseDate . $sequence;
 
-        $image = array();
-        if($files = $request->file('link_photo')){
-          foreach ($files as $file){
-            $link_photos = time()."_".$file->getClientOriginalName();
-            $tujuan_upload = 'img/koi/photo';
-            $image_url = $link_photos;
-            $file->move($tujuan_upload,$link_photos);
-            $image[] = $image_url;
-          }
-        }
-        else if($request->file('link_photo') == null)
-        {
-            $image[] = '';
-        }
-        else{
-            $image[] = '';
-        }
+        // Handle file uploads
+        $image = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
+        $imagev = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
+        $link_trophys = $this->handleSingleFileUpload($request->file('link_trophy'), 'img/koi/trophy');
+        $link_certificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
 
-        // $imageh = array();
-        // if($files = $request->file('photo_highlight')){
-        //   foreach ($files as $file){
-        //     $photo_highlights = time()."_".$file->getClientOriginalName();
-        //     $tujuan_upload = 'img/koi/photo_highlight';
-        //     $imageh_url = $photo_highlights;
-        //     $file->move($tujuan_upload,$photo_highlights);
-        //     $imageh[] = $imageh_url;
-        //   }
-        // }
-        // else if($request->file('photo_highlight') == null)
-        // {
-        //     $imageh[] = '';
-        // }
-        // else{
-        //     $imageh[] = '';
-        // }
-
-        $imagev = array();
-        if($files = $request->file('link_video')){
-          foreach ($files as $file){
-            $link_videos = time()."_".$file->getClientOriginalName();
-            $tujuan_upload = 'img/koi/video';
-            $image_url = $link_videos;
-            $file->move($tujuan_upload,$link_videos);
-            $imagev[] = $image_url;
-          }
-        }
-        else if($request->file('link_video') == null)
-        {
-            $imagev[] = '';
-        }
-        else{
-            $imagev[] = '';
-        }
-
-        if($request->file('link_trophy') != null){
-            $link_trophy = $request->file('link_trophy');
-            $link_trophys = time()."_".$link_trophy->getClientOriginalName();
-            $tujuan_upload = 'img/koi/trophy';
-            $link_trophy->move($tujuan_upload,$link_trophys);
-        }
-        else{
-            $link_trophys = '';
-        }
-
-        if($request->file('link_certificate') != null){
-            $link_certificate = $request->file('link_certificate');
-            $link_certificates = time()."_".$link_certificate->getClientOriginalName();
-            $tujuan_upload = 'img/koi/certificate';
-            $link_certificate->move($tujuan_upload,$link_certificates);
-        }
-        else{
-            $link_certificates = '';
-        }
-
-
-        $koi = Koi::create([
-            'koi_code' => $code_koi,
-            'code_variety' => $variety,
-            'code_breeder' => $breeder,
-            'code_purchasedate' => $date_purchese,
-            'code_sequence' => $sequence,
+        // Create Koi record
+        Koi::create([
+            'code' => $koiCode,
             'nickname' => $request->nickname,
-            'variety' => $request->variety,
-            'birth' => $request->birth,
-            'gender' => $request->gender,
-            'date_purchese' => $request->date_purchese,
-            'salleragent' => $request->salleragent,
-            'pricebuy_idr' => $request->pricebuy_idr,
-            'pricebuy_jpy' => $request->pricebuy_jpy,
-            'breeder' => $request->breeder,
-            'bloodline' => $request->bloodline,
-            'year' => $request->year,
-            'n_status' => $request->n_status,
-        ]);
-
-        History::create([
-            'koi_id' => $koi->id,
-            'year' => $request->year,
-            'age' => $request->age,
+            'variety_id' => $request->variety,
+            'breeder_id' => $request->breeder,
+            'bloodline_id' => $request->bloodline,
+            'sequence' => $sequence,
             'size' => $request->size,
-            'hagent' => $request->hagent,
-            'kep_loc' => $request->kep_loc,
-            'link_photo' => implode('|', $image),
-            'link_video' => implode('|', $imagev),
-            'link_trophy' => $link_trophys,
-            'name_trophy' => $request->name_trophys,
-            'link_certificate' => $link_certificates,
-            'name_certificate' => $request->name_certificate,
-            'pricesell_idr' => $request->pricesell_idr,
-            'pricesell_jpy' => $request->pricesell_jpy,
-            'buyer_name' => $request->buyer_name,
-            'death_date' => $request->death_date,
-            'death_note' => $request->death_note,
-            'koi_sequence' => $sequence,
+            'birthdate' => $request->birth ? Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth() : null,
+            'gender' => $request->gender,
+            'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : null,
+            'seller_id' => $request->salleragent,
+            'price_buy_idr' => $request->pricebuy_idr ? (int) $request->pricebuy_idr : 0,
+            'price_buy_jpy' => $request->pricebuy_jpy ? (int) $request->pricebuy_jpy : 0,
+            'price_sell_idr' => $request->pricesell_idr ? (int) $request->pricesell_idr : 0,
+            'price_sell_jpy' => $request->pricesell_jpy ? (int) $request->pricesell_jpy : 0,
+            'location' => $request->location,
+            'photo' => implode('|', $image),
+            'video' => implode('|', $imagev),
+            'trophy' => $link_trophys,
+            'certificate' => $link_certificates,
+            'status' => $request->status,
         ]);
-
-
-
 
         return redirect('/CMS/koi');
     }
+
+    /**
+     * Generate the sequence for the Koi code.
+     */
+    private function generateSequence($variety, $breeder, $purchaseDate)
+    {
+        $koiCodeInput = $variety->code . $breeder->code . $purchaseDate;
+        $existingKoi = Koi::where('code', 'like', $koiCodeInput . '%')
+            ->orderBy('sequence', 'desc')
+            ->first();
+
+        if ($existingKoi) {
+            return str_pad($existingKoi->sequence + 1, 5, '0', STR_PAD_LEFT);
+        }
+
+        return '00001';
+    }
+
+    /**
+     * Handle multiple file uploads.
+     */
+    private function handleFileUploads($files, $destinationPath)
+    {
+        if (!$files) {
+            return [];
+        }
+
+        return array_map(function ($file) use ($destinationPath) {
+            $filename = uniqid() . "_" . $file->getClientOriginalName();
+            $file->move($destinationPath, $filename);
+            return $filename;
+        }, $files);
+    }
+
+    /**
+     * Handle single file upload.
+     */
+    private function handleSingleFileUpload($file, $destinationPath)
+    {
+        if (!$file) {
+            return '';
+        }
+
+        $filename = uniqid() . "_" . $file->getClientOriginalName();
+        $file->move($destinationPath, $filename);
+        return $filename;
+    }
+
+
 
     public function koigstore(request $request)
     {
@@ -1028,10 +996,10 @@ class C_ArthurkaikoiAdmin extends Controller
             // Jika kode koi sudah ada dalam database
             // Periksa apakah semua entitas sebelumnya memiliki nilai yang sama untuk variety, breeder, dan date_purchese
             $previous_kois = Koi::where('code_variety', $variety)
-                                ->orWhere('code_breeder', $breeder)
-                                ->orWhere('code_purchasedate', $date_purchese)
-                                ->orderBy('code_sequence', 'desc')
-                                ->get();
+                ->orWhere('code_breeder', $breeder)
+                ->orWhere('code_purchasedate', $date_purchese)
+                ->orderBy('code_sequence', 'desc')
+                ->get();
 
             if ($previous_kois->isEmpty()) {
                 // Jika tidak ada entitas sebelumnya yang memiliki nilai yang sama
@@ -1049,20 +1017,17 @@ class C_ArthurkaikoiAdmin extends Controller
 
 
         $image = array();
-        if($files = $request->file('link_photo')){
-          foreach ($files as $file){
-            $link_photos = time()."_".$file->getClientOriginalName();
-            $tujuan_upload = 'img/koi/photo';
-            $image_url = $link_photos;
-            $file->move($tujuan_upload,$link_photos);
-            $image[] = $image_url;
-          }
-        }
-        else if($request->file('link_photo') == null)
-        {
+        if ($files = $request->file('link_photo')) {
+            foreach ($files as $file) {
+                $link_photos = time() . "_" . $file->getClientOriginalName();
+                $tujuan_upload = 'img/koi/photo';
+                $image_url = $link_photos;
+                $file->move($tujuan_upload, $link_photos);
+                $image[] = $image_url;
+            }
+        } else if ($request->file('link_photo') == null) {
             $image[] = '';
-        }
-        else{
+        } else {
             $image[] = '';
         }
 
@@ -1085,40 +1050,35 @@ class C_ArthurkaikoiAdmin extends Controller
         // }
 
         $imagev = array();
-        if($files = $request->file('link_video')){
-          foreach ($files as $file){
-            $link_videos = time()."_".$file->getClientOriginalName();
-            $tujuan_upload = 'img/koi/video';
-            $image_url = $link_videos;
-            $file->move($tujuan_upload,$link_videos);
-            $imagev[] = $image_url;
-          }
-        }
-        else if($request->file('link_video') == null)
-        {
+        if ($files = $request->file('link_video')) {
+            foreach ($files as $file) {
+                $link_videos = time() . "_" . $file->getClientOriginalName();
+                $tujuan_upload = 'img/koi/video';
+                $image_url = $link_videos;
+                $file->move($tujuan_upload, $link_videos);
+                $imagev[] = $image_url;
+            }
+        } else if ($request->file('link_video') == null) {
             $imagev[] = '';
-        }
-        else{
+        } else {
             $imagev[] = '';
         }
 
-        if($request->file('link_trophy') != null){
+        if ($request->file('link_trophy') != null) {
             $link_trophy = $request->file('link_trophy');
-            $link_trophys = time()."_".$link_trophy->getClientOriginalName();
+            $link_trophys = time() . "_" . $link_trophy->getClientOriginalName();
             $tujuan_upload = 'img/koi/trophy';
-            $link_trophy->move($tujuan_upload,$link_trophys);
-        }
-        else{
+            $link_trophy->move($tujuan_upload, $link_trophys);
+        } else {
             $link_trophys = '';
         }
 
-        if($request->file('link_certificate') != null){
+        if ($request->file('link_certificate') != null) {
             $link_certificate = $request->file('link_certificate');
-            $link_certificates = time()."_".$link_certificate->getClientOriginalName();
+            $link_certificates = time() . "_" . $link_certificate->getClientOriginalName();
             $tujuan_upload = 'img/koi/certificate';
-            $link_certificate->move($tujuan_upload,$link_certificates);
-        }
-        else{
+            $link_certificate->move($tujuan_upload, $link_certificates);
+        } else {
             $link_certificates = '';
         }
 
@@ -1163,9 +1123,6 @@ class C_ArthurkaikoiAdmin extends Controller
             'death_note' => $request->death_note,
         ]);
 
-
-
-
         return redirect('/CMS/koi/grid');
     }
 
@@ -1180,20 +1137,21 @@ class C_ArthurkaikoiAdmin extends Controller
         $file->move($path, $name);
 
         return response()->json([
-            'name'          => $name,
+            'name' => $name,
             'original_name' => $file->getClientOriginalName(),
         ]);
     }
 
-    public function koiedit($id)
+    public function koiedit(Request $request, $id)
     {
-        $koi = Koi::where('id_koi', $id)->get();
+        $koi = Koi::with('breeder', 'variety', 'bloodline')->where('id', $id)->get();
         $variety = Variety::all();
         $bloodline = Bloodline::all();
         $breeder = Breeder::all();
         $agent = Agent::all();
-        $sequence = History::where('koi_id', $id)->get();
-        return view('arthurkaikoiadmin.koi.koi_edit', compact('koi', 'variety', 'bloodline', 'breeder', 'agent', 'sequence'));
+        $sequence = Koi::where('id', $id)->get();
+        $olds = $request->old();
+        return view('arthurkaikoiadmin.koi.koi_edit', compact('koi', 'variety', 'bloodline', 'breeder', 'agent', 'sequence', 'olds'));
     }
 
     public function koigedit($id)
@@ -1212,193 +1170,103 @@ class C_ArthurkaikoiAdmin extends Controller
         return view('arthurkaikoiadmin.koi.koi_retweet', compact('koi'));
     }
 
-    public function koiupdate(request $request)
+    public function koiupdate(Request $request)
     {
-        if($request->file('link_photo') == null){
-            $image = array();
-            if($files = explode('|', $request->link_photos)){
-            $image = $files;
+        $koi = Koi::find($request->id);
+
+
+        $image = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
+        $imagev = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
+        $link_trophys = $this->handleSingleFileUpload($request->file('link_trophy'), 'img/koi/trophy');
+        $link_certificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
+
+        // Handle photo removals
+        if ($request->has('remove_photos')) {
+            foreach ($request->remove_photos as $photo) {
+                $photoPath = public_path('img/koi/photo/' . $photo);
+                if (file_exists($photoPath)) {
+                    unlink($photoPath);
+                }
             }
-          }else{
-            $image = array();
-            if($files = $request->file('link_photo')){
-              foreach ($files as $file){
-                $link_photo = time()."_".$file->getClientOriginalName();
-                $tujuan_upload = 'img/koi/photo';
-                $image_url = $link_photo;
-                $file->move($tujuan_upload,$link_photo);
-                $image[] = $image_url;
-              }
-            }
-          }
-
-        //   if($request->file('photo_highlight') == null){
-        //     $imageh = array();
-        //     if($files = explode('|', $request->photo_highlights)){
-        //     $imageh = $files;
-        //     }
-        //   }else{
-        //     $imageh = array();
-        //     if($files = $request->file('photo_highlight')){
-        //       foreach ($files as $file){
-        //         $photo_highlight = time()."_".$file->getClientOriginalName();
-        //         $tujuan_upload = 'img/koi/photo_highlight';
-        //         $imageh_url = $photo_highlight;
-        //         $file->move($tujuan_upload,$photo_highlight);
-        //         $imageh[] = $imageh_url;
-        //       }
-        //     }
-        //   }
-
-          if($request->file('link_video') == null){
-            $imagev = array();
-            if($files = explode('|', $request->link_videos)){
-            $imagev = $files;
-            }
-          }else{
-            $imagev = array();
-            if($files = $request->file('link_video')){
-              foreach ($files as $file){
-                $link_video = time()."_".$file->getClientOriginalName();
-                $tujuan_upload = 'img/koi/video';
-                $imagev_url = $link_video;
-                $file->move($tujuan_upload,$link_video);
-                $imagev[] = $imagev_url;
-              }
-            }
-          }
-
-        if($request->file('link_trophy') == null){
-            $link_trophy = $request->link_trophys;
-            }
-        else{
-            $file_image = $request->file('link_trophy');
-            $link_trophy = time()."_".$file_image->getClientOriginalName();
-            $tujuan_upload = 'img/koi/trophy';
-            $file_image->move($tujuan_upload,$link_trophy);
-        }
-
-        if($request->file('link_certificate') == null){
-            $link_certificate = $request->link_certificates;
-            }
-        else{
-            $file_image = $request->file('link_certificate');
-            $link_certificate = time()."_".$file_image->getClientOriginalName();
-            $tujuan_upload = 'img/koi/certificate/';
-            $file_image->move($tujuan_upload,$link_certificate);
-        }
-
-        Koi::where('id', $request->id)->update([
-            'koi_code' => $request->koi_code,
-            'nickname' => $request->nickname,
-            'variety' => $request->variety,
-            'birth' => $request->birth,
-            'gender' => $request->gender,
-            'date_purchese' => $request->date_purchese,
-            'salleragent' => $request->salleragent,
-            'pricebuy_idr' => $request->pricebuy_idr,
-            'pricebuy_jpy' => $request->pricebuy_jpy,
-            'kep_loc' => $request->kep_loc,
-            'date_sell' => $request->date_sell,
-            'photo_highlight' => $request->photo_highlight,
-            'breeder' => $request->breeder,
-            'bloodline' => $request->bloodline,
-            'year' => $request->year,
-            'n_status' => $request->n_status
-        ]);
-
-        // Fetch all history records for the specified koi
-        $latestHistory = History::where('koi_id', $request->koi_id)
-        ->orderBy('created_at', 'desc')
-        ->first();
-        // Initialize newKoiSequence
-        $newKoiSequence = '00001';
-
-        // Check if there is any history record
-        if ($latestHistory->koi_sequence !== null) {
-        // Get the latest history record
-        $latestRecord = $latestHistory->latest()->first();   
-        
-        // If the latest history is for the same year
-        if ($latestRecord->year == $request->year) {
-            $newKoiSequence = $latestRecord->koi_sequence;
+            // Remove from database record
+            $currentPhotos = explode('|', $koi->photo);
+            $updatedPhotos = array_diff($currentPhotos, $request->remove_photos);
         } else {
-            // Increment the sequence number by 1, ensuring it's 5 digits long
-            $newKoiSequence = str_pad((int) $latestRecord->koi_sequence + 1, 5, '0', STR_PAD_LEFT);
+            $updatedPhotos = explode('|', $koi->photo);
         }
-         }
 
-        if($request->id_history != null)
-        {
-            History::where('id', $request->id_history)->update([
-                'koi_id' => $request->koi_id,
-                'year' => $request->year,
-                'age' => $request->age,
-                'size' => $request->size,
-                'hagent' => $request->hagent,
-                'kep_loc' => $request->kep_loc,
-                'photo_highlight' => $request->photo_highlight,
-                'link_photo' => implode('|', $image),
-                'link_video' => implode('|', $imagev),
-                'link_trophy' => $link_trophy,
-                'name_trophy' => $request->name_trophy,
-                'link_certificate' => $link_certificate,
-                'name_certificate' => $request->name_certificate,
-                'pricesell_idr' => $request->pricesell_idr,
-                'pricesell_jpy' => $request->pricesell_jpy,
-                'buyer_name' => $request->buyer_name,
-                'death_date' => $request->death_date,
-                'death_note' => $request->death_note,
-            ]);
+        // Determine new Koi code if necessary
+        $variety = Variety::find($request->variety);
+        $breeder = Breeder::find($request->breeder);
+        $purchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : '';
+        $purchaseDateJson = Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth();
+
+        // Normalize dates
+        $purchaseDateJson = Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth()->format('Y-m-d');
+        $currentPurchaseDate = $koi->purchase_date ? Carbon::parse($koi->purchase_date)->format('Y-m-d') : null;
+
+        // Check if any base parameter has changed
+        $isVarietyChanged = $koi->variety_id != $request->variety;
+        $isBreederChanged = $koi->breeder_id != $request->breeder;
+        $isPurchaseDateChanged = $currentPurchaseDate != $purchaseDateJson;
+
+        // Generate new Koi code if any base parameter changes
+        if ($isVarietyChanged || $isBreederChanged || $isPurchaseDateChanged) {
+            $variety = Variety::find($request->variety);
+            $breeder = Breeder::find($request->breeder);
+            $sequence = $this->generateSequence($variety, $breeder, $purchaseDateJson);
+            $koiCode = $variety->code . $breeder->code . $purchaseDate . $sequence;
+        } else {
+            $koiCode = $koi->code;
         }
-        else
-        {
-            History::create([
-                'koi_id' => $request->koi_id,
-                'year' => $request->year,
-                'age' => $request->age,
-                'size' => $request->size,
-                'hagent' => $request->hagent,
-                'kep_loc' => $request->kep_loc,
-                'photo_highlight' => $request->photo_highlight,
-                'link_photo' => implode('|', $image),
-                'link_video' => implode('|', $imagev),
-                'link_trophy' => $link_trophy,
-                'name_trophy' => $request->name_trophy,
-                'link_certificate' => $link_certificate,
-                'name_certificate' => $request->name_certificate,
-                'pricesell_idr' => $request->pricesell_idr,
-                'pricesell_jpy' => $request->pricesell_jpy,
-                'buyer_name' => $request->buyer_name,
-                'death_date' => $request->death_date,
-                'death_note' => $request->death_note,
-                'koi_sequence' => $newKoiSequence
-            ]);
-        }
-        return response()->json(['success' => 'Data is successfully updated ', $newKoiSequence, 'latest history', $latestHistory->koi_sequence]);
-        // return redirect('/CMS/koi');
+
+        // Update Koi record
+        $koi->update([
+            'code' => $koiCode,
+            'nickname' => $request->nickname,
+            'variety_id' => $request->variety,
+            'breeder_id' => $request->breeder,
+            'bloodline_id' => $request->bloodline,
+            'sequence' => $sequence ?? $koi->sequence, // Update only if sequence is changed
+            'size' => $request->size,
+            'birthdate' => $request->birth ? Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth() : $koi->birthdate,
+            'gender' => $request->gender,
+            'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : $koi->purchase_date,
+            'seller_id' => $request->salleragent ?? $koi->seller_id,
+            'price_buy_idr' => $request->pricebuy_idr ? (int) $request->pricebuy_idr : $koi->price_buy_idr,
+            'price_buy_jpy' => $request->pricebuy_jpy ? (int) $request->pricebuy_jpy : $koi->price_buy_jpy,
+            'price_sell_idr' => $request->pricesell_idr ? (int) $request->pricesell_idr : $koi->price_sell_idr,
+            'price_sell_jpy' => $request->pricesell_jpy ? (int) $request->pricesell_jpy : $koi->price_sell_jpy,
+            'location' => $request->location,
+            'photo' => implode('|', $image) ?: $koi->photo,
+            'video' => implode('|', $imagev) ?: $koi->video,
+            'trophy' => $link_trophys ?: $koi->trophy,
+            'certificate' => $link_certificates ?: $koi->certificate,
+            'status' => $request->status,
+        ]);
+        return redirect('/CMS/koi');
     }
 
 
     public function koigupdate(request $request)
     {
-        if($request->file('link_photo') == null){
+        if ($request->file('link_photo') == null) {
             $image = array();
-            if($files = explode('|', $request->link_photos)){
-            $image = $files;
+            if ($files = explode('|', $request->link_photos)) {
+                $image = $files;
             }
-          }else{
+        } else {
             $image = array();
-            if($files = $request->file('link_photo')){
-              foreach ($files as $file){
-                $link_photo = time()."_".$file->getClientOriginalName();
-                $tujuan_upload = 'img/koi/photo';
-                $image_url = $link_photo;
-                $file->move($tujuan_upload,$link_photo);
-                $image[] = $image_url;
-              }
+            if ($files = $request->file('link_photo')) {
+                foreach ($files as $file) {
+                    $link_photo = time() . "_" . $file->getClientOriginalName();
+                    $tujuan_upload = 'img/koi/photo';
+                    $image_url = $link_photo;
+                    $file->move($tujuan_upload, $link_photo);
+                    $image[] = $image_url;
+                }
             }
-          }
+        }
 
         //   if($request->file('photo_highlight') == null){
         //     $imageh = array();
@@ -1418,42 +1286,40 @@ class C_ArthurkaikoiAdmin extends Controller
         //     }
         //   }
 
-          if($request->file('link_video') == null){
+        if ($request->file('link_video') == null) {
             $imagev = array();
-            if($files = explode('|', $request->link_videos)){
-            $imagev = $files;
+            if ($files = explode('|', $request->link_videos)) {
+                $imagev = $files;
             }
-          }else{
+        } else {
             $imagev = array();
-            if($files = $request->file('link_video')){
-              foreach ($files as $file){
-                $link_video = time()."_".$file->getClientOriginalName();
-                $tujuan_upload = 'img/koi/video';
-                $imagev_url = $link_video;
-                $file->move($tujuan_upload,$link_video);
-                $imagev[] = $imagev_url;
-              }
+            if ($files = $request->file('link_video')) {
+                foreach ($files as $file) {
+                    $link_video = time() . "_" . $file->getClientOriginalName();
+                    $tujuan_upload = 'img/koi/video';
+                    $imagev_url = $link_video;
+                    $file->move($tujuan_upload, $link_video);
+                    $imagev[] = $imagev_url;
+                }
             }
-          }
-
-        if($request->file('link_trophy') == null){
-            $link_trophy = $request->link_trophys;
-            }
-        else{
-            $file_image = $request->file('link_trophy');
-            $link_trophy = time()."_".$file_image->getClientOriginalName();
-            $tujuan_upload = 'img/koi/trophy';
-            $file_image->move($tujuan_upload,$link_trophy);
         }
 
-        if($request->file('link_certificate') == null){
+        if ($request->file('link_trophy') == null) {
+            $link_trophy = $request->link_trophys;
+        } else {
+            $file_image = $request->file('link_trophy');
+            $link_trophy = time() . "_" . $file_image->getClientOriginalName();
+            $tujuan_upload = 'img/koi/trophy';
+            $file_image->move($tujuan_upload, $link_trophy);
+        }
+
+        if ($request->file('link_certificate') == null) {
             $link_certificate = $request->link_certificates;
-            }
-        else{
+        } else {
             $file_image = $request->file('link_certificate');
-            $link_certificate = time()."_".$file_image->getClientOriginalName();
+            $link_certificate = time() . "_" . $file_image->getClientOriginalName();
             $tujuan_upload = 'img/koi/certificate/';
-            $file_image->move($tujuan_upload,$link_certificate);
+            $file_image->move($tujuan_upload, $link_certificate);
         }
 
         Koi::where('id', $request->id)->update([
@@ -1478,8 +1344,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
 
 
-        if($request->id_history != null)
-        {
+        if ($request->id_history != null) {
             History::where('id_history', $request->id_history)->update([
                 'koi_id' => $request->koi_id,
                 'year' => $request->year,
@@ -1500,9 +1365,7 @@ class C_ArthurkaikoiAdmin extends Controller
                 'death_date' => $request->death_date,
                 'death_note' => $request->death_note,
             ]);
-        }
-        else
-        {
+        } else {
             History::create([
                 'koi_id' => $request->koi_id,
                 'year' => $request->year,
@@ -1632,14 +1495,13 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function statusupdate(request $request)
     {
-        if($request->status == 'Death'){
+        if ($request->status == 'Death') {
             $dateDeath = Carbon::now()->format('Y-m-d');
             Koi::where('id', $request->id)->update([
                 'status' => $request->status,
                 'death_date' => $dateDeath
             ]);
-        }
-        else{
+        } else {
             Koi::where('id', $request->id)->update([
                 'status' => $request->status,
             ]);
@@ -1682,8 +1544,8 @@ class C_ArthurkaikoiAdmin extends Controller
     public function varietystore(request $request)
     {
         Variety::create([
-            'name' => $request->variety_name,
-            'code' => $request->variety_code,
+            'name' => $request->name,
+            'code' => $request->code,
         ]);
 
         return redirect('/CMS/variety');
@@ -1699,8 +1561,8 @@ class C_ArthurkaikoiAdmin extends Controller
     {
 
         Variety::where('id', $request->id)->update([
-            'variety_name' => $request->variety_name,
-            'variety_code' => $request->variety_code,
+            'name' => $request->name,
+            'code' => $request->code,
         ]);
 
         return redirect('/CMS/variety');
@@ -1744,13 +1606,10 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function bloodlineupdate(request $request)
     {
-
         Bloodline::where('id', $request->id)->update([
-            'name' => $request->bloodline_name,
-            'code' => $request->bloodline_code,
-            // 'variety' => $request->variety,
+            'name' => $request->name,
+            'code' => $request->code,
         ]);
-
         return redirect('/CMS/bloodline');
     }
 
@@ -1776,11 +1635,11 @@ class C_ArthurkaikoiAdmin extends Controller
     public function breederstore(request $request)
     {
         Breeder::create([
-            'breeder_name' => $request->breeder_name,
-            'breeder_location' => $request->breeder_location,
-            'breeder_contact' => $request->breeder_contact,
-            'breeder_code' => $request->breeder_code,
-            'breeder_website' => $request->breeder_website,
+            'name' => $request->name,
+            'location' => $request->location,
+            'contact' => $request->contact,
+            'code' => $request->code,
+            'website' => $request->website,
         ]);
 
         return redirect('/CMS/breeder');
@@ -1796,11 +1655,11 @@ class C_ArthurkaikoiAdmin extends Controller
     {
 
         Breeder::where('id', $request->id)->update([
-            'name' => $request->breeder_name,
-            'location' => $request->breeder_location,
-            'contact' => $request->breeder_contact,
-            'code' => $request->breeder_code,
-            'website' => $request->breeder_website,
+            'name' => $request->name,
+            'location' => $request->location,
+            'contact' => $request->contact,
+            'code' => $request->code,
+            'website' => $request->website,
         ]);
 
         return redirect('/CMS/breeder');
@@ -1811,195 +1670,191 @@ class C_ArthurkaikoiAdmin extends Controller
         Breeder::where('id', $id)->delete();
         return redirect('/CMS/breeder');
     }
+    ### Agent ###
 
-     ### Agent ###
+    public function agent()
+    {
+        $agent = Agent::all();
+        return view('arthurkaikoiadmin.agent.agent', compact('agent'));
+    }
 
-     public function agent()
-     {
-         $agent = Agent::all();
-         return view('arthurkaikoiadmin.agent.agent', compact('agent'));
-     }
+    public function agentadd()
+    {
+        return view('arthurkaikoiadmin.agent.agent_add');
+    }
 
-     public function agentadd()
-     {
-         return view('arthurkaikoiadmin.agent.agent_add');
-     }
+    public function agentstore(request $request)
+    {
+        Agent::create([
+            'name' => $request->name,
+            'location' => $request->location,
+            'website' => $request->website,
+            'owner' => $request->owner,
+            'code' => $request->code,
+        ]);
 
-     public function agentstore(request $request)
-     {
-         Agent::create([
-             'name' => $request->agent_name,
-             'location' => $request->agent_location,
-             'website' => $request->agent_website,
-             'owner' => $request->agent_owner,
-             'code' => $request->agent_code,
-         ]);
+        return redirect('/CMS/agent');
+    }
 
-         return redirect('/CMS/agent');
-     }
+    public function agentedit($id)
+    {
+        $agent = Agent::where('id', $id)->get();
+        return view('arthurkaikoiadmin.agent.agent_edit', compact('agent'));
+    }
 
-     public function agentedit($id)
-     {
-         $agent = Agent::where('id', $id)->get();
-         return view('arthurkaikoiadmin.agent.agent_edit', compact('agent'));
-     }
+    public function agentupdate(request $request)
+    {
 
-     public function agentupdate(request $request)
-     {
-
-         Agent::where('id', $request->id)->update([
+        Agent::where('id', $request->id)->update([
             'name' => $request->agent_name,
             'location' => $request->agent_location,
             'website' => $request->agent_website,
             'owner' => $request->agent_owner,
             'code' => $request->agent_code,
-         ]);
+        ]);
 
-         return redirect('/CMS/agent');
-     }
+        return redirect('/CMS/agent');
+    }
 
-     public function agentdelete($id)
-     {
-         Agent::where('id', $id)->delete();
-         return redirect('/CMS/agent');
-     }
+    public function agentdelete($id)
+    {
+        Agent::where('id', $id)->delete();
+        return redirect('/CMS/agent');
+    }
 
-     ### Handlin Agent ###
+    ### Handlin Agent ###
 
-     public function handlingagent()
-     {
-         $handlingagent = HandlingAgent::all();
-         return view('arthurkaikoiadmin.handlingagent.handlingagent', compact('handlingagent'));
-     }
+    public function handlingagent()
+    {
+        $handlingagent = HandlingAgent::all();
+        return view('arthurkaikoiadmin.handlingagent.handlingagent', compact('handlingagent'));
+    }
 
-     public function handlingagentadd()
-     {
-         return view('arthurkaikoiadmin.handlingagent.handlingagent_add');
-     }
+    public function handlingagentadd()
+    {
+        return view('arthurkaikoiadmin.handlingagent.handlingagent_add');
+    }
 
-     public function handlingagentstore(request $request)
-     {
-         HandlingAgent::create([
+    public function handlingagentstore(request $request)
+    {
+        HandlingAgent::create([
 
-         ]);
+        ]);
 
-         return redirect('/CMS/handlingagent');
-     }
+        return redirect('/CMS/handlingagent');
+    }
 
-     public function handlingagentedit($id)
-     {
-         $handlingagent = HandlingAgent::where('id', $id)->get();
-         return view('arthurkaikoiadmin.handlingagent.handlingagent_edit', compact('handlingagent'));
-     }
+    public function handlingagentedit($id)
+    {
+        $handlingagent = HandlingAgent::where('id', $id)->get();
+        return view('arthurkaikoiadmin.handlingagent.handlingagent_edit', compact('handlingagent'));
+    }
 
-     public function handlingagentupdate(request $request)
-     {
+    public function handlingagentupdate(request $request)
+    {
 
-         HandlingAgent::where('id', $request->id)->update([
+        HandlingAgent::where('id', $request->id)->update([
 
-         ]);
+        ]);
 
-         return redirect('/CMS/handlingagent');
-     }
+        return redirect('/CMS/handlingagent');
+    }
 
-     public function handlingagentdelete($id)
-     {
-         HandlingAgent::where('id', $id)->delete();
-         return redirect('/CMS/handlingagent');
-     }
+    public function handlingagentdelete($id)
+    {
+        HandlingAgent::where('id', $id)->delete();
+        return redirect('/CMS/handlingagent');
+    }
 
-     ##$ page Website $$$
+    ##$ page Website $$$
 
-     /// # Web Uur Collection # ///
+    /// # Web Uur Collection # ///
 
-     public function ourcollection()
-     {
-         $ourcollection = OurCollection::with('koi')->get();
+    public function ourcollection()
+    {
+        $ourcollection = OurCollection::with('koi')->get();
         //  return response()->json($ourcollection);
-         return view('arthurkaikoiadmin.website.ourcollection.ourcollection', compact('ourcollection'));
-     }
+        return view('arthurkaikoiadmin.website.ourcollection.ourcollection', compact('ourcollection'));
+    }
 
-     public function ourcollectionadd()
-     {
-         return view('arthurkaikoiadmin.website.ourcollection.ourcollection_add');
-     }
+    public function ourcollectionadd()
+    {
+        return view('arthurkaikoiadmin.website.ourcollection.ourcollection_add');
+    }
 
-     public function ourcollectionstore(request $request)
-     {
-        if($request->file('image') == null){
+    public function ourcollectionstore(request $request)
+    {
+        if ($request->file('image') == null) {
             $image = $request->images;
-            }
-        else{
+        } else {
             $file_image = $request->file('image');
-            $image = time()."_".$file_image->getClientOriginalName();
+            $image = time() . "_" . $file_image->getClientOriginalName();
             $tujuan_upload = 'img/koi/website/ourcollection';
-            $file_image->move($tujuan_upload,$image);
+            $file_image->move($tujuan_upload, $image);
         }
 
-         OurCollection::create([
+        OurCollection::create([
             'title' => $request->title,
             // 'image' => $image,
-            'description' => $request->deskripsi,
+            'description' => $request->description,
             'koi_id' => $request->koi_id,
-         ]);
-         return redirect('/CMS/ourcollection');
-     }
+        ]);
+        return redirect('/CMS/ourcollection');
+    }
 
-     public function ourcollectionedit($id)
-     {
-         $ourcollection = OurCollection::where('id', $id)->get();
-         return view('arthurkaikoiadmin.website.ourcollection.ourcollection_edit', compact('ourcollection'));
-     }
+    public function ourcollectionedit($id)
+    {
+        $ourcollection = OurCollection::where('id', $id)->get();
+        return view('arthurkaikoiadmin.website.ourcollection.ourcollection_edit', compact('ourcollection'));
+    }
 
-     public function ourcollectionupdate(request $request)
-     {
-        if($request->file('image') == null){
+    public function ourcollectionupdate(request $request)
+    {
+        if ($request->file('image') == null) {
             $image = $request->images;
-            }
-        else{
+        } else {
             $file_image = $request->file('image');
-            $image = time()."_".$file_image->getClientOriginalName();
+            $image = time() . "_" . $file_image->getClientOriginalName();
             $tujuan_upload = 'img/koi/website/ourcollection';
-            $file_image->move($tujuan_upload,$image);
+            $file_image->move($tujuan_upload, $image);
         }
 
-         OurCollection::where('id', $request->id)->update([
+        OurCollection::where('id', $request->id)->update([
             'title' => $request->title,
             'description' => $request->deskripsi,
             'koi_id' => $request->koi_id
-         ]);
+        ]);
 
-         return redirect('/CMS/ourcollection');
-     }
+        return redirect('/CMS/ourcollection');
+    }
 
-     public function ourcollectiondelete($id)
-     {
-         OurCollection::where('id_ourcollection', $id)->delete();
-         return redirect('/CMS/ourcollection');
-     }
+    public function ourcollectiondelete($id)
+    {
+        OurCollection::where('id', $id)->delete();
+        return redirect('/CMS/ourcollection');
+    }
 
-     /// # Web News # ///
-     public function news()
-     {
-         $news = News::all();
-         return view('arthurkaikoiadmin.website.news.news', compact('news'));
-     }
+    /// # Web News # ///
+    public function news()
+    {
+        $news = News::all();
+        return view('arthurkaikoiadmin.website.news.news', compact('news'));
+    }
 
-     public function newsadd()
-     {
-         return view('arthurkaikoiadmin.website.news.news_add');
-     }
+    public function newsadd()
+    {
+        return view('arthurkaikoiadmin.website.news.news_add');
+    }
 
-     public function newsstore(request $request)
-     {
-        if($request->file('image') == null){
+    public function newsstore(request $request)
+    {
+        if ($request->file('image') == null) {
             $image = $request->images;
-            }
-        else{
+        } else {
             $file_image = $request->file('image');
-            $image = time()."_".$file_image->getClientOriginalName();
+            $image = time() . "_" . $file_image->getClientOriginalName();
             $tujuan_upload = 'img/koi/website/news';
-            $file_image->move($tujuan_upload,$image);
+            $file_image->move($tujuan_upload, $image);
         }
 
         News::create([
@@ -2007,156 +1862,153 @@ class C_ArthurkaikoiAdmin extends Controller
             'image' => $image,
             'deskripsi' => $request->deskripsi,
             'deskripsi_singkat' => $request->deskripsi_singkat,
-         ]);
+        ]);
 
-         return redirect('/CMS/news');
-     }
+        return redirect('/CMS/news');
+    }
 
-     public function newsedit($id)
-     {
-         $news = News::where('id_news', $id)->get();
-         return view('arthurkaikoiadmin.website.news.news_edit', compact('news'));
-     }
+    public function newsedit($id)
+    {
+        $news = News::where('id_news', $id)->get();
+        return view('arthurkaikoiadmin.website.news.news_edit', compact('news'));
+    }
 
-     public function newsupdate(request $request)
-     {
-        if($request->file('image') == null){
+    public function newsupdate(request $request)
+    {
+        if ($request->file('image') == null) {
             $image = $request->images;
-            }
-        else{
+        } else {
             $file_image = $request->file('image');
-            $image = time()."_".$file_image->getClientOriginalName();
+            $image = time() . "_" . $file_image->getClientOriginalName();
             $tujuan_upload = 'img/koi/website/news';
-            $file_image->move($tujuan_upload,$image);
+            $file_image->move($tujuan_upload, $image);
         }
 
-         News::where('id', $request->id)->update([
+        News::where('id', $request->id)->update([
             'title' => $request->title,
             'image' => $image,
             'deskripsi' => $request->deskripsi,
             'deskripsi_singkat' => $request->deskripsi_singkat,
-         ]);
+        ]);
 
-         return redirect('/CMS/news');
-     }
+        return redirect('/CMS/news');
+    }
 
-     public function newsdelete($id)
-     {
-         News::where('id_news', $id)->delete();
-         return redirect('/CMS/news');
-     }
+    public function newsdelete($id)
+    {
+        News::where('id_news', $id)->delete();
+        return redirect('/CMS/news');
+    }
 
-     /// # Web About US # ///
-     public function aboutus()
-     {
-         $aboutus = AboutUs::all();
-         return view('arthurkaikoiadmin.website.aboutus.aboutus', compact('aboutus'));
-     }
+    /// # Web About US # ///
+    public function aboutus()
+    {
+        $aboutus = AboutUs::all();
+        return view('arthurkaikoiadmin.website.aboutus.aboutus', compact('aboutus'));
+    }
 
-     public function aboutusadd()
-     {
-         return view('arthurkaikoiadmin.website.aboutus.aboutus_add');
-     }
+    public function aboutusadd()
+    {
+        return view('arthurkaikoiadmin.website.aboutus.aboutus_add');
+    }
 
-     public function aboutusstore(request $request)
-     {
-        if($request->file('image') == null){
+    public function aboutusstore(request $request)
+    {
+        if ($request->file('image') == null) {
             $image = $request->images;
-            }
-        else{
+        } else {
             $file_image = $request->file('image');
-            $image = time()."_".$file_image->getClientOriginalName();
+            $image = time() . "_" . $file_image->getClientOriginalName();
             $tujuan_upload = 'img/koi/website/aboutus';
-            $file_image->move($tujuan_upload,$image);
+            $file_image->move($tujuan_upload, $image);
         }
 
-         AboutUs::create([
-             'image' => $image,
-             'deskripsi' => $request->deskripsi,
-         ]);
+        AboutUs::create([
+            'image' => $image,
+            'deskripsi' => $request->deskripsi,
+        ]);
 
-         return redirect('/CMS/aboutus');
-     }
+        return redirect('/CMS/aboutus');
+    }
 
-     public function aboutusedit($id)
-     {
-         $aboutus = AboutUs::where('id', $id)->get();
-         return view('arthurkaikoiadmin.website.aboutus.aboutus_edit', compact('aboutus'));
-     }
+    public function aboutusedit($id)
+    {
+        $aboutus = AboutUs::where('id', $id)->get();
+        return view('arthurkaikoiadmin.website.aboutus.aboutus_edit', compact('aboutus'));
+    }
 
-     public function aboutusupdate(request $request)
-     {
-        if($request->file('image') == null){
+    public function aboutusupdate(request $request)
+    {
+        if ($request->file('image') == null) {
             $image = $request->images;
-            }
-        else{
+        } else {
             $file_image = $request->file('image');
-            $image = time()."_".$file_image->getClientOriginalName();
+            $image = time() . "_" . $file_image->getClientOriginalName();
             $tujuan_upload = 'img/koi/website/aboutus';
-            $file_image->move($tujuan_upload,$image);
+            $file_image->move($tujuan_upload, $image);
         }
 
-         AboutUs::where('id', $request->id)->update([
-             'image' => $image,
-             'description' => $request->deskripsi,
-         ]);
+        AboutUs::where('id', $request->id)->update([
+            'image' => $image,
+            'description' => $request->deskripsi,
+        ]);
 
-         return redirect('/CMS/aboutus');
-     }
+        return redirect('/CMS/aboutus');
+    }
 
-     public function aboutusdelete($id)
-     {
-         AboutUs::where('id', $id)->delete();
-         return redirect('/CMS/aboutus');
-     }
+    public function aboutusdelete($id)
+    {
+        AboutUs::where('id', $id)->delete();
+        return redirect('/CMS/aboutus');
+    }
 
-     /// # Web Contact US # ///
-     public function contactus()
-     {
-         $contactus = ContactUs::all();
-         return view('arthurkaikoiadmin.website.contactus.contactus', compact('contactus'));
-     }
+    /// # Web Contact US # ///
+    public function contactus()
+    {
+        $contactus = ContactUs::all();
+        return view('arthurkaikoiadmin.website.contactus.contactus', compact('contactus'));
+    }
 
-     public function contactusadd()
-     {
-         return view('arthurkaikoiadmin.website.contactus.contactus_add');
-     }
+    public function contactusadd()
+    {
+        return view('arthurkaikoiadmin.website.contactus.contactus_add');
+    }
 
-     public function contactusstore(request $request)
-     {
-         ContactUs::create([
+    public function contactusstore(request $request)
+    {
+        ContactUs::create([
             'nama' => $request->nama,
             'email' => $request->email,
             'no_wa' => $request->no_wa,
             'message' => $request->message,
-         ]);
+        ]);
 
-         return redirect('/CMS/contactus');
-     }
+        return redirect('/CMS/contactus');
+    }
 
-     public function contactusedit($id)
-     {
-         $contactus = ContactUs::where('id_contactus', $id)->get();
-         return view('arthurkaikoiadmin.website.contactus.contactus_edit', compact('contactus'));
-     }
+    public function contactusedit($id)
+    {
+        $contactus = ContactUs::where('id_contactus', $id)->get();
+        return view('arthurkaikoiadmin.website.contactus.contactus_edit', compact('contactus'));
+    }
 
-     public function contactusupdate(request $request)
-     {
+    public function contactusupdate(request $request)
+    {
 
-         ContactUs::where('id_contactus', $request->id)->update([
+        ContactUs::where('id_contactus', $request->id)->update([
             'nama' => $request->nama,
             'email' => $request->email,
             'no_wa' => $request->no_wa,
             'message' => $request->message,
-         ]);
+        ]);
 
-         return redirect('/CMS/contactus');
-     }
+        return redirect('/CMS/contactus');
+    }
 
-     public function contactusdelete($id)
-     {
-         ContactUs::where('id', $id)->delete();
-         return redirect('/CMS/contactus');
-     }
+    public function contactusdelete($id)
+    {
+        ContactUs::where('id', $id)->delete();
+        return redirect('/CMS/contactus');
+    }
 
 }

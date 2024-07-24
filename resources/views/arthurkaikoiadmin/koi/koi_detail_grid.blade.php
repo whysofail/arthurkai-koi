@@ -623,9 +623,9 @@
 
                                     <br />
 
-                                    <a href="{{ route("cmskoidetail", $k->id_koi) }}" class="btn btn-xs mt-3"
+                                    <a href="{{ route("cmskoidetail", $k->id) }}" class="btn btn-xs mt-3"
                                         style="background: darkred; color:white; border: 1px solid #62200a; font-size: 12px"
-                                        data-toggle="modal" data-target="#modalShowVideo{{ $k->id_koi }}"><i
+                                        data-toggle="modal" data-target="#modalShowVideo{{ $k->id }}"><i
                                             class="fas fa-video"></i></a>
 
                                 </h2>
@@ -694,8 +694,8 @@
 
                                                                 <!-- modalShowVideo -->
 
-                                                                <div class="modal fade bannerformmodal{{ $k->id_koi }}"
-                                                                    id="modalShowVideo{{ $k->id_koi }}">
+                                                                <div class="modal fade bannerformmodal{{ $k->id }}"
+                                                                    id="modalShowVideo{{ $k->id }}">
 
                                                                     <div class="modal-dialog">
 
@@ -754,7 +754,7 @@
                                                                                     data-dismiss="modal"><i
                                                                                         class="fas fa-long-arrow-alt-left"></i></button>
 
-                                                                                {{-- <a href="{{ route('cmskoiDelete', $k->id_koi) }}"
+                                                                                {{-- <a href="{{ route('cmskoiDelete', $k->id) }}"
                                                                         type="button" class="btn btn-danger">Delete</a> --}}
 
                                                                             </div>

@@ -8,7 +8,7 @@ use App\Http\Controllers\KoiController;
 
 
 //FITUR CLEAR
-Route::get('/clear', function() {
+Route::get('/clear', function () {
     $exitcode = Artisan::call('optimize:clear');
     return 'DONE';
 });
@@ -26,28 +26,31 @@ Route::get('contactus', [C_Arthurkaikoi::class, 'contactus'])->name('contactus')
 
 Auth::routes();
 
+
+Route::middleware(['auth', 'layout'])->group(function () {
+    Route::get('CMS/koi', [C_ArthurkaikoiAdmin::class, 'koi'])->name('cmskoi');
+    Route::get('CMS/koi/data', [C_ArthurkaikoiAdmin::class, 'getDataKoi'])->name('getDataKoi');
+    Route::get('CMS/koi/data/za', [C_ArthurkaikoiAdmin::class, 'getDataKoiZA'])->name('getDataKoiZA');
+    Route::get('CMS/koi/data/1-9', [C_ArthurkaikoiAdmin::class, 'getDataKoi19'])->name('getDataKoi19');
+    Route::get('CMS/koi/data/9-1', [C_ArthurkaikoiAdmin::class, 'getDataKoi91'])->name('getDataKoi91');
+    Route::get('CMS/koi/data/high', [C_ArthurkaikoiAdmin::class, 'getDataKoihigh'])->name('getDataKoihigh');
+    Route::get('CMS/koi/data/low', [C_ArthurkaikoiAdmin::class, 'getDataKoilow'])->name('getDataKoilow');
+    Route::get('CMS/koi/add', [C_ArthurkaikoiAdmin::class, 'koiadd'])->name('cmskoiAdd');
+    Route::post('CMS/koi/store', [C_ArthurkaikoiAdmin::class, 'koistore'])->name('cmskoistore');
+    Route::get('CMS/koi/edit/{id}', [C_ArthurkaikoiAdmin::class, 'koiedit'])->name('cmskoiEdit');
+    Route::post('CMS/koi/update', [C_ArthurkaikoiAdmin::class, 'koiupdate'])->name('cmskoiUpdate');
+    Route::get('CMS/koi/retweet/{id}', [C_ArthurkaikoiAdmin::class, 'koiretweet'])->name('cmskoiRetweet');
+    Route::get('CMS/koi/detailyear/{year}', [C_ArthurkaikoiAdmin::class, 'koifilter_year'])->name('cmskoiyear');
+    Route::get('CMS/koi/delete/{id}', [C_ArthurkaikoiAdmin::class, 'koidelete'])->name('cmskoiDelete');
+    Route::get('CMS/koi/detail/{id}', [C_ArthurkaikoiAdmin::class, 'koidetail'])->name('cmskoidetail');
+});
 // ## ADMIN Arthurkai-koi ______________#
 Route::get('CMS', [LoginController::class, 'showLoginForm'])->name('showLoginForm');
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('CMS/dashboard', [C_ArthurkaikoiAdmin::class, 'dashboard'])->name('dashboard')->middleware('auth');
 
 // # Koi
-Route::get('CMS/koi', [C_ArthurkaikoiAdmin::class, 'koi'])->name('cmskoi')->middleware('auth');
-Route::get('CMS/koi/data', [C_ArthurkaikoiAdmin::class, 'getDataKoi'])->name('getDataKoi')->middleware('auth');
-Route::get('CMS/koi/data/za', [C_ArthurkaikoiAdmin::class, 'getDataKoiZA'])->name('getDataKoiZA')->middleware('auth');
-Route::get('CMS/koi/data/1-9', [C_ArthurkaikoiAdmin::class, 'getDataKoi19'])->name('getDataKoi19')->middleware('auth');
-Route::get('CMS/koi/data/9-1', [C_ArthurkaikoiAdmin::class, 'getDataKoi91'])->name('getDataKoi91')->middleware('auth');
-Route::get('CMS/koi/data/high', [C_ArthurkaikoiAdmin::class, 'getDataKoihigh'])->name('getDataKoihigh')->middleware('auth');
-Route::get('CMS/koi/data/low', [C_ArthurkaikoiAdmin::class, 'getDataKoilow'])->name('getDataKoilow')->middleware('auth');
-Route::get('CMS/koi/add', [C_ArthurkaikoiAdmin::class, 'koiadd'])->name('cmskoiAdd')->middleware('auth');
-Route::post('CMS/koi/store', [C_ArthurkaikoiAdmin::class, 'koistore'])->name('cmskoistore')->middleware('auth');
-Route::get('CMS/koi/edit/{id}', [C_ArthurkaikoiAdmin::class, 'koiedit'])->name('cmskoiEdit')->middleware('auth');
-Route::post('CMS/koi/update', [C_ArthurkaikoiAdmin::class, 'koiupdate'])->name('cmskoiUpdate')->middleware('auth');
-Route::get('CMS/koi/retweet/{id}', [C_ArthurkaikoiAdmin::class, 'koiretweet'])->name('cmskoiRetweet')->middleware('auth');
-Route::get('CMS/koi/detailyear/{year}', [C_ArthurkaikoiAdmin::class, 'koifilter_year'])->name('cmskoiyear')->middleware('auth');
-Route::get('CMS/koi/delete/{id}', [C_ArthurkaikoiAdmin::class, 'koidelete'])->name('cmskoiDelete')->middleware('auth');
-Route::get('CMS/koi/detail/{id}', [C_ArthurkaikoiAdmin::class, 'koidetail'])->name('cmskoidetail')->middleware('auth');
+
 
 // Get Year
 Route::get('CMS/koi/getyear', [C_ArthurkaikoiAdmin::class, 'getyear'])->name('cmsgetyear')->middleware('auth');
@@ -149,7 +152,7 @@ Route::get('CMS/aboutus/edit/{id}', [C_ArthurkaikoiAdmin::class, 'aboutusedit'])
 Route::post('CMS/aboutus/update', [C_ArthurkaikoiAdmin::class, 'aboutusupdate'])->name('cmsaboutusUpdate')->middleware('auth');
 Route::get('CMS/aboutus/delete/{id}', [C_ArthurkaikoiAdmin::class, 'aboutusdelete'])->name('cmsaboutusDelete')->middleware('auth');
 
- /// # Web Contact US # ///
+/// # Web Contact US # ///
 Route::get('CMS/contactus', [C_ArthurkaikoiAdmin::class, 'contactus'])->name('cmscontactus')->middleware('auth');
 Route::get('CMS/contactus/add', [C_ArthurkaikoiAdmin::class, 'contactusadd'])->name('cmscontactusAdd')->middleware('auth');
 Route::post('CMS/contactus/store', [C_ArthurkaikoiAdmin::class, 'contactusstore'])->name('cmscontactusStore')->middleware('auth');
@@ -158,7 +161,6 @@ Route::post('CMS/contactus/update', [C_ArthurkaikoiAdmin::class, 'contactusupdat
 Route::get('CMS/contactus/delete/{id}', [C_ArthurkaikoiAdmin::class, 'contactusdelete'])->name('cmscontactusDelete')->middleware('auth');
 
 // API (JSON) Stuff
-
 Route::get('/api/koi', [KoiController::class, 'index'])->name('api_koi');
 Route::get('/api/koi/search', [KoiController::class, 'searchKoi'])->name('api_koi_search');
 

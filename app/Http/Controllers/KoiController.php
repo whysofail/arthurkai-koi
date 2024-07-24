@@ -10,7 +10,7 @@ class KoiController extends Controller
 {
     public function index()
     {
-        $koiSuggestions = Koi::with(['breeder','variety','bloodline','history'])->take(10)->where('status', 'Available')->get();
+        $koiSuggestions = Koi::with(['breeder', 'variety', 'bloodline', 'history'])->take(10)->where('status', 'Available')->get();
 
         // Return the suggestions as JSON
         return response()->json([
@@ -22,7 +22,7 @@ class KoiController extends Controller
     {
         $koi = Koi::find($id);
         return response()->json(['koi' => $koi]);
-        
+
     }
 
     public function getKoiHistory($id)
@@ -32,17 +32,18 @@ class KoiController extends Controller
         return response()->json(['history' => $history]);
     }
 
-    public function searchKoi(Request $request){
-         // Get the query from the request
-         $query = strtoupper($request->input('query'));
+    public function searchKoi(Request $request)
+    {
+        // Get the query from the request
+        $query = strtoupper($request->input('query'));
 
-         // Search Koi by name or species
-         $results = Koi::where('koi_code', 'LIKE', "%{$query}%")->where('n_status', 'Available')
-                       ->get();
- 
-         // Return the results as JSON
-         return response()->json($results);
+        // Search Koi by name or species
+        $results = Koi::where('code', 'LIKE', "%{$query}%")->where('status', 'Available')
+            ->get();
+
+        // Return the results as JSON
+        return response()->json($results);
     }
 
-    
+
 }

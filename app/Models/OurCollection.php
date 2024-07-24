@@ -15,6 +15,6 @@ class OurCollection extends Model
 
     public function koi()
     {
-        return $this->belongsTo(Koi::class, 'koi_id', 'id_koi');
+        return $this->belongsTo(Koi::class, 'koi_id', 'id');
     }
 }

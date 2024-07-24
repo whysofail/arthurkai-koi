@@ -2,11 +2,14 @@
     "plugins": ["@shufo/prettier-plugin-blade"],
     "overrides": [
         {
-            "files": ["*.blade.php"],
+            "files": ["*.php", "*.blade.php"],
             "options": {
                 "parser": "blade",
                 "tabWidth": 4,
-                "singleQuote": false
+                "endOfLine": "lf",
+                "singleQuote": false,
+                "trailingCommaPHP": true,
+                "htmlWhitespaceSensitivity": "ignore"
             }
         }
     ]
