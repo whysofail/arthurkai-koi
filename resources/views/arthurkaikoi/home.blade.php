@@ -31,10 +31,11 @@
     </section>
 
     <section class="artists-section section-padding" id="section_2">
-        <div class="container">
+        <div class="container">                
+            <div class="row justify-content-center">
             <div class="col-12 text-center">
-                <div class="row justify-content-center">
-                    <h2 class="mb-4">Our Collection</h1>
+                    <h2 class="mb-4">Our Collection</h2>
+                    </div>
                         @if (count($ourCollection) > 1)
                             @foreach ($ourCollection as $collection)
                                 <div class="col-lg-3 col-6">
