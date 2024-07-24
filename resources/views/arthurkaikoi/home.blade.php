@@ -68,11 +68,6 @@
                                                 @endif
                                             @endif
                                     @endif
-                                    <div class="artists-image-wrap">
-                                        <img src="{{ asset("img/koi/" . $collection->koi->photo) }}"
-                                            class="artists-image img-fluid">
-                                        <p class="namaikan">{{ $collection->title }}</p>
-                                    </div>
                                 </div>
                 </div>
                 @endforeach
