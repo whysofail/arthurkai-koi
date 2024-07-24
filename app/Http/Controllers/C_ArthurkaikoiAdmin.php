@@ -71,8 +71,8 @@ class C_ArthurkaikoiAdmin extends Controller
             1 => 'action',
             2 => 'code',
             3 => 'nickname',
-            4 => 'breeder',
-            5 => 'variety',
+            4 => 'variety',
+            5 => 'breeder',
             6 => 'gender',
             7 => 'birthdate',
             8 => 'age',
@@ -102,6 +102,9 @@ class C_ArthurkaikoiAdmin extends Controller
         switch ($orderColumn) {
             case 'variety':
                 $order = 'variety.name';
+                break;
+            case 'breeder':
+                $order = 'breeder.name';
                 break;
             case 'price_buy':
                 $order = ['koi.price_buy_idr', 'koi.price_buy_jpy'];

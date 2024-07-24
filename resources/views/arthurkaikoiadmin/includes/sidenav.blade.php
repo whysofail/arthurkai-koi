@@ -18,7 +18,8 @@
                             Koi
                         </p>
                     </a>
-                    <a href="{{ route("cmskoigrid") }}" class="nav-link" style="text-align: right; height: 50px;">
+                    <a href="{{ route("cmskoi", ["layout" => "grid"]) }}" class="nav-link"
+                        style="text-align: right; height: 50px;">
                         <i class="fa-solid fa-table-cells" style="font-size: 18px !important; color: white"></i>
                         <p class="whitefont" style="font-size: 18px !important;">
                             Koi<span> Grid</span>

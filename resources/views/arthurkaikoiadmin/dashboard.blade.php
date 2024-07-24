@@ -500,9 +500,26 @@
                     ],
                     // order: [[2, 'asc']], // Urutkan berdasarkan kolom kedua (koi_code)
                     dom: 'lBfrtip', // This controls the layout of the table
-                    buttons: [
-                        'excel', 'pdf', 'print'
+                    buttons: [{
+                            extend: 'excel',
+                            exportOptions: {
+                                columns: [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            exportOptions: {
+                                columns: [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                            }
+                        },
+                        {
+                            extend: 'print',
+                            exportOptions: {
+                                columns: [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                            }
+                        }
                     ],
+
                     lengthMenu: [ // Custom lengthMenu options
                         [10, 25, 50, 100, 200, 500],
                         [10, 25, 50, 100, 200, 500] // labels for options

@@ -111,7 +111,7 @@
                     <input type="hidden" name="id" id="id" value="{{ $k->id }}">
                     <input type="hidden" name="status" value="{{ $k->status }}">
                     <div class="col-sm-12">
-                        <a href="{{ route("cmskoi") }}" class="btn btn-sm"
+                        <a href="{{ url()->previous() }}" class="btn btn-sm"
                             style="margin-bottom: 5px; border-radius: 20px 1px 10px; border: black solid 1px; ">
                             <i class="fas fa-arrow-circle-left" style="position: relative; right: 3%; top: 1px;"></i>
                             Back
@@ -123,8 +123,6 @@
                                         <h2>Base Koi Information</h2>
                                         <hr>
                                         <!-- Display all old input values -->
-                                        <!-- Display all old input values -->
-
                                         <div class="col-sm-12" style="margin-top: 10px">
                                             <div class="form-group row">
                                                 <label for="koi_code" class="col-sm-2 col-form-label">Koi Code</label>
@@ -454,7 +452,7 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-12 mt-3">
-                                            <label>Link_Video</label><br>
+                                            <label>Video</label><br>
                                             <div class="form-group">
                                                 <img width="125" id="link_video" class="img-thumbnailv">
                                                 @foreach ($k->history as $history)
