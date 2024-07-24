@@ -1,5 +1,5 @@
 @extends("layouts.apparthur")
-@section("title", "Arthurkai - KOI")
+@section("title", "Arthurkai - KOI | Our Collection")
 @section("our", "active")
 @section("css")
 @endsection

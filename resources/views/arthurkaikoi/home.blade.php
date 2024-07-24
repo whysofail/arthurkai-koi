@@ -32,54 +32,65 @@
 
     <section class="artists-section section-padding" id="section_2">
         <div class="container">
-            <div class="row justify-content-center">
-
-                <div class="col-12 text-center">
+            <div class="col-12 text-center">
+                <div class="row justify-content-center">
                     <h2 class="mb-4">Our Collection</h1>
-                </div>
+                        @if (count($ourCollection) > 1)
+                            @foreach ($ourCollection as $collection)
+                                <div class="col-lg-3 col-6">
+                                    @if (!empty($collection->koi->photo))
+                                        @php
+                                            $photos = array_filter(explode("|", $collection->koi->photo));
+                                            $firstPhoto = !empty($photos) ? $photos[0] : null;
+                                        @endphp
+                                        <div id="existing-photos">
+                                            @if ($firstPhoto)
+                                                @php
+                                                    $photoPath = public_path("img/koi/photo/" . $firstPhoto);
+                                                @endphp
+                                                @if (file_exists($photoPath))
+                                                    <div class="artists-thumb">
 
-                <div class="col-lg-3 col-6">
-                    <div class="artists-thumb">
-                        <div class="artists-image-wrap">
-                            <img src="{{ asset("website/images/koi.png") }}" class="artists-image img-fluid">
-                            <p class="namaikan">Ginrin Shinwa</p>
-                        </div>
-                    </div>
+                                                        <div class="artists-image-wrap">
+                                                            <img src="{{ asset("img/koi/photo" . $collection->koi->photo) }}"
+                                                                class="artists-image img-fluid">
+                                                            <p class="namaikan">{{ $collection->title }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                @else
+                                                    <div class="photo-item"
+                                                        style="display: flex; flex-direction: column; align-items: center;">
+                                                        <img src="{{ asset("img/assets/broken.png") }}" class="img"
+                                                            style="object-fit: contain;" alt="Placeholder">
+                                                        <span>{{ $firstPhoto }} (not found)</span>
+                                                    </div>
+                                                @endif
+                                            @endif
+                                    @endif
+                                    <div class="artists-image-wrap">
+                                        <img src="{{ asset("img/koi/" . $collection->koi->photo) }}"
+                                            class="artists-image img-fluid">
+                                        <p class="namaikan">{{ $collection->title }}</p>
+                                    </div>
+                                </div>
                 </div>
-                <div class="col-lg-3 col-6">
-                    <div class="artists-thumb">
-                        <div class="artists-image-wrap">
-                            <img src="{{ asset("website/images/koi.png") }}" class="artists-image img-fluid">
-                            <p class="namaikan">Ginrin Shinwa</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-6">
-                    <div class="artists-thumb">
-                        <div class="artists-image-wrap">
-                            <img src="{{ asset("website/images/koi.png") }}" class="artists-image img-fluid">
-                            <p class="namaikan">Ginrin Shinwa</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-6">
-                    <div class="artists-thumb">
-                        <div class="artists-image-wrap">
-                            <img src="{{ asset("website/images/koi.png") }}" class="artists-image img-fluid">
-                            <p class="namaikan">Ginrin Shinwa</p>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
+            @else
+                <h2>Hi there, currently there's no Koi listed.</h2>
+                @endif
+            </div>
+        </div>
 
-                {{-- <div class="col-12 text-center">
+        {{-- <div class="col-12 text-center">
                 <p class="deskripsi mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                     tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.
                     Risus commodo viverra maecenas accumsan lacus vel facilisis. </p>
             </div> --}}
 
-                <a href="#" class="buttoncollection seecollection">See More >></a>
+        <a href="#" class="buttoncollection seecollection">See More >></a>
 
-            </div>
+        </div>
         </div>
     </section>
 

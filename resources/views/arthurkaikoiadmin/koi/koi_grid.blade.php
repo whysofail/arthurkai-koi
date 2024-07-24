@@ -199,42 +199,25 @@
                                     </div>
 
                                     <div class="col-sm-3">
-
                                         <div class="card-tools">
-
                                             <form action="{{ route("cmskoigridsearch") }}" method="POST">
-
                                                 @csrf
-
                                                 <div class="input-group input-group-sm">
-
                                                     <input type="text" class="form-control" name="search"
                                                         placeholder="Search Koi">
-
                                                     <div class="input-group-append">
-
                                                         <button class="btn btn-primary">
-
                                                             <i class="fas fa-search"></i>
-
                                                         </button>
-
                                                     </div>
-
                                                 </div>
-
                                             </form>
-
                                         </div>
-
                                     </div>
-
                                 </div>
 
                                 <div class="card-body pb-0">
-
                                     <div class="row">
-
                                         @foreach ($koi as $k)
                                             <div class="col-sm-3"
                                                 style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">

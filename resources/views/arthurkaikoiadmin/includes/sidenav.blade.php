@@ -101,8 +101,11 @@
                 <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Setting
                         Koi</span></li>
                 @foreach ($webItem as $webNav)
+                    <?php
+                    $isActive = Request::is("CMS" . $webNav["path"] . "*");
+                    ?>
                     <li class="nav-item" style="border-top: 0.6px solid white;">
-                        <a href="{{ route($webNav["route"]) }}" class="nav-link">
+                        <a href="{{ route($webNav["route"]) }}" class="nav-link {{ $isActive ? "active" : "" }}">
                             <i class="whitefont nav-icon fas fa-minus"></i>
                             <p class="whitefont">
                                 {{ $webNav["label"] }}

@@ -121,7 +121,6 @@ class C_ArthurkaikoiAdmin extends Controller
             ->leftJoin('variety', 'koi.variety_id', '=', 'variety.id')
             ->leftJoin('breeder', 'koi.breeder_id', '=', 'breeder.id')
             ->with(['history', 'breeder', 'variety']);
-
         // Order by price columns if applicable
         if (is_array($order)) {
             foreach ($order as $col) {
@@ -130,7 +129,6 @@ class C_ArthurkaikoiAdmin extends Controller
         } else {
             $query->orderBy($order, $orderDir);
         }
-
         if (empty($request->input('search.value'))) {
             $kois = $query->offset($start)
                 ->limit($limit)
@@ -1798,7 +1796,7 @@ class C_ArthurkaikoiAdmin extends Controller
         OurCollection::create([
             'title' => $request->title,
             // 'image' => $image,
-            'description' => $request->deskripsi,
+            'description' => $request->description,
             'koi_id' => $request->koi_id,
         ]);
         return redirect('/CMS/ourcollection');
@@ -1832,7 +1830,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function ourcollectiondelete($id)
     {
-        OurCollection::where('id_ourcollection', $id)->delete();
+        OurCollection::where('id', $id)->delete();
         return redirect('/CMS/ourcollection');
     }
 
