@@ -61,7 +61,7 @@
                                                     <br>
                                                 @else
                                                     <div class="photo-item"
-                                                        style="display: flex; flex-direction: column; align-items: center;">
+                                                        style="display: flex; flex-direction: column;">
                                                         <img src="{{ asset("img/assets/broken.png") }}" class="img"
                                                             style="object-fit: contain;" alt="Placeholder">
                                                         <span>{{ $firstPhoto }} (not found)</span>
