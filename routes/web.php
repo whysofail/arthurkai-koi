@@ -162,6 +162,10 @@ Route::get('CMS/contactus/delete/{id}', [C_ArthurkaikoiAdmin::class, 'contactusd
 
 // API (JSON) Stuff
 Route::get('/api/koi', [KoiController::class, 'index'])->name('api_koi');
+Route::post('/api/koi/history', [KoiController::class, 'storeHistory'])->name('history.store');
 Route::get('/api/koi/{id}', [KoiController::class, 'getKoi'])->name('api_koi_id');
+
+Route::get('/api/koi/history/{koi_id}/{year}', [KoiController::class, 'getHistoryByYear'])->name('history.getByYear');
+
 Route::get('/api/koi/search', [KoiController::class, 'searchKoi'])->name('api_koi_search');
 

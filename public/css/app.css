@@ -5855,7 +5855,6 @@ fieldset:disabled .btn {
 }
 
 .modal-body {
-    height: 50vh;
     position: relative;
     flex: 1 1 auto;
     padding: 1rem;

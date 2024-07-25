@@ -16,7 +16,8 @@ class CreateHistoryTable extends Migration
         Schema::create('history', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('koi_id');
-            $table->string('size');
+            $table->integer('year')->nullable();
+            $table->string('size')->nullable();
             $table->string('photo')->nullable();
             $table->string('video')->nullable();
             $table->timestamps();

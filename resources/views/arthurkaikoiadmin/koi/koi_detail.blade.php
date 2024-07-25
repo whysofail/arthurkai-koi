@@ -11,6 +11,10 @@
             padding-bottom: 60px;
         }
 
+        .modal {
+            z-index: 1050 !important;
+        }
+
         .select2-container .select2-selection--single {
             box-sizing: border-box;
             cursor: pointer;
@@ -48,7 +52,6 @@
         .history-tl-container ul.tl li {
             list-style: none;
             margin: auto;
-            margin-left: 200px;
             min-height: 50px;
             /*background: rgba(255,255,0,0.1);*/
             border-left: 1px dashed #86D6FF;
@@ -78,7 +81,9 @@
             transition: all 1000ms ease-in-out;
         }
 
-        ul.tl li .item-title {}
+        ul.tl li .item-title {
+            padding: 0 0 0 1.5em;
+        }
 
         ul.tl li .item-detail {
             color: rgba(0, 0, 0, 0.5);
@@ -86,12 +91,10 @@
         }
 
         ul.tl li .timestamp {
-            color: #8D8D8D;
-            position: absolute;
-            width: 100px;
-            left: -40%;
-            text-align: right;
-            font-size: 12px;
+            color: black;
+            font-weight: bold;
+            text-align: left;
+            font-size: 1.5em;
         }
 
         @media (max-width: 384px) {
@@ -314,54 +317,36 @@
 
                         <div class="col-12 col-lg-4 col-md-4 col-sm-4">
                             <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff"
-                                class="swiper mySwiper2">
+                                class="swiper mySwiper1">
                                 <div class="swiper-wrapper">
                                     @foreach ($koi as $k)
-                                        @foreach ($k->history as $h)
-                                            @if ($loop->first)
-                                                @foreach (explode("|", $h->link_photo) as $image)
-                                                    <div class="swiper-slide">
-
-                                                        <img class="img-thumbnail"
-                                                            src="{{ asset("img/koi/photo/" . $image) }}">
-
-                                                    </div>
-                                                @endforeach
-                                            @else
-                                            @endif
+                                        @foreach (explode("|", $k->photo) as $image)
+                                            <div class="swiper-slide">
+                                                <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $image) }}">
+                                            </div>
                                         @endforeach
                                     @endforeach
-
                                 </div>
-
-                                {{-- <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div> --}}
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
 
                             </div>
 
-                            <div thumbsSlider="" class="swiper mySwiper">
-
+                            {{-- <div thumbsSlider="" class="swiper mySwiper">
                                 <div class="swiper-wrapper">
-
                                     @foreach ($koi as $k)
-                                        @foreach ($k->history as $h)
-                                            @if ($loop->first)
-                                                @foreach (explode("|", $h->link_photo) as $image)
-                                                    <div class="swiper-slide">
-
-                                                        <img class="img-thumbnail"
-                                                            src="{{ asset("img/koi/photo/" . $image) }}">
-
-                                                    </div>
-                                                @endforeach
-                                            @else
-                                            @endif
-                                        @endforeach
+                                        @if ($loop->first)
+                                            @foreach (explode("|", $k->photo) as $image)
+                                                <div class="swiper-slide">
+                                                    <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $image) }}">
+                                                </div>
+                                            @endforeach
+                                        @else
+                                        @endif
                                     @endforeach
 
                                 </div>
-
-                            </div>
+                            </div> --}}
 
                         </div>
 
@@ -384,6 +369,50 @@
                                             style="background: darkred; color:white; border: 1px solid #62200a"
                                             data-toggle="modal" data-target="#modalShowVideo{{ $k->id }}"><i
                                                 class="fas fa-video"></i></a>
+                                        <div class="modal fade bannerformmodal{{ $k->id }}"
+                                            id="modalShowVideo{{ $k->id }}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header" style="display: block; text-align: center;">
+                                                        <h5 class="modal-title">
+                                                            {{ $k->code }}</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="swiper mySwiper" style="text-align: center">
+                                                            <div class="swiper-wrapper">
+                                                                @if (!empty($k->video))
+                                                                    @php
+                                                                        $videos = explode("|", $k->video);
+                                                                    @endphp
+                                                                    @foreach ($videos as $video)
+                                                                        <div class="swiper-slide">
+                                                                            <video controls="controls" style="width: 100%"
+                                                                                name="{{ $video }}">
+                                                                                <source
+                                                                                    src="{{ asset("img/koi/video/" . $video) }}">
+                                                                            </video><br>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @else
+                                                                    <p>-</p>
+                                                                @endif
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer justify-content-between">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal"><i
+                                                        class="fas fa-long-arrow-alt-left"></i></button>
+                                                {{-- <a href="{{ route('cmskoiDelete', $k->id) }}"
+                                                                    type="button" class="btn btn-danger">Delete</a> --}}
+                                            </div>
+                                        </div>
                                         <div>
                                             <div style="padding: 1em 0 0 0;">
                                                 <div class="btn-group">
@@ -467,92 +496,102 @@
                                         <div class="tab-pane fade active show" id="progress-koi" role="tabpanel"
                                             aria-labelledby="progress-koi-tab">
                                             <div class="history-tl-container">
+                                                <div class="history-modal">
+                                                    <button class="btn btn-success" type="button"data-toggle="modal"
+                                                        data-target="#historyModal">Add or Edit History</button>
+                                                    <div class="modal fade" id="historyModal" tabindex="-1"
+                                                        role="dialog" aria-labelledby="historyModalLabel"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="historyModalLabel">
+                                                                        @foreach ($koi as $k)
+                                                                            {{ $k->code }}
+                                                                        @endforeach
+                                                                        History
+                                                                    </h5>
+                                                                    <button type="button" class="close"
+                                                                        data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form id="historyForm" method="POST"
+                                                                        name="historyForm">
+                                                                        @csrf
+                                                                        <input type="hidden" name="koi_id"
+                                                                            id="koi_id" value="{{ $k->id }}">
+                                                                        <div class="form-group">
+                                                                            <label for="year">Year</label>
+                                                                            <select class="form-control select2"
+                                                                                name="year" id="year"
+                                                                                style="width: 100%;">
+                                                                                @for ($year = 2018; $year <= 2028; $year++)
+                                                                                    <option value="{{ $year }}">
+                                                                                        {{ $year }}</option>
+                                                                                @endfor
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="size">Size</label>
+                                                                            <input type="text" class="form-control"
+                                                                                name="size" id="size"
+                                                                                placeholder="Enter Koi Size">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="photos">Photos</label>
+                                                                            <input type="file" class="form-control"
+                                                                                name="photos[]" id="photos" multiple>
+                                                                        </div>
+                                                                        <div id="photos-preview" class="mb-3"></div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button"
+                                                                                class="btn btn-secondary"
+                                                                                data-dismiss="modal">Close</button>
+                                                                            <button type="button" id="saveHistoryBtn"
+                                                                                class="btn btn-primary">Save
+                                                                                changes</button>
+                                                                        </div>
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
                                                 <ul class="tl">
                                                     @foreach ($koi as $k)
-                                                        @foreach ($k->history as $h)
-                                                            <li class="tl-item" ng-repeat="item in retailer_history">
-                                                                <div class="timestamp"
-                                                                    style="font-weight: bold; font-size: 16px;">
-                                                                    {{ $h->year }}<br>
-                                                                </div>
-                                                                <div class="item-title"
-                                                                    style="font-weight: bold; font-size: 16px;">
-                                                                    {{ $k->code }}</div>
-                                                                @foreach (explode("|", $h->link_photo) as $image)
-                                                                    <img style="width: 10%" class="img-thumbnail"
-                                                                        src="{{ asset("img/koi/photo/" . $image) }}">
-                                                                @endforeach
-                                                                <br>
-                                                                <div style="font-weight: bold; font-size: 16px;">Size :
-                                                                    {{ $h->size }} CM</div>
-                                                                <!-- modalShowVideo -->
-                                                                <div class="modal fade bannerformmodal{{ $k->id }}"
-                                                                    id="modalShowVideo{{ $k->id }}">
-                                                                    <div class="modal-dialog">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-header"
-                                                                                style="display: block; text-align: center;">
-                                                                                <h5 class="modal-title">
-                                                                                    {{ $k->code }}</h5>
-                                                                                <button type="button" class="close"
-                                                                                    data-dismiss="modal"
-                                                                                    aria-label="Close">
-                                                                                    <span aria-hidden="true">&times;</span>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <div class="swiper mySwiper"
-                                                                                    style="text-align: center">
-                                                                                    <div class="swiper-wrapper">
-                                                                                        @if (!empty($k->video))
-                                                                                            @php
-                                                                                                $videos = explode(
-                                                                                                    "|",
-                                                                                                    $k->video,
-                                                                                                );
-                                                                                            @endphp
-                                                                                            @foreach ($videos as $video)
-                                                                                                <div class="swiper-slide">
-                                                                                                    <video
-                                                                                                        controls="controls"
-                                                                                                        style="width: 100%"
-                                                                                                        name="{{ $video }}">
-                                                                                                        <source
-                                                                                                            src="{{ asset("img/koi/video/" . $video) }}">
-                                                                                                    </video><br>
-                                                                                                </div>
-                                                                                            @endforeach
-                                                                                        @else
-                                                                                            <p>-</p>
-                                                                                        @endif
+                                                        @php
+                                                            // Sort and group history by year
+                                                            $sortedHistory = $k->history
+                                                                ->sortBy("year")
+                                                                ->groupBy("year");
+                                                        @endphp
 
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="swiper-pagination"></div>
-                                                                        </div>
-                                                                        <div class="swiper-button-next"></div>
-                                                                        <div class="swiper-button-prev"></div>
+                                                        @foreach ($sortedHistory as $year => $historyRecords)
+                                                            @foreach ($historyRecords as $record)
+                                                                <li class="tl-item">
+                                                                    <div class="timestamp"
+                                                                        style="display: flex; gap: 0.25em;">
+                                                                        {{ $year }}
                                                                     </div>
-                                                                    <div class="modal-footer justify-content-between">
-                                                                        <button type="button" class="btn btn-default"
-                                                                            data-dismiss="modal"><i
-                                                                                class="fas fa-long-arrow-alt-left"></i></button>
-                                                                        {{-- <a href="{{ route('cmskoiDelete', $k->id) }}"
-                                                                                    type="button" class="btn btn-danger">Delete</a> --}}
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- /.modalShowVideo -->
-
-                                                            </li>
+                                                                    @foreach (explode("|", $record->photo) as $image)
+                                                                        <img style="width: 10%" class="img-thumbnail"
+                                                                            src="{{ asset("img/koi/photo/" . $image) }}"
+                                                                            alt="Photo">
+                                                                    @endforeach
+                                                                    <br>
+                                                                    <div style="font-weight: bold; font-size: 16px;">
+                                                                        Size: {{ $record->size }} CM</div>
+                                                                </li>
+                                                            @endforeach
                                                         @endforeach
                                                     @endforeach
 
                                                 </ul>
-
                                             </div>
-
                                         </div>
 
                                         <div class="tab-pane fade" id="product-comments" role="tabpanel"
@@ -724,6 +763,19 @@
 
             </div>
 
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <img src="..." class="rounded me-2" alt="...">
+                        <strong class="me-auto">Notification</strong>
+                        <small>Just now</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        <!-- Toast message will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
         </section>
 
     </div>
@@ -741,19 +793,24 @@
 @endsection
 
 @section("script")
+    <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+
         var swiper = new Swiper(".mySwiper", {
-            loop: true,
             spaceBetween: 10,
-            slidesPerView: 4,
             freeMode: true,
             watchSlidesProgress: true,
         });
         var swiper2 = new Swiper(".mySwiper2", {
-            loop: true,
             spaceBetween: 10,
             navigation: {
                 nextEl: ".swiper-button-next",
@@ -776,6 +833,73 @@
                 nextEl: ".swiper-button-next",
                 prevEl: ".swiper-button-prev",
             },
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Prevent form submission on Enter key press
+            $('#historyForm').on('keydown', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Prevent the default form submission
+                }
+            });
+
+            // Handle button click event
+            $('#saveHistoryBtn').on('click', function() {
+                let formData = new FormData($('#historyForm')[0]); // Create FormData object from the form
+
+                $.ajax({
+                    url: "{{ route("history.store") }}",
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        $('#historyModal').modal(
+                            'hide'); // Hide the modal on successful submission
+                        // Optionally, refresh the history data or UI
+                    },
+                    error: function(xhr) {
+                        alert('Error saving history data.'); // Handle error
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#year').on('change', function() {
+                var year = $(this).val(); // Get selected year
+                var koi_id = $('#koi_id').val(); // Get koi_id from hidden input
+
+                if (year) {
+                    $.ajax({
+                        url: "{{ url("/api/koi/history") }}/" + koi_id + "/" + year,
+                        method: 'GET',
+                        success: function(response) {
+                            // Populate the form fields with the existing data
+                            $('#size').val(response.size);
+
+                            // Handle photos
+                            if (response.link_photo) {
+                                var photos = response.link_photo.split('|');
+                                $('#photos-preview').empty(); // Clear previous previews
+                                photos.forEach(function(photo) {
+                                    $('#photos-preview').append(
+                                        '<img src="{{ asset("img/koi/photo/") }}/' +
+                                        photo +
+                                        '" class="img-thumbnail" style="width: 100px; margin-right: 5px;">'
+                                    );
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            alert('Error fetching history data.');
+                        }
+                    });
+                }
+            });
         });
     </script>
 
