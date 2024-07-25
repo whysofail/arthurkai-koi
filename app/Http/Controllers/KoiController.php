@@ -10,7 +10,7 @@ class KoiController extends Controller
 {
     public function index()
     {
-        $koiSuggestions = Koi::with(['breeder', 'variety', 'bloodline', 'history'])->take(10)->where('status', 'Available')->get();
+        $koiSuggestions = Koi::with(['breeder', 'variety', 'bloodline', 'history'])->take(10)->where('status', 'Available')->latest()->get();
 
         // Return the suggestions as JSON
         return response()->json([
@@ -20,9 +20,8 @@ class KoiController extends Controller
 
     public function getKoi($id)
     {
-        $koi = Koi::find($id);
+        $koi = Koi::with(['breeder', 'variety', 'bloodline', 'history'])->find($id);
         return response()->json(['koi' => $koi]);
-
     }
 
     public function getKoiHistory($id)

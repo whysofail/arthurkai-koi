@@ -1,17 +1,10 @@
 @extends("layouts.apparthuradm")
-
 @section("title", "Detail")
-
 @section("css")
-
     <!-- Select2 -->
-
     <link rel="stylesheet" href="{{ asset("plugins/select2/css/select2.min.css") }}">
-
     <link rel="stylesheet" href="{{ asset("plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css") }}">
-
     <link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
-
     <style>
         .note-editor.note-airframe .note-editing-area .note-editable,
         .note-editor.note-frame .note-editing-area .note-editable {
@@ -127,7 +120,6 @@
     </style>
 
     <link rel="stylesheet" href="{{ asset("css/bootstrap.min.css") }}">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     <style>
@@ -285,10 +277,15 @@
                         <h1>Ochiba Shigure</h1>
                     </div>
                 </div> --}}
+                    @php
+                        $previousUrl = url()->previous();
+                        $currentUrl = url()->current();
+                        $fallbackUrl = route("cmskoi"); // Replace with your fallback route
+                    @endphp
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <a href="{{ url()->previous() }}" class="btn btn-sm"
+                            <a href={{ $previousUrl !== $currentUrl ? $previousUrl : $fallbackUrl }} class="btn btn-sm"
                                 style="margin-bottom: 5px; border-radius: 20px 1px 10px; border: black solid 1px; ">
                                 <i class="fas fa-arrow-circle-left" style="position: relative; right: 3%; top: 1px;"></i>
                                 Back
@@ -316,12 +313,9 @@
                     </div> --}}
 
                         <div class="col-12 col-lg-4 col-md-4 col-sm-4">
-
                             <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff"
                                 class="swiper mySwiper2">
-
                                 <div class="swiper-wrapper">
-
                                     @foreach ($koi as $k)
                                         @foreach ($k->history as $h)
                                             @if ($loop->first)
@@ -372,169 +366,181 @@
                         </div>
 
                         <div class="col-12 col-lg-8 col-md-8 col-sm-8">
-
                             <div class="px-3" style="background: ">
-
                                 <h2 class="mb-0"
                                     style="font-size: 2.2857142857142858rem; font-weight: 800; font-family: 'Open Sauce One', sans-serif;">
-
                                     @foreach ($koi as $k)
                                         {{ $k->nickname }}
                                     @endforeach
-
                                 </h2>
-
                                 <br>
-
                                 <h2 class="mb-0"
                                     style="font-size: 1.2857142857142858rem; font-weight: 800; font-family: 'Open Sauce One', sans-serif;">
-
-                                    Koi Code : @foreach ($koi as $k)
-                                        {{ $k->code }}
-                                    @endforeach
-
+                                    Koi Code :
+                                    {{ $k->code }}
                                     <br />
+                                    <div>
+                                        <a href="{{ route("cmskoidetail", ["id", $k->id]) }}" class="btn btn-xs"
+                                            style="background: darkred; color:white; border: 1px solid #62200a"
+                                            data-toggle="modal" data-target="#modalShowVideo{{ $k->id }}"><i
+                                                class="fas fa-video"></i></a>
+                                        <div>
+                                            <div style="padding: 1em 0 0 0;">
+                                                <div class="btn-group">
+                                                    <button class="btn-light" disabled style="font-size: 14px;">-</button>
+                                                    @if ($k->status == "Available")
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-success">Available</button>
+                                                    @elseif($k->status == "Sold")
+                                                        <button type="button" class="btn btn-sm btn-danger">Sold</button>
+                                                    @elseif($k->status == "Death")
+                                                        <button type="button" class="btn btn-sm btn-default"
+                                                            style="background: purple; color: white">Death</button>
+                                                    @else
+                                                    @endif
 
-                                    <a href="{{ route("cmskoidetail", $k->id) }}" class="btn btn-xs mt-3"
-                                        style="background: darkred; color:white; border: 1px solid #62200a; font-size: 12px"
-                                        data-toggle="modal" data-target="#modalShowVideo{{ $k->id }}"><i
-                                            class="fas fa-video"></i></a>
+                                                    <button type="button"
+                                                        class="btn btn-default btn-xs dropdown-toggle dropdown-icon"
+                                                        data-toggle="dropdown">
+                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                    </button>
+                                                    <div class="dropdown-menu" role="menu">
+                                                        <form action="{{ route("cmsstatusupdate") }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="id"
+                                                                value="{{ $k->id }}">
+                                                            <input type="hidden" name="status" value="Available">
+                                                            <button class="dropdown-item">Available</button>
+                                                        </form>
+                                                        <form action="{{ route("cmsstatusupdate") }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="id"
+                                                                value="{{ $k->id }}">
 
+                                                            <input type="hidden" name="status" value="Sold">
+
+                                                            <button class="dropdown-item">Sold</button>
+                                                        </form>
+                                                        <form action="{{ route("cmsstatusupdate") }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="id"
+                                                                value="{{ $k->id }}">
+                                                            <input type="hidden" name="status" value="Death">
+                                                            <button class="dropdown-item">Death</button>
+                                                        </form>
+
+                                                    </div>
+
+                                                    <span style="padding: 0 0 0 1em;">
+                                                        <a href="{{ route("cmskoiEdit", $k->id) }}"
+                                                            class="btn btn-warning btn-xs" style=""><i
+                                                                class="fas fa-edit"></i></a>
+                                                        <a href="#bannerformmodal{{ $k->id }}"
+                                                            class="btn btn-danger btn-xs" data-toggle="modal"
+                                                            data-target="#modalDelete{{ $k->id }}"
+                                                            style=""><i class="far fa-trash-alt"></i></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </h2>
-
                                 <br /><br />
-
                                 <div class="row mt-4">
-
                                     <nav class="w-100">
-
                                         <div class="nav nav-tabs" id="product-tab" role="tablist">
-
                                             <a class="nav-item nav-link active" id="progress-koi-tab" data-toggle="tab"
                                                 href="#progress-koi" role="tab" aria-controls="progress-koi"
                                                 aria-selected="false">Progress Koi</a>
-
                                             <a class="nav-item nav-link" id="product-comments-tab" data-toggle="tab"
                                                 href="#product-comments" role="tab" aria-controls="product-comments"
                                                 aria-selected="false">Detail Information</a>
-
-                                            <a class="nav-item nav-link" id="trophy-tab" data-toggle="tab" href="#trophy"
-                                                role="tab" aria-controls="trophy" aria-selected="false">Certification
+                                            <a class="nav-item nav-link" id="trophy-tab" data-toggle="tab"
+                                                href="#trophy" role="tab" aria-controls="trophy"
+                                                aria-selected="false">Certification
                                                 and
-
                                                 Trophy</a>
-
                                         </div>
-
                                     </nav>
 
                                     <div class="tab-content p-3" id="nav-tabContent">
-
                                         <div class="tab-pane fade active show" id="progress-koi" role="tabpanel"
                                             aria-labelledby="progress-koi-tab">
-
                                             <div class="history-tl-container">
-
                                                 <ul class="tl">
-
                                                     @foreach ($koi as $k)
                                                         @foreach ($k->history as $h)
                                                             <li class="tl-item" ng-repeat="item in retailer_history">
-
                                                                 <div class="timestamp"
                                                                     style="font-weight: bold; font-size: 16px;">
-
                                                                     {{ $h->year }}<br>
-
                                                                 </div>
-
                                                                 <div class="item-title"
                                                                     style="font-weight: bold; font-size: 16px;">
-
-                                                                    {{ $k->koi_code }}</div>
-
+                                                                    {{ $k->code }}</div>
                                                                 @foreach (explode("|", $h->link_photo) as $image)
                                                                     <img style="width: 10%" class="img-thumbnail"
                                                                         src="{{ asset("img/koi/photo/" . $image) }}">
                                                                 @endforeach
-
                                                                 <br>
-
                                                                 <div style="font-weight: bold; font-size: 16px;">Size :
-
                                                                     {{ $h->size }} CM</div>
-
                                                                 <!-- modalShowVideo -->
-
                                                                 <div class="modal fade bannerformmodal{{ $k->id }}"
                                                                     id="modalShowVideo{{ $k->id }}">
-
                                                                     <div class="modal-dialog">
-
                                                                         <div class="modal-content">
-
                                                                             <div class="modal-header"
                                                                                 style="display: block; text-align: center;">
-
                                                                                 <h5 class="modal-title">
-
-                                                                                    {{ $k->koi_code }}</h5>
-
+                                                                                    {{ $k->code }}</h5>
                                                                                 <button type="button" class="close"
                                                                                     data-dismiss="modal"
                                                                                     aria-label="Close">
-
                                                                                     <span aria-hidden="true">&times;</span>
-
                                                                                 </button>
-
                                                                             </div>
-
-                                                                            <div class="modal-body"
-                                                                                style="text-align: center">
-
-                                                                                <span>
-
-                                                                                    @foreach ($k->history as $h)
-                                                                                        @if ($loop->first)
-                                                                                            @foreach (explode("|", $h->link_video) as $image)
-                                                                                                <video
-                                                                                                    src="{{ asset("img/koi/video/" . $image) }}"
-                                                                                                    type="video/mp4"
-                                                                                                    style="width: 80%"
-                                                                                                    controls></video><br>
-
-                                                                                                <span
-                                                                                                    style="font-size: 0.8rem; color: #62200a">{{ $image }}</span>
+                                                                            <div class="modal-body">
+                                                                                <div class="swiper mySwiper"
+                                                                                    style="text-align: center">
+                                                                                    <div class="swiper-wrapper">
+                                                                                        @if (!empty($k->video))
+                                                                                            @php
+                                                                                                $videos = explode(
+                                                                                                    "|",
+                                                                                                    $k->video,
+                                                                                                );
+                                                                                            @endphp
+                                                                                            @foreach ($videos as $video)
+                                                                                                <div class="swiper-slide">
+                                                                                                    <video
+                                                                                                        controls="controls"
+                                                                                                        style="width: 100%"
+                                                                                                        name="{{ $video }}">
+                                                                                                        <source
+                                                                                                            src="{{ asset("img/koi/video/" . $video) }}">
+                                                                                                    </video><br>
+                                                                                                </div>
                                                                                             @endforeach
                                                                                         @else
-                                                                                            -
+                                                                                            <p>-</p>
                                                                                         @endif
-                                                                                    @endforeach
 
-                                                                                    <br />
-
-                                                                                </span>
-
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
-
-                                                                            <div
-                                                                                class="modal-footer justify-content-between">
-
-                                                                                <button type="button"
-                                                                                    class="btn btn-default"
-                                                                                    data-dismiss="modal"><i
-                                                                                        class="fas fa-long-arrow-alt-left"></i></button>
-
-                                                                                {{-- <a href="{{ route('cmskoiDelete', $k->id) }}"
-                                                                        type="button" class="btn btn-danger">Delete</a> --}}
-
-                                                                            </div>
-
+                                                                            <div class="swiper-pagination"></div>
                                                                         </div>
-
+                                                                        <div class="swiper-button-next"></div>
+                                                                        <div class="swiper-button-prev"></div>
                                                                     </div>
-
+                                                                    <div class="modal-footer justify-content-between">
+                                                                        <button type="button" class="btn btn-default"
+                                                                            data-dismiss="modal"><i
+                                                                                class="fas fa-long-arrow-alt-left"></i></button>
+                                                                        {{-- <a href="{{ route('cmskoiDelete', $k->id) }}"
+                                                                                    type="button" class="btn btn-danger">Delete</a> --}}
+                                                                    </div>
                                                                 </div>
 
                                                                 <!-- /.modalShowVideo -->
@@ -551,36 +557,21 @@
 
                                         <div class="tab-pane fade" id="product-comments" role="tabpanel"
                                             aria-labelledby="product-comments-tab">
-
                                             <table border="0">
-
                                                 <tbody>
-
                                                     @foreach ($koi as $k)
                                                         <tr>
-
                                                             <td><strong>Variety</strong></td>
-
                                                             <td>:</td>
-
                                                             <td style="padding: 10px">
-
-                                                                {{ $k->variety_id ? $k->variety->name . " | " . $k->variety->code : "-" }}
-
+                                                                {{ $k->variety_id ? $k->variety->name : "-" }}
                                                             </td>
-
                                                         </tr>
-
                                                         <tr>
-
                                                             <td><strong>Bloodline</strong></td>
-
                                                             <td>:</td>
-
                                                             <td style="padding: 10px">
-
                                                                 {{ $k->bloodline ? $k->bloodline->name : "-" }}</td>
-
                                                         </tr>
                                                         <tr>
                                                             <td><strong>Breeder</strong></td>
@@ -687,8 +678,7 @@
                                             <div class="row" style="text-align: center">
 
                                                 <div class="col-sm-4">
-
-                                                    @if ($k->name_trophy == null)
+                                                    @if ($k->trophy == null)
                                                         -
                                                     @else
                                                         <img style="width: 100%" width="150" class="img-thumbnail"

@@ -22,18 +22,23 @@
         }
 
         .swiper {
-            width: 500px;
             height: 100%;
         }
 
         .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-content: center;
             background-position: center;
             background-size: cover;
+            padding-bottom: 1.75em;
         }
 
         .swiper-slide img {
             display: block;
-            width: 100%;
+            height: 100%;
+            width: 300px;
+            object-fit: cover;
         }
 
         .swiper-button-prev:after,
@@ -185,7 +190,7 @@
 
                     <div class="col-12 col-sm-1 col-md-1">
 
-                        <a href="{{ route("cmskoigrid") }}" style="color:black;">
+                        <a href="{{ route("cmskoi", ["layout" => "grid"]) }}" style="color:black;">
 
                             <div class=" mb-3 mt-4">
 

@@ -78,7 +78,7 @@
                                             <label for="koi_id" class="col-sm-2 col-form-label">Koi</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" placeholder="Search Koi"
-                                                    id="koi_search">
+                                                    id="koi_search" autocomplete="off">
                                                 <input type="hidden" name="koi_id" id="koi_id">
                                                 <ul id="results"
                                                     class="list-group position-absolute w-100 search-dropdown"
@@ -109,8 +109,8 @@
 
                                         <label>Deskripsi</label>
 
-                                        <textarea id="deskripsi" name="deskripsi" rows="7">
-                                      {{ old("deskripsi") }}
+                                        <textarea id="description" name="description" rows="7">
+                                      {{ old("description") }}
                                     </textarea>
 
                                     </div>

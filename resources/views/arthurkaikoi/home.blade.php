@@ -34,8 +34,8 @@
         <div class="container">                
             <div class="row justify-content-center">
             <div class="col-12 text-center">
+                <div class="row justify-content-center">
                     <h2 class="mb-4">Our Collection</h2>
-                    </div>
                         @if (count($ourCollection) > 1)
                             @foreach ($ourCollection as $collection)
                                 <div class="col-lg-3 col-6">
@@ -64,10 +64,13 @@
                                                         style="display: flex; flex-direction: column;">
                                                         <img src="{{ asset("img/assets/broken.png") }}" class="img"
                                                             style="object-fit: contain;" alt="Placeholder">
-                                                        <span>{{ $firstPhoto }} (not found)</span>
-                                                    </div>
+                                                    @endif
                                                 @endif
-                                            @endif
+                                            </div>
+                                            <div>
+                                                <p class="namaikan">{{ $collection->title }}</p>
+                                                <p class="jenisikan">{{ $collection->koi->variety->name }}</p>
+                                            </div>
                                     @endif
                                 </div>
                 </div>
@@ -84,7 +87,7 @@
                     Risus commodo viverra maecenas accumsan lacus vel facilisis. </p>
             </div> --}}
 
-        <a href="#" class="buttoncollection seecollection">See More >></a>
+        <a href="{{ route("our") }}" class="buttoncollection seecollection">See More >></a>
 
         </div>
         </div>
