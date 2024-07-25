@@ -43,7 +43,6 @@
                                             $photos = array_filter(explode("|", $collection->koi->photo));
                                             $firstPhoto = !empty($photos) ? $photos[0] : null;
                                         @endphp
-
                                         <div class="artists-thumb">
                                             <div class="artists-image-wrap">
                                                 @if ($firstPhoto)
