@@ -19,7 +19,7 @@ Route::get('/clear', function () {
 
 Route::get('/', [C_Arthurkaikoi::class, 'index'])->name('homepage')->withoutMiddleware('auth');
 Route::get('our', [C_Arthurkaikoi::class, 'our'])->name('our')->withoutMiddleware('auth');
-Route::get('our/detail', [C_Arthurkaikoi::class, 'our_detail'])->name('ourdetail')->withoutMiddleware('auth');
+Route::get('our/detail/{id}', [C_Arthurkaikoi::class, 'our_detail'])->name('ourdetail')->withoutMiddleware('auth');
 Route::get('news', [C_Arthurkaikoi::class, 'news'])->name('news')->withoutMiddleware('auth');
 Route::get('aboutus', [C_Arthurkaikoi::class, 'aboutus'])->name('aboutus')->withoutMiddleware('auth');
 Route::get('contactus', [C_Arthurkaikoi::class, 'contactus'])->name('contactus')->withoutMiddleware('auth');
@@ -162,5 +162,6 @@ Route::get('CMS/contactus/delete/{id}', [C_ArthurkaikoiAdmin::class, 'contactusd
 
 // API (JSON) Stuff
 Route::get('/api/koi', [KoiController::class, 'index'])->name('api_koi');
+Route::get('/api/koi/{id}', [KoiController::class, 'getKoi'])->name('api_koi_id');
 Route::get('/api/koi/search', [KoiController::class, 'searchKoi'])->name('api_koi_search');
 

@@ -25,12 +25,14 @@ class C_Arthurkaikoi extends Controller
 
     public function our()
     {
-        return view('arthurkaikoi.our');
+        $ourCollection = OurCollection::with('koi')->paginate(8);
+        return view('arthurkaikoi.our', compact('ourCollection'));
     }
 
-    public function our_detail()
+    public function our_detail(Request $request, $id)
     {
-        return view('arthurkaikoi.detail.our');
+        $ourCollection = OurCollection::with('koi')->findOrFail($id);
+        return view('arthurkaikoi.detail.our', compact('ourCollection'));
     }
 
     public function news()

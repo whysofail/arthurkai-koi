@@ -35,7 +35,7 @@
             <div class="col-12 text-center">
                 <div class="row justify-content-center">
                     <h2 class="mb-4">Our Collection</h1>
-                        @if (count($ourCollection) > 1)
+                        @if (count($ourCollection) >= 1)
                             @foreach ($ourCollection as $collection)
                                 <div class="col-lg-3 col-6">
                                     @if (!empty($collection->koi->photo))
@@ -43,30 +43,26 @@
                                             $photos = array_filter(explode("|", $collection->koi->photo));
                                             $firstPhoto = !empty($photos) ? $photos[0] : null;
                                         @endphp
-                                        <div id="existing-photos">
-                                            @if ($firstPhoto)
-                                                @php
-                                                    $photoPath = public_path("img/koi/photo/" . $firstPhoto);
-                                                @endphp
-                                                @if (file_exists($photoPath))
-                                                    <div class="artists-thumb">
 
-                                                        <div class="artists-image-wrap">
-                                                            <img src="{{ asset("img/koi/photo" . $collection->koi->photo) }}"
-                                                                class="artists-image img-fluid">
-                                                            <p class="namaikan">{{ $collection->title }}</p>
-                                                        </div>
-                                                    </div>
-                                                    <br>
-                                                @else
-                                                    <div class="photo-item"
-                                                        style="display: flex; flex-direction: column; align-items: center;">
+                                        <div class="artists-thumb">
+                                            <div class="artists-image-wrap">
+                                                @if ($firstPhoto)
+                                                    @php
+                                                        $photoPath = public_path("img/koi/photo/" . $firstPhoto);
+                                                    @endphp
+                                                    @if (file_exists($photoPath))
+                                                        <img src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
+                                                            class="artists-image img-fluid">
+                                                    @else
                                                         <img src="{{ asset("img/assets/broken.png") }}" class="img"
                                                             style="object-fit: contain;" alt="Placeholder">
-                                                        <span>{{ $firstPhoto }} (not found)</span>
-                                                    </div>
+                                                    @endif
                                                 @endif
-                                            @endif
+                                            </div>
+                                            <div>
+                                                <p class="namaikan">{{ $collection->title }}</p>
+                                                <p class="jenisikan">{{ $collection->koi->variety->name }}</p>
+                                            </div>
                                     @endif
                                 </div>
                 </div>
@@ -83,7 +79,7 @@
                     Risus commodo viverra maecenas accumsan lacus vel facilisis. </p>
             </div> --}}
 
-        <a href="#" class="buttoncollection seecollection">See More >></a>
+        <a href="{{ route("our") }}" class="buttoncollection seecollection">See More >></a>
 
         </div>
         </div>

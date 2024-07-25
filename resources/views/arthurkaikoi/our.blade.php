@@ -19,94 +19,39 @@
     <section class="artists-section section-padding" id="section_2">
         <div class="container">
             <div class="galeri">
-                <div class="artists-thumb">
-                    <div class="photo">
-                        <a href="{{ route("ourdetail") }}"><img src="{{ asset("website/images/koi.png") }}"> </a>
-                        <p class="namaikan">Ginrin Shinwa</p>
-                        <p class="jenisikan">Jenis Ikan</p>
-                    </div>
-                    {{-- <div class="artists-hover">
-                    <p>
-                        <strong>Name:</strong>
-                        Madona
-                    </p>
-
-                    <p>
-                        <strong>Birthdate:</strong>
-                        August 16, 1958
-                    </p>
-                </div> --}}
-                </div>
-                <div class="artists-thumb">
-                    <div class="photo">
-                        <a href="{{ route("ourdetail") }}"><img src="{{ asset("website/images/koi.png") }}"> </a>
-                        <p class="namaikan">Ginrin Shinwa</p>
-                        <p class="jenisikan">Jenis Ikan</p>
-                    </div>
-                </div>
-                <div class="artists-thumb">
-                    <div class="photo">
-                        <a href="{{ route("ourdetail") }}"><img src="{{ asset("website/images/koi.png") }}"> </a>
-                        <p class="namaikan">Ginrin Shinwa</p>
-                        <p class="jenisikan">Jenis Ikan</p>
-                    </div>
-                </div>
-                <div class="artists-thumb">
-                    <div class="photo">
-                        <a href="{{ route("ourdetail") }}"><img src="{{ asset("website/images/koi.png") }}"> </a>
-                        <p class="namaikan">Ginrin Shinwa</p>
-                        <p class="jenisikan">Jenis Ikan</p>
-                    </div>
-                </div>
-                <div class="artists-thumb">
-                    <div class="photo">
-                        <a href="{{ route("ourdetail") }}"><img src="{{ asset("website/images/koi.png") }}"> </a>
-                        <p class="namaikan">Ginrin Shinwa</p>
-                        <p class="jenisikan">Jenis Ikan</p>
-                    </div>
-                </div>
-                <div class="artists-thumb">
-                    <div class="photo">
-                        <a href="{{ route("ourdetail") }}"><img src="{{ asset("website/images/koi.png") }}"> </a>
-                        <p class="namaikan">Ginrin Shinwa</p>
-                        <p class="jenisikan">Jenis Ikan</p>
-                    </div>
-                </div>
-                <div class="artists-thumb">
-                    <div class="photo">
-                        <a href="{{ route("ourdetail") }}"><img src="{{ asset("website/images/koi.png") }}"> </a>
-                        <p class="namaikan">Ginrin Shinwa</p>
-                        <p class="jenisikan">Jenis Ikan</p>
-                    </div>
-                </div>
-                <div class="artists-thumb">
-                    <div class="photo">
-                        <a href="{{ route("ourdetail") }}"><img src="{{ asset("website/images/koi.png") }}"> </a>
-                        <p class="namaikan">Ginrin Shinwa</p>
-                        <p class="jenisikan">Jenis Ikan</p>
-                    </div>
-                </div>
-                <div class="artists-thumb">
-                    <div class="photo">
-                        <a href="{{ route("ourdetail") }}"><img src="{{ asset("website/images/koi.png") }}"> </a>
-                        <p class="namaikan">Ginrin Shinwa</p>
-                        <p class="jenisikan">Jenis Ikan</p>
-                    </div>
-                </div>
-                <div class="artists-thumb">
-                    <div class="photo">
-                        <a href="{{ route("ourdetail") }}"><img src="{{ asset("website/images/koi.png") }}"> </a>
-                        <p class="namaikan">Ginrin Shinwa</p>
-                        <p class="jenisikan">Jenis Ikan</p>
-                    </div>
-                </div>
-                <div class="artists-thumb">
-                    <div class="photo">
-                        <a href="{{ route("ourdetail") }}"><img src="{{ asset("website/images/koi.png") }}"> </a>
-                        <p class="namaikan">Ginrin Shinwa</p>
-                        <p class="jenisikan">Jenis Ikan</p>
-                    </div>
-                </div>
+                {{ $ourCollection }}
+                @if ($ourCollection !== null)
+                    @foreach ($ourCollection as $collection)
+                        <div class="artists-thumb">
+                            @if (!empty($collection->koi->photo))
+                                @php
+                                    $photos = array_filter(explode("|", $collection->koi->photo));
+                                    $firstPhoto = !empty($photos) ? $photos[0] : null;
+                                @endphp
+                                <div class="photo">
+                                    @if ($firstPhoto)
+                                        @php
+                                            $photoPath = public_path("img/koi/photo/" . $firstPhoto);
+                                        @endphp
+                                        <a href="{{ route("ourdetail", $collection->id) }}">
+                                            @if (file_exists($photoPath))
+                                                <img src="{{ asset("img/koi/photo/" . $firstPhoto) }}">
+                                            @else
+                                                <img src="{{ asset("img/assets/broken.png") }}" class="img"
+                                                    style="object-fit: contain;" alt="Placeholder">
+                                            @endif
+                                        </a>
+                                    @endif
+                                    </a>
+                                </div>
+                            @endif
+                            <div>
+                                <p class="namaikan">{{ $collection->title }}</p>
+                                <p class="jenisikan">{{ $collection->koi->variety->name }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
             <div class="pagination">
                 <a href="page2.html" class="next">Next</a>

@@ -75,7 +75,7 @@
                                                 <th>Action</th>
                                                 <th>Koi ID | Code</th>
                                                 <th>Title</th>
-                                                <th>Deskripsi</th>
+                                                <th>Description</th>
                                             </tr>
                                         </thead>
                                         <tbody>

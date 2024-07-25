@@ -24,6 +24,8 @@
     <link href="{{ asset("website/css/bootstrap-icons.css") }}" rel="stylesheet">
     <link href="{{ asset("website/css/style.css") }}" rel="stylesheet">
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
     @yield("css")
 </head>
 
@@ -103,6 +105,7 @@
     <script src="{{ asset("website/js/jquery.sticky.js") }}"></script>
 
     <script src="{{ asset("website/js/custom.js") }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     @yield("script")
 

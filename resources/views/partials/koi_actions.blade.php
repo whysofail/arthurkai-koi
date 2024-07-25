@@ -1,10 +1,8 @@
 <span style="display: flex !important; gap: 4px">
     <a href="{{ route("cmskoiEdit", $k->id) }}" class="btn btn-warning btn-xs" style="width: 30px"><i
             class="fas fa-edit"></i></a>
-
     <a href="#bannerformmodal{{ $k->id }}" class="btn btn-danger btn-xs" data-toggle="modal"
         data-target="#modalDelete{{ $k->id }}" style="width: 30px"><i class="far fa-trash-alt"></i></a>
-
     <a href="{{ route("cmskoidetail", $k->id) }}" class="btn btn-info btn-xs" style="background: black;">Details</a>
 
 </span>
@@ -72,27 +70,21 @@
             <div class="modal-body">
                 <div class="swiper mySwiper" style="text-align: center">
                     <div class="swiper-wrapper">
-                        @foreach ($k as $h)
-                            @if ($loop->first)
-                                @if (!empty($h->video))
-                                    @foreach (explode("|", $h->video) as $image)
-                                        @if (!empty($image))
-                                            <div class="swiper-slide">
-                                                <video controls="controls" style="width: 80%"
-                                                    name="{{ $image }}">
-                                                    <source src="{{ asset("img/koi/video/" . $image) }}">
-                                                </video><br>
-                                            </div>
-                                        @else
-                                            <p style="text-align: center;">-</p>
-                                        @endif
-                                    @endforeach
-                                @else
-                                    <p style="text-align: center;">No video available.</p>
-                                @endif
-                            @endif
+                        @if (!empty($k->video))
+                            @php
+                                $videos = explode("|", $k->video);
+                            @endphp
+                            @foreach ($videos as $video)
+                                <div class="swiper-slide">
+                                    <video controls="controls" style="width: 100%" name="{{ $video }}">
+                                        <source src="{{ asset("img/koi/video/" . $video) }}">
+                                    </video><br>
+                                </div>
+                            @endforeach
+                        @else
+                            <p>-</p>
+                        @endif
 
-                        @endforeach
                     </div>
                 </div>
             </div>
@@ -120,7 +112,6 @@
 <!-- modalShowPhoto -->
 
 <div class="modal fade bannerformmodal{{ $k->id }}" id="modalShowPhoto{{ $k->id }}">
-
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header" style="display: block; text-align: center;">
@@ -136,12 +127,10 @@
                             @php
                                 $photos = explode("|", $k->photo);
                             @endphp
-
                             @foreach ($photos as $photo)
                                 <div class="swiper-slide">
-                                    <img width="125" class="img-thumbnail"
-                                        src="{{ asset("img/koi/photo/" . $photo) }}"
-                                        style="display: block; margin: 0 auto;">
+                                    <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $photo) }}"
+                                        style="display: block;">
                                 </div>
                             @endforeach
                         @else
@@ -154,21 +143,12 @@
                 </div>
             </div>
         </div>
-
         <div class="modal-footer justify-content-between">
-
             <button type="button" class="btn btn-default" data-dismiss="modal"><i
                     class="fas fa-long-arrow-alt-left"></i></button>
-
-            {{-- <a href="{{ route('cmskoiDelete', $k->id) }}"
-                    type="button" class="btn btn-danger">Delete</a> --}}
-
         </div>
-
     </div>
-
 </div>
-
 </div>
 
 <!-- /.modalShowPhoto -->
@@ -232,9 +212,7 @@
 <br /><br />
 
 <div class="btn-group">
-
     <button class="btn-light" disabled style="font-size: 14px;">-</button>
-
     @if ($k->status == "Available")
         <button type="button" class="btn btn-sm btn-success">Available</button>
     @elseif($k->status == "Sold")
@@ -245,32 +223,27 @@
     @endif
 
     <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-icon" data-toggle="dropdown">
-
         <span class="sr-only">Toggle Dropdown</span>
-
     </button>
-
     <div class="dropdown-menu" role="menu">
         <form action="{{ route("cmsstatusupdate") }}" method="POST">
             @csrf
-            <input type="hidden" name="id_koi" value="{{ $k->id }}">
-            <input type="hidden" name="n_status" value="Available">
+            <input type="hidden" name="id" value="{{ $k->id }}">
+            <input type="hidden" name="status" value="Available">
             <button class="dropdown-item">Available</button>
         </form>
-
         <form action="{{ route("cmsstatusupdate") }}" method="POST">
             @csrf
-            <input type="hidden" name="id_koi" value="{{ $k->id }}">
+            <input type="hidden" name="id" value="{{ $k->id }}">
 
-            <input type="hidden" name="n_status" value="Sold">
+            <input type="hidden" name="status" value="Sold">
 
             <button class="dropdown-item">Sold</button>
         </form>
-
         <form action="{{ route("cmsstatusupdate") }}" method="POST">
             @csrf
-            <input type="hidden" name="id_koi" value="{{ $k->id }}">
-            <input type="hidden" name="n_status" value="Death">
+            <input type="hidden" name="id" value="{{ $k->id }}">
+            <input type="hidden" name="status" value="Death">
             <button class="dropdown-item">Death</button>
         </form>
 

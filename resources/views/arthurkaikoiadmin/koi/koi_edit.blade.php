@@ -455,24 +455,26 @@
                                             <label>Video</label><br>
                                             <div class="form-group">
                                                 <img width="125" id="link_video" class="img-thumbnailv">
-                                                @foreach ($k->history as $history)
-                                                    @if ($loop->first)
-                                                        @foreach (explode("|", $history->link_video) as $image)
-                                                            @if ($image == null)
-                                                            @else
-                                                                <video src="{{ asset("img/koi/video/" . $image) }}"
+                                                @if ($loop->first)
+                                                    @if (isset($k->video) && !empty($k->video))
+                                                        @foreach (explode("|", $k->video) as $video)
+                                                            @if (!is_null($video) && $video != "")
+                                                                <video src="{{ asset("img/koi/video/" . $video) }}"
                                                                     type="video/mp4" width="130px" id="link_video"
                                                                     controls></video><br>
 
                                                                 <span id="spanLinkVideo"
-                                                                    style="font-size: 0.8rem; color: #62200a;">{{ $image }}</span>
+                                                                    style="font-size: 0.8rem; color: #62200a;">{{ $video }}</span>
 
                                                                 <br />
                                                             @endif
                                                         @endforeach
                                                     @else
+                                                        <p>No video provided</p>
                                                     @endif
-                                                @endforeach
+                                                @else
+                                                    <p>No video provided</p>
+                                                @endif
                                                 </span>
                                                 <div class="input-group realprocodeLV control-group lst incrementLV">
                                                     <input type="file" name="link_video[]" class="myfrm form-control"
@@ -501,13 +503,13 @@
 
                                         <div class="col-sm-12 mt-3">
                                             <label>Link Trophy</label><br>
-                                            @foreach ($k->history as $history)
+                                            {{-- @foreach ($k->history as $history)
                                                 @if ($loop->first)
-                                                    @if ($history->link_trophy == null)
-                                                        -
-                                                    @else
+                                                    @if (isset($history->link_trophy) && $history->link_trophy != null)
                                                         <img width="125" id="link_trophy" class="img-thumbnail"
                                                             src="{{ asset("img/koi/trophy/" . $history->link_trophy) }}">
+                                                    @else
+                                                        -
                                                     @endif
 
                                                     <div class="input-group">
@@ -516,29 +518,28 @@
                                                                 class="custom-file-input" id="link_trophy"
                                                                 onchange="Imagelinktrophy(event)">
                                                             <label class="custom-file-label" for="link_trophy"
-                                                                id="labelLinkTrophy">{{ $history->link_trophy }}</label>
+                                                                id="labelLinkTrophy">{{ $history->link_trophy ?? "No file chosen" }}</label>
                                                             <input type="hidden" name="link_trophys"
-                                                                value="{{ $history->link_trophy }}">
+                                                                value="{{ $history->link_trophy ?? "" }}">
                                                         </div>
                                                     </div>
-                                                @else
                                                 @endif
-                                            @endforeach
+                                            @endforeach --}}
+
                                         </div>
 
                                         <div class="col-sm-12" style="margin-top: 10px">
                                             <div class="form-group row">
                                                 <div class="col-sm-12">
                                                     <input type="text" class="form-control" name="name_trophy"
-                                                        value="@foreach ($k->history as $history)@if ($loop->first){{ old("name_trophy") ? old("name_trophy") : $history->name_trophy }}@else @endif @endforeach"
-                                                        id="name_trophy" placeholder="Nama Event">
+                                                        {{-- value="@foreach ($k->history as $history)@if ($loop->first){{ old("name_trophy") ? old("name_trophy") : $history->name_trophy }}@else @endif @endforeach" --}} id="name_trophy" placeholder="Nama Event">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="col-sm-12 mt-3">
                                             <label>Link Certificate</label><br>
-                                            @foreach ($k->history as $history)
+                                            {{-- @foreach ($k->history as $history)
                                                 @if ($loop->first)
                                                     @if ($history->link_certificate == null)
                                                         -
@@ -568,7 +569,7 @@
                                                     </div>
                                                 @else
                                                 @endif
-                                            @endforeach
+                                            @endforeach --}}
 
                                         </div>
 
@@ -577,8 +578,8 @@
                                             <div class="form-group row">
                                                 <div class="col-sm-12">
                                                     <input type="text" class="form-control" name="name_certificate"
-                                                        value="@foreach ($k->history as $history)@if ($loop->first){{ old("name_certificate") ? old("name_certificate") : $history->name_certificate }}@else @endif @endforeach"
-                                                        id="name_certificate" placeholder="Nama Event">
+                                                        {{-- value="@foreach ($k->history as $history)@if ($loop->first){{ old("name_certificate") ? old("name_certificate") : $history->name_certificate }}@else @endif @endforeach" --}} id="name_certificate"
+                                                        placeholder="Nama Event">
                                                 </div>
                                             </div>
                                         </div>
@@ -590,8 +591,7 @@
                                                     Sell</label>
                                                 <div class="col-sm-10">
                                                     <input type="month" class="form-control" name="date_sell"
-                                                        value="@foreach ($k->history as $history)@if ($loop->first){{ old("date_sell") ? old("date_sell") : $history->date_sell }}@else @endif @endforeach"
-                                                        id="date_sell">
+                                                        {{-- value="@foreach ($k->history as $history)@if ($loop->first){{ old("date_sell") ? old("date_sell") : $history->date_sell }}@else @endif @endforeach" --}} id="date_sell">
                                                 </div>
                                             </div>
                                         </div>
@@ -601,8 +601,7 @@
                                                 <label for="buyer_name" class="col-sm-2 col-form-label">Buyer Name</label>
                                                 <div class="col-sm-10">
                                                     <input type="text" class="form-control" name="buyer_name"
-                                                        value="@foreach ($k->history as $history)@if ($loop->first){{ old("buyer_name") ? old("buyer_name") : $history->buyer_name }}@else @endif @endforeach"
-                                                        id="buyer_name">
+                                                        {{-- value="@foreach ($k->history as $history)@if ($loop->first){{ old("buyer_name") ? old("buyer_name") : $history->buyer_name }}@else @endif @endforeach" --}} id="buyer_name">
                                                 </div>
                                             </div>
                                         </div>
@@ -613,8 +612,7 @@
                                                     Death</label>
                                                 <div class="col-sm-10">
                                                     <input type="date" class="form-control" name="death_date"
-                                                        value="@foreach ($k->history as $history)@if ($loop->first){{ old("death_date") ? old("death_date") : $history->death_date }}@else @endif @endforeach"
-                                                        id="death_date">
+                                                        {{-- value="@foreach ($k->history as $history)@if ($loop->first){{ old("death_date") ? old("death_date") : $history->death_date }}@else @endif @endforeach" --}} id="death_date">
                                                 </div>
                                             </div>
 
@@ -624,12 +622,12 @@
                                                 <label for="death_note" class="col-sm-2 col-form-label">Death Note</label>
                                                 <div class="col-sm-10">
                                                     <textarea name="death_note" class="form-control" id="death_note" rows="3">
-                                        @foreach ($k->history as $history)
+                                        {{-- @foreach ($k->history as $history)
 @if ($loop->first)
 {{ old("death_note") ? old("death_note") : $history->death_note }}
 @else
 @endif
-@endforeach
+@endforeach --}}
                                         </textarea>
                                                 </div>
                                             </div>

@@ -831,6 +831,7 @@ class C_ArthurkaikoiAdmin extends Controller
     public function koidetail($id)
     {
         $koi = Koi::with('history')->where('id', $id)->get();
+        // return response()->json($koi);
         return view('arthurkaikoiadmin.koi.koi_detail', compact('koi'));
     }
 
@@ -1506,8 +1507,7 @@ class C_ArthurkaikoiAdmin extends Controller
                 'status' => $request->status,
             ]);
         }
-
-        return redirect('/CMS/dashboard');
+        return redirect()->back();
     }
 
     ### KOI History
@@ -1792,10 +1792,8 @@ class C_ArthurkaikoiAdmin extends Controller
             $tujuan_upload = 'img/koi/website/ourcollection';
             $file_image->move($tujuan_upload, $image);
         }
-
         OurCollection::create([
             'title' => $request->title,
-            // 'image' => $image,
             'description' => $request->description,
             'koi_id' => $request->koi_id,
         ]);
@@ -1821,7 +1819,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
         OurCollection::where('id', $request->id)->update([
             'title' => $request->title,
-            'description' => $request->deskripsi,
+            'description' => $request->description,
             'koi_id' => $request->koi_id
         ]);
 
