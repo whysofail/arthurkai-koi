@@ -166,7 +166,7 @@
     <script>
         $(document).ready(function() {
 
-            $('#deskripsi').summernote({
+            $('#description').summernote({
                 height: 400,
                 toolbar: [
                     // [groupName, [list of button]]
@@ -196,8 +196,11 @@
                             $.each(data.suggestions, function(index, item) {
                                 $('#results').append(
                                     '<li class="list-group-item list-group-item-action" data-id="' +
-                                    item.id + '">' + 'ID : ' + item.id +
-                                    ' | Code : ' + item.code + '</li>');
+                                    item.id + '">' + item.code + ' | ' + item
+                                    .variety
+                                    .name + ' | ' + item.breeder
+                                    .name +
+                                    '</li>');
                             });
                         }
                     }
@@ -220,8 +223,11 @@
                                 $.each(data, function(index, item) {
                                     $('#results').append(
                                         '<li class="list-group-item list-group-item-action" data-id="' +
-                                        item.id + '">' + 'ID : ' + item.id +
-                                        ' | Code : ' + item.code + '</li>');
+                                        item.id + '">' + item.code + ' | ' + item
+                                        .variety
+                                        .name + ' | ' + item.breeder
+                                        .name +
+                                        '</li>');
                                 });
                             } else {
                                 $('#results').append(
@@ -243,9 +249,9 @@
 
             // Fill the input field when a suggestion is clicked
             $('#results').on('click', '.list-group-item', function() {
-                let selectedKoiCode = $(this).text().split(' | Code : ')[1];
+                let selectedText = $(this).text(); // Get the full text of the selected item
                 let selectedKoiId = $(this).data('id');
-                $('#koi_search').val(selectedKoiCode); // Set the text input with the Koi code
+                $('#koi_search').val(selectedText); // Set the text input with the full text
                 $('#koi_id').val(selectedKoiId); // Set the hidden input with the Koi ID (integer)
                 $('#results').empty();
                 // Optionally, do something with the selected koi ID

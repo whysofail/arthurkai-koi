@@ -898,7 +898,7 @@ class C_ArthurkaikoiAdmin extends Controller
         $link_certificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
 
         // Create Koi record
-        Koi::create([
+        $koi = Koi::create([
             'code' => $koiCode,
             'nickname' => $request->nickname,
             'variety_id' => $request->variety,
@@ -922,7 +922,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect('/CMS/koi');
+        return redirect('/CMS/koi/detail/' . $koi->id);
     }
 
     /**

@@ -16,7 +16,7 @@ class MakeOurcollectionTable extends Migration
         Schema::create('ourcollection', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->unsignedBigInteger('koi_id')->nullable();
             $table->timestamps();
             $table->foreign('koi_id')->references('id')->on('koi')->onDelete('set null');
@@ -30,6 +30,6 @@ class MakeOurcollectionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ourcollection');   
+        Schema::dropIfExists('ourcollection');
     }
 }

@@ -504,22 +504,14 @@
                                                                                         @endforeach
 
                                                                                     </div>
-
                                                                                     <div class="swiper-pagination">
-
                                                                                     </div>
-
                                                                                 </div>
-
                                                                                 <div class="swiper-button-next"></div>
-
                                                                                 <div class="swiper-button-prev"></div>
-
                                                                             </div>
-
                                                                             <div
                                                                                 class="modal-footer justify-content-between">
-
                                                                                 <button type="button"
                                                                                     class="btn btn-default"
                                                                                     data-dismiss="modal"><i

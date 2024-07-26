@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Arthurkai-Koi | @yield("title")</title>
     <link rel="stylesheet" href="{{ asset("css/app.css") }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset("plugins/summernote/summernote-bs4.min.css") }}">
     <!-- Google Font: Source Sans Pro -->
@@ -162,6 +162,7 @@
     </div>
     <!-- ./wrapper -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <script src="https://kit.fontawesome.com/66254d2337.js" crossorigin="anonymous"></script>
     <!-- jQuery -->
     <script src="{{ asset("plugins/jquery/jquery.min.js") }}"></script>
@@ -169,7 +170,7 @@
     <script src="{{ asset("plugins/bootstrap/js/bootstrap.bundle.min.js") }}"></script>
     <!-- DataTables  & Plugins -->
     <script src="{{ asset("plugins/datatables/jquery.dataTables.min.js") }}"></script>
-    <script src="{{ asset("plugins/datatables-bs4/js/dataTables.bootstrap4.min.js") }}"></script>
+
     <script src="{{ asset("plugins/datatables-responsive/js/dataTables.responsive.min.js") }}"></script>
     <script src="{{ asset("plugins/datatables-responsive/js/responsive.bootstrap4.min.js") }}"></script>
     <script src="{{ asset("plugins/datatables-buttons/js/dataTables.buttons.min.js") }}"></script>

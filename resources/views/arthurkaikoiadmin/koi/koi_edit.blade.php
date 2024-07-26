@@ -622,13 +622,8 @@
                                                 <label for="death_note" class="col-sm-2 col-form-label">Death Note</label>
                                                 <div class="col-sm-10">
                                                     <textarea name="death_note" class="form-control" id="death_note" rows="3">
-                                        {{-- @foreach ($k->history as $history)
-@if ($loop->first)
-{{ old("death_note") ? old("death_note") : $history->death_note }}
-@else
-@endif
-@endforeach --}}
-                                        </textarea>
+                                                    {{ $k->death_node ?? "" }}
+                                                    </textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -1013,7 +1008,6 @@
             rupiahpbjpy.value = formatJPY(this.value, '¥ ');
         });
     </script>
-
     <script>
         $.ajaxSetup({
             headers: {
