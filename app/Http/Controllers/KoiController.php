@@ -25,9 +25,9 @@ class KoiController extends Controller
         return response()->json(['koi' => $koi]);
     }
 
-    public function getKoiHistory(Request $request, $id)
+    public function getKoiHistory(Request $request, $koi_id)
     {
-        $koi = Koi::find($id);
+        $koi = Koi::find($koi_id);
 
         if (!$koi) {
             return response()->json(['error' => 'Koi not found.'], 404);
@@ -78,12 +78,19 @@ class KoiController extends Controller
 
     public function searchKoi(Request $request)
     {
-        // Get the query from the request
         $query = strtoupper($request->input('query'));
 
-        // Search Koi by name or species
-        $results = Koi::where('code', 'LIKE', "%{$query}%")->where('status', 'Available')
+        // Perform the search query
+        $results = Koi::leftJoin('variety', 'koi.variety_id', '=', 'variety.id')
+            ->leftJoin('breeder', 'koi.breeder_id', '=', 'breeder.id')
+            ->where(function ($q) use ($query) {
+                $q->whereRaw('LOWER(koi.code) LIKE ?', ['%' . strtolower($query) . '%'])
+                    ->orWhereRaw('LOWER(variety.name) LIKE ?', ['%' . strtolower($query) . '%'])
+                    ->orWhereRaw('LOWER(breeder.name) LIKE ?', ['%' . strtolower($query) . '%']);
+            })
+            ->select('koi.*', 'variety.name as variety_name', 'breeder.name as breeder_name')
             ->get();
+
 
         // Return the results as JSON
         return response()->json($results);

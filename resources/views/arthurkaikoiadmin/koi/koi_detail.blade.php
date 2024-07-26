@@ -298,7 +298,7 @@
                         {{-- <div class="col-sm-6" style="text-align: right">
                         <button type="button" class="btn btn-default dropdown-toggle dropdown-icon"
                             data-toggle="dropdown" style="background: black; color: white;">
-                            @foreach ($koi as $k) {{ $k->year }} @endforeach <span class="sr-only">Toggle Dropdown</span>
+                            @foreach ($koi as $koi) {{ $koi->year }} @endforeach <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu" role="menu">
                             <a class="dropdown-item" href="{{ route('cmskoiyear', '2018') }}">2018</a>
@@ -319,13 +319,13 @@
                             <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff"
                                 class="swiper mySwiper1">
                                 <div class="swiper-wrapper">
-                                    @foreach ($koi as $k)
-                                        @foreach (explode("|", $k->photo) as $image)
+                                    @if (!empty($koi->photo))
+                                        @foreach (explode("|", $koi->photo) as $image)
                                             <div class="swiper-slide">
                                                 <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $image) }}">
                                             </div>
                                         @endforeach
-                                    @endforeach
+                                    @endif
                                 </div>
                                 <div class="swiper-button-next"></div>
                                 <div class="swiper-button-prev"></div>
@@ -334,9 +334,9 @@
 
                             {{-- <div thumbsSlider="" class="swiper mySwiper">
                                 <div class="swiper-wrapper">
-                                    @foreach ($koi as $k)
+                                    @foreach ($koi as $koi)
                                         @if ($loop->first)
-                                            @foreach (explode("|", $k->photo) as $image)
+                                            @foreach (explode("|", $koi->photo) as $image)
                                                 <div class="swiper-slide">
                                                     <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $image) }}">
                                                 </div>
@@ -354,28 +354,26 @@
                             <div class="px-3" style="background: ">
                                 <h2 class="mb-0"
                                     style="font-size: 2.2857142857142858rem; font-weight: 800; font-family: 'Open Sauce One', sans-serif;">
-                                    @foreach ($koi as $k)
-                                        {{ $k->nickname }}
-                                    @endforeach
+                                    {{ $koi->nickname ?? "-" }}
                                 </h2>
                                 <br>
                                 <h2 class="mb-0"
                                     style="font-size: 1.2857142857142858rem; font-weight: 800; font-family: 'Open Sauce One', sans-serif;">
                                     Koi Code :
-                                    {{ $k->code }}
+                                    {{ $koi->code ?? "-" }}
                                     <br />
                                     <div>
-                                        <a href="{{ route("cmskoidetail", ["id", $k->id]) }}" class="btn btn-xs"
+                                        <a href="{{ route("cmskoidetail", ["id", $koi->id]) }}" class="btn btn-xs"
                                             style="background: darkred; color:white; border: 1px solid #62200a"
-                                            data-toggle="modal" data-target="#modalShowVideo{{ $k->id }}"><i
+                                            data-toggle="modal" data-target="#modalShowVideo{{ $koi->id }}"><i
                                                 class="fas fa-video"></i></a>
-                                        <div class="modal fade bannerformmodal{{ $k->id }}"
-                                            id="modalShowVideo{{ $k->id }}">
+                                        <div class="modal fade bannerformmodal{{ $koi->id }}"
+                                            id="modalShowVideo{{ $koi->id }}">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header" style="display: block; text-align: center;">
                                                         <h5 class="modal-title">
-                                                            {{ $k->code }}</h5>
+                                                            {{ $koi->code }}</h5>
                                                         <button type="button" class="close" data-dismiss="modal"
                                                             aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
@@ -384,9 +382,9 @@
                                                     <div class="modal-body">
                                                         <div class="swiper mySwiper" style="text-align: center">
                                                             <div class="swiper-wrapper">
-                                                                @if (!empty($k->video))
+                                                                @if (!empty($koi->video))
                                                                     @php
-                                                                        $videos = explode("|", $k->video);
+                                                                        $videos = explode("|", $koi->video);
                                                                     @endphp
                                                                     @foreach ($videos as $video)
                                                                         <div class="swiper-slide">
@@ -409,7 +407,7 @@
                                             <div class="modal-footer justify-content-between">
                                                 <button type="button" class="btn btn-default" data-dismiss="modal"><i
                                                         class="fas fa-long-arrow-alt-left"></i></button>
-                                                {{-- <a href="{{ route('cmskoiDelete', $k->id) }}"
+                                                {{-- <a href="{{ route('cmskoiDelete', $koi->id) }}"
                                                                     type="button" class="btn btn-danger">Delete</a> --}}
                                             </div>
                                         </div>
@@ -417,12 +415,12 @@
                                             <div style="padding: 1em 0 0 0;">
                                                 <div class="btn-group">
                                                     <button class="btn-light" disabled style="font-size: 14px;">-</button>
-                                                    @if ($k->status == "Available")
+                                                    @if ($koi->status == "Available")
                                                         <button type="button"
                                                             class="btn btn-sm btn-success">Available</button>
-                                                    @elseif($k->status == "Sold")
+                                                    @elseif($koi->status == "Sold")
                                                         <button type="button" class="btn btn-sm btn-danger">Sold</button>
-                                                    @elseif($k->status == "Death")
+                                                    @elseif($koi->status == "Death")
                                                         <button type="button" class="btn btn-sm btn-default"
                                                             style="background: purple; color: white">Death</button>
                                                     @else
@@ -437,14 +435,14 @@
                                                         <form action="{{ route("cmsstatusupdate") }}" method="POST">
                                                             @csrf
                                                             <input type="hidden" name="id"
-                                                                value="{{ $k->id }}">
+                                                                value="{{ $koi->id }}">
                                                             <input type="hidden" name="status" value="Available">
                                                             <button class="dropdown-item">Available</button>
                                                         </form>
                                                         <form action="{{ route("cmsstatusupdate") }}" method="POST">
                                                             @csrf
                                                             <input type="hidden" name="id"
-                                                                value="{{ $k->id }}">
+                                                                value="{{ $koi->id }}">
 
                                                             <input type="hidden" name="status" value="Sold">
 
@@ -453,7 +451,7 @@
                                                         <form action="{{ route("cmsstatusupdate") }}" method="POST">
                                                             @csrf
                                                             <input type="hidden" name="id"
-                                                                value="{{ $k->id }}">
+                                                                value="{{ $koi->id }}">
                                                             <input type="hidden" name="status" value="Death">
                                                             <button class="dropdown-item">Death</button>
                                                         </form>
@@ -461,12 +459,12 @@
                                                     </div>
 
                                                     <span style="padding: 0 0 0 1em;">
-                                                        <a href="{{ route("cmskoiEdit", $k->id) }}"
+                                                        <a href="{{ route("cmskoiEdit", $koi->id) }}"
                                                             class="btn btn-warning btn-xs" style=""><i
                                                                 class="fas fa-edit"></i></a>
-                                                        <a href="#bannerformmodal{{ $k->id }}"
+                                                        <a href="#bannerformmodal{{ $koi->id }}"
                                                             class="btn btn-danger btn-xs" data-toggle="modal"
-                                                            data-target="#modalDelete{{ $k->id }}"
+                                                            data-target="#modalDelete{{ $koi->id }}"
                                                             style=""><i class="far fa-trash-alt"></i></a>
                                                     </span>
                                                 </div>
@@ -506,9 +504,7 @@
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h5 class="modal-title" id="historyModalLabel">
-                                                                        @foreach ($koi as $k)
-                                                                            {{ $k->code }}
-                                                                        @endforeach
+                                                                        {{ $koi->code }}
                                                                         History
                                                                     </h5>
                                                                     <button type="button" class="close"
@@ -521,7 +517,7 @@
                                                                         name="historyForm">
                                                                         @csrf
                                                                         <input type="hidden" name="koi_id"
-                                                                            id="koi_id" value="{{ $k->id }}">
+                                                                            id="koi_id" value="{{ $koi->id }}">
                                                                         <div class="form-group">
                                                                             <label for="year">Year</label>
                                                                             <select class="form-control select2"
@@ -561,32 +557,31 @@
                                                     </div>
 
                                                 </div>
-                                                <ul class="tl">
-                                                    @foreach ($koi as $k)
-                                                        @php
-                                                            // Sort and group history by year
-                                                            $sortedHistory = $k->history
-                                                                ->sortBy("year")
-                                                                ->groupBy("year");
-                                                        @endphp
-
-                                                        @foreach ($sortedHistory as $year => $historyRecords)
-                                                            @foreach ($historyRecords as $record)
-                                                                <li class="tl-item">
-                                                                    <div class="timestamp"
-                                                                        style="display: flex; gap: 0.25em;">
-                                                                        {{ $year }}
-                                                                    </div>
+                                                <ul class="tl" id="historyList">
+                                                    @php
+                                                        // Sort and group history by year
+                                                        $sortedHistory = $koi->history->sortBy("year")->groupBy("year");
+                                                    @endphp
+                                                    @foreach ($sortedHistory as $year => $historyRecords)
+                                                        @foreach ($historyRecords as $record)
+                                                            <li class="tl-item">
+                                                                <div class="timestamp"
+                                                                    style="display: flex; gap: 0.25em;">
+                                                                    {{ $year }}
+                                                                </div>
+                                                                @if (!empty($record->photo))
                                                                     @foreach (explode("|", $record->photo) as $image)
                                                                         <img style="width: 10%" class="img-thumbnail"
                                                                             src="{{ asset("img/koi/photo/" . $image) }}"
                                                                             alt="Photo">
                                                                     @endforeach
-                                                                    <br>
-                                                                    <div style="font-weight: bold; font-size: 16px;">
-                                                                        Size: {{ $record->size }} CM</div>
-                                                                </li>
-                                                            @endforeach
+                                                                @else
+                                                                    <span>No photos provided.</span>
+                                                                @endif
+                                                                <br>
+                                                                <div style="font-weight: bold; font-size: 16px;">
+                                                                    Size: {{ $record->size }} CM</div>
+                                                            </li>
                                                         @endforeach
                                                     @endforeach
 
@@ -598,112 +593,99 @@
                                             aria-labelledby="product-comments-tab">
                                             <table border="0">
                                                 <tbody>
-                                                    @foreach ($koi as $k)
-                                                        <tr>
-                                                            <td><strong>Variety</strong></td>
-                                                            <td>:</td>
-                                                            <td style="padding: 10px">
-                                                                {{ $k->variety_id ? $k->variety->name : "-" }}
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><strong>Bloodline</strong></td>
-                                                            <td>:</td>
-                                                            <td style="padding: 10px">
-                                                                {{ $k->bloodline ? $k->bloodline->name : "-" }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><strong>Breeder</strong></td>
-                                                            <td>:</td>
-                                                            <td style="padding: 10px">
-                                                                {{ $k->breeder ? $k->breeder->name : "-" }}</td>
-                                                        </tr>
+                                                    <tr>
+                                                        <td><strong>Variety</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->variety_id ? $koi->variety->name : "-" }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Bloodline</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->bloodline ? $koi->bloodline->name : "-" }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Breeder</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->breeder ? $koi->breeder->name : "-" }}</td>
+                                                    </tr>
 
-                                                        <tr>
-                                                            <td><strong>Size</strong></td>
-                                                            <td>:</td>
-                                                            <td style="padding: 10px">{{ $k->size ? $k->size : "-" }}
-                                                            </td>
-                                                        </tr>
+                                                    <tr>
+                                                        <td><strong>Size</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">{{ $koi->size ? $koi->size : "-" }}
+                                                        </td>
+                                                    </tr>
 
-                                                        <tr>
-                                                            <td><strong>Birthday Year & Month</strong></td>
-                                                            <td>:</td>
-                                                            <td style="padding: 10px">
-                                                                {{ $k->birthdate ? $k->birthdate : "-" }}
-                                                            </td>
+                                                    <tr>
+                                                        <td><strong>Birthday Year & Month</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->birthdate ? $koi->birthdate : "-" }}
+                                                        </td>
 
-                                                        </tr>
-                                                        @foreach ($koi as $k)
-                                                            <tr>
-                                                                <td><strong>Age</strong></td>
-                                                                <td>:</td>
-                                                                <td style="padding: 10px">
-                                                                    @if ($k->birthdate)
-                                                                        @php
-                                                                            $umur = \Carbon\Carbon::parse(
-                                                                                $k->birthdate,
-                                                                            )->diff(\Carbon\Carbon::now());
-                                                                            $umurTahun = $umur->y;
-                                                                            $umurBulan = $umur->m;
-                                                                            echo $umurTahun . "yr " . $umurBulan . "m";
-                                                                        @endphp
-                                                                    @else
-                                                                        -
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><strong>Date Of Ownership</strong></td>
-                                                                <td>:</td>
-                                                                <td style="padding: 10px">
-                                                                    {{ $k->purchase_date ? $k->purchase_date : "-" }}</td>
-                                                            </tr>
-                                                        @endforeach
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Age</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            @if ($koi->birthdate)
+                                                                @php
+                                                                    $umur = \Carbon\Carbon::parse(
+                                                                        $koi->birthdate,
+                                                                    )->diff(\Carbon\Carbon::now());
+                                                                    $umurTahun = $umur->y;
+                                                                    $umurBulan = $umur->m;
+                                                                    echo $umurTahun . "yr " . $umurBulan . "m";
+                                                                @endphp
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Date Of Ownership</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->purchase_date ? $koi->purchase_date : "-" }}</td>
+                                                    </tr>
 
-                                                        <tr>
-                                                            <td><strong>Price Buy (IDR)</strong></td>
-                                                            <td>:</td>
-                                                            <td style="padding: 10px">
-                                                                {{ $k->price_buy_idr ? $k->price_buy_idr : "-" }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><strong>Price Buy (JPY)</strong></td>
-                                                            <td>:</td>
-                                                            <td style="padding: 10px">
-                                                                {{ $k->price_buy_jpy ? $k->price_buy_jpy : "-" }}</td>
-                                                        </tr>
+                                                    <tr>
+                                                        <td><strong>Price Buy (IDR)</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->price_buy_idr ?? "-" }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Price Buy (JPY)</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->price_buy_jpy ?? "-" }}</td>
+                                                    </tr>
 
-                                                        <tr>
-                                                            <td><strong>Sell Price (IDR)</strong></td>
-                                                            <td>:</td>
-                                                            <td style="padding: 10px">
-                                                                @foreach ($k->history as $h)
-                                                                    @if ($loop->first)
-                                                                        {{ $h->pricesell_idr ? $h->pricesell_idr : "-" }}
-                                                                    @else
-                                                                    @endif
-                                                                @endforeach
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><strong>Sell Price (JPY)</strong></td>
+                                                    <tr>
+                                                        <td><strong>Sell Price (IDR)</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
 
-                                                            <td>:</td>
+                                                            {{ $koi->price_sell_idr ?? "-" }}
 
-                                                            <td style="padding: 10px">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Sell Price (JPY)</strong></td>
 
-                                                                @foreach ($k->history as $h)
-                                                                    @if ($loop->first)
-                                                                        {{ $h->pricesell_jpy ? $h->pricesell_jpy : "-" }}
-                                                                    @else
-                                                                    @endif
-                                                                @endforeach
+                                                        <td>:</td>
 
-                                                            </td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->price_sell_jpy ?? "-" }}
 
-                                                        </tr>
-                                                    @endforeach
+                                                        </td>
+
+                                                    </tr>
 
                                                 </tbody>
 
@@ -717,26 +699,26 @@
                                             <div class="row" style="text-align: center">
 
                                                 <div class="col-sm-4">
-                                                    @if ($k->trophy == null)
+                                                    @if ($koi->trophy == null)
                                                         -
                                                     @else
                                                         <img style="width: 100%" width="150" class="img-thumbnail"
-                                                            src="{{ asset("img/koi/certificate/" . $k->link_certificate) }}"><br><br>
+                                                            src="{{ asset("img/koi/certificate/" . $koi->link_certificate) }}"><br><br>
 
-                                                        <p>{{ $k->name_trophy }}</p>
+                                                        <p>{{ $koi->name_trophy }}</p>
                                                     @endif
 
                                                 </div>
 
                                                 <div class="col-sm-4">
 
-                                                    @if ($k->name_certificate == null)
+                                                    @if ($koi->name_certificate == null)
                                                         -
                                                     @else
                                                         <img style="width: 100%" class="img-thumbnail"
-                                                            src="{{ asset("img/koi/trophy/" . $k->link_trophy) }}"><br><br>
+                                                            src="{{ asset("img/koi/trophy/" . $koi->link_trophy) }}"><br><br>
 
-                                                        <p>{{ $k->name_certificate }}</p>
+                                                        <p>{{ $koi->name_certificate }}</p>
                                                     @endif
 
                                                 </div>
@@ -839,7 +821,6 @@
         $(document).ready(function() {
             // Prevent form submission on Enter key press
             $('#historyForm').on('keydown', function(e) {
-                e.preventDefault(); // Prevent the default form submission
                 if (e.key === 'Enter') {
                     e.preventDefault(); // Prevent the default form submission
                 }
@@ -858,15 +839,55 @@
                     success: function(response) {
                         $('#historyModal').modal(
                             'hide'); // Hide the modal on successful submission
-                        // Optionally, refresh the history data or UI
+                        fetchHistoryData($('#koi_id').val()); // Refresh the history data
                     },
                     error: function(xhr) {
                         alert('Error saving history data.'); // Handle error
                     }
                 });
             });
+
+            // Fetch and update history data
+            function fetchHistoryData(koi_id) {
+                $.ajax({
+                    url: "{{ url("/api/koi/history") }}/" + koi_id,
+                    method: 'GET',
+                    success: function(response) {
+                        // Clear the current history list
+                        $('#historyList').empty();
+
+                        // Iterate through each year's history and append to the UI
+                        $.each(response.history, function(year, items) {
+                            $.each(items, function(index, item) {
+                                var historyItem = $('<li>').addClass('tl-item');
+                                historyItem.append(
+                                    '<div class="timestamp" style="display: flex; gap: 0.25em;">' +
+                                    year + '</div>');
+
+                                if (item.link_photo) {
+                                    var photos = item.link_photo.split('|');
+                                    $.each(photos, function(i, photo) {
+                                        historyItem.append(
+                                            '<img style="width: 10%" class="img-thumbnail" src="{{ asset("img/koi/photo/") }}/' +
+                                            photo + '" alt="Photo">');
+                                    });
+                                }
+
+                                historyItem.append(
+                                    '<br><div style="font-weight: bold; font-size: 16px;">Size: ' +
+                                    item.size + ' CM</div>');
+                                $('#historyList').append(historyItem);
+                            });
+                        });
+                    },
+                    error: function(xhr) {
+                        alert('Error fetching history data.'); // Handle error
+                    }
+                });
+            }
         });
     </script>
+
     <script>
         $(document).ready(function() {
             $('#year').on('change', function() {
@@ -895,7 +916,7 @@
                             }
                         },
                         error: function(xhr) {
-                            alert('Error fetching history data.');
+                            console.error('Error fetching history data.');
                         }
                     });
                 }

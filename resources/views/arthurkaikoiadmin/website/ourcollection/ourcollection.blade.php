@@ -73,7 +73,7 @@
                                             <tr>
                                                 <th>No</th>
                                                 <th>Action</th>
-                                                <th>Koi ID | Code</th>
+                                                <th>Koi</th>
                                                 <th>Title</th>
                                                 <th>Description</th>
                                             </tr>
@@ -92,8 +92,13 @@
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        <a
-                                                            href="{{ route("cmskoidetail", $o->koi_id) }}">{{ $o->koi_id . " | " . $o->koi->code }}</a>
+                                                        <a href="{{ route("cmskoidetail", $o->koi_id ?? 0) }}">
+                                                            @if (!is_null($o->koi))
+                                                                {{ $o->koi->code ?? "-" }}
+                                                            @else
+                                                                No Koi Provided, Please Edit
+                                                            @endif
+                                                        </a>
                                                     </td>
                                                     <td>{{ $o->title }}</td>
                                                     <td>
