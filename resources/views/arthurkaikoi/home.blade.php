@@ -73,7 +73,7 @@
                 @endif
             </div>
         </div>
-
+        {{-- lorem  --}}
         {{-- <div class="col-12 text-center">
                 <p class="deskripsi mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                     tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.
