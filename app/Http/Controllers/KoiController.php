@@ -81,7 +81,7 @@ class KoiController extends Controller
         $query = strtoupper($request->input('query'));
 
         // Perform the search query
-        $results = Koi::leftJoin('variety', 'koi.variety_id', '=', 'variety.id')
+        $results = Koi::with('variety', 'breeder')->leftJoin('variety', 'koi.variety_id', '=', 'variety.id')
             ->leftJoin('breeder', 'koi.breeder_id', '=', 'breeder.id')
             ->where(function ($q) use ($query) {
                 $q->whereRaw('LOWER(koi.code) LIKE ?', ['%' . strtolower($query) . '%'])
