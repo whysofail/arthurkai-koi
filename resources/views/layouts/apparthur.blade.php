@@ -68,7 +68,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-2 col-6">
-                        <img clas="imgfooter" src="{{ asset("website/images/logofooter.png") }}">
+                        <img class="imgfooter" src="{{ asset("website/images/logofooter.png") }}">
                     </div>
                     <div class="sitelink col-lg-10 col-6">
                         <div class="row">
