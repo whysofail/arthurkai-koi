@@ -830,7 +830,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function koidetail($id)
     {
-        $koi = Koi::with('history')->where('id', $id)->get();
+        $koi = Koi::with('history')->where('id', $id)->first();
         // return response()->json($koi);
         return view('arthurkaikoiadmin.koi.koi_detail', compact('koi'));
     }
