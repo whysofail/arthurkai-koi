@@ -240,13 +240,11 @@
                         success: function(data) {
                             $('#results').empty();
                             if (data.length > 0) {
-                                $.each(data.suggestions, function(index, item) {
+                                $.each(data, function(index, item) {
                                     $('#results').append(
                                         '<li class="list-group-item list-group-item-action" data-id="' +
                                         item.id + '">' + item.code + ' | ' + item
-                                        .variety
-                                        .name + ' | ' + item.breeder
-                                        .name +
+                                        .variety.name + ' | ' + item.breeder.name +
                                         '</li>');
                                 });
                             } else {
@@ -310,7 +308,7 @@
                         if (data.koi) {
                             $('#koi_search').val(
                                 `${data.koi.code} | ${data.koi.variety.name} | ${data.koi.breeder.name}`
-                                );
+                            );
                         }
                     }
                 });
