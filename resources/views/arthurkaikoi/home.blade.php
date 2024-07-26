@@ -45,18 +45,20 @@
                                         @endphp
                                         <div class="artists-thumb">
                                             <div class="artists-image-wrap">
-                                                @if ($firstPhoto)
-                                                    @php
-                                                        $photoPath = public_path("img/koi/photo/" . $firstPhoto);
-                                                    @endphp
-                                                    @if (file_exists($photoPath))
-                                                        <img src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
-                                                            class="artists-image img-fluid">
-                                                    @else
-                                                        <img src="{{ asset("img/assets/broken.png") }}" class="img"
-                                                            style="object-fit: contain;" alt="Placeholder">
+                                                <a href="{{ route("ourdetail", $collection->id) }}">
+                                                    @if ($firstPhoto)
+                                                        @php
+                                                            $photoPath = public_path("img/koi/photo/" . $firstPhoto);
+                                                        @endphp
+                                                        @if (file_exists($photoPath))
+                                                            <img src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
+                                                                class="artists-image img-fluid">
+                                                        @else
+                                                            <img src="{{ asset("img/assets/broken.png") }}" class="img"
+                                                                style="object-fit: contain;" alt="Placeholder">
+                                                        @endif
                                                     @endif
-                                                @endif
+                                                </a>
                                             </div>
                                             <div>
                                                 <p class="namaikan">{{ $collection->title }}</p>

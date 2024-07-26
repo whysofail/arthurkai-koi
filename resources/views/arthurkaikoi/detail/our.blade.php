@@ -7,12 +7,7 @@
     <section class="hero-collection">
         <div class="justify-content-center align-items-center">
             <img class="banner" src="{{ asset("website/images/collectionbanner.png") }}" alt="Collection Banner">
-            <!-- <div class="search">
-                                                                                                                                                                                                                                                    <input  class="search-txt" type="text" name="" placeholder="Type to search">
-                                                                                                                                                                                                                                                    <a class="search-btn" href="#" >
-                                                                                                                                                                                                                                                       <i class="fas fa-search"></i>
-                                                                                                                                                                                                                                                    </a>
-                                                                                                                                                                                                                                                </div> -->
+            <!-- <div class="search">                                                                                                                                                                                                   </a>                                                                                                                                                                                                           </div> -->
         </div>
     </section>
 
@@ -27,7 +22,10 @@
                     <br>
                     <p class="namaikan">{{ $ourCollection->title ?? "Unknown" }}</p>
                     <hr>
-                    <p>{{ $ourCollection->description ?? "No description." }}</p>
+                    <div class="description">
+                        {!! $ourCollection->description ?? "No description." !!}
+                    </div>
+
                     <div>
                         @if (isset($ourCollection->koi))
                             <div class="selected"
