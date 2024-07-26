@@ -33,15 +33,9 @@
     <section class="artists-section section-padding" id="section_2">
         <div class="container">
             <div class="col-12 text-center">
-<<<<<<<<< Temporary merge branch 1
-                    <h2 class="mb-4">Our Collection</h2>
-                    </div>
-                        @if (count($ourCollection) > 1)
-=========
                 <div class="row justify-content-center">
                     <h2 class="mb-4">Our Collection</h1>
                         @if (count($ourCollection) >= 1)
->>>>>>>>> Temporary merge branch 2
                             @foreach ($ourCollection as $collection)
                                 <div class="col-lg-3 col-6">
                                     @if (!empty($collection->koi->photo))
@@ -49,34 +43,22 @@
                                             $photos = array_filter(explode("|", $collection->koi->photo));
                                             $firstPhoto = !empty($photos) ? $photos[0] : null;
                                         @endphp
-
-<<<<<<<<< Temporary merge branch 1
-                                                        <div class="artists-image-wrap">
-                                                            <img src="{{ asset("img/koi/photo" . $collection->koi->photo) }}"
-                                                                class="artists-image img-fluid">
-                                                            <p class="namaikan">{{ $collection->title }}</p>
-                                                        </div>
-                                                    </div>
-                                                    <br>
-                                                @else
-                                                    <div class="photo-item"
-                                                        style="display: flex; flex-direction: column;">
-=========
                                         <div class="artists-thumb">
                                             <div class="artists-image-wrap">
-                                                @if ($firstPhoto)
-                                                    @php
-                                                        $photoPath = public_path("img/koi/photo/" . $firstPhoto);
-                                                    @endphp
-                                                    @if (file_exists($photoPath))
-                                                        <img src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
-                                                            class="artists-image img-fluid">
-                                                    @else
->>>>>>>>> Temporary merge branch 2
-                                                        <img src="{{ asset("img/assets/broken.png") }}" class="img"
-                                                            style="object-fit: contain;" alt="Placeholder">
+                                                <a href="{{ route("ourdetail", $collection->id) }}">
+                                                    @if ($firstPhoto)
+                                                        @php
+                                                            $photoPath = public_path("img/koi/photo/" . $firstPhoto);
+                                                        @endphp
+                                                        @if (file_exists($photoPath))
+                                                            <img src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
+                                                                class="artists-image img-fluid">
+                                                        @else
+                                                            <img src="{{ asset("img/assets/broken.png") }}" class="img"
+                                                                style="object-fit: contain;" alt="Placeholder">
+                                                        @endif
                                                     @endif
-                                                @endif
+                                                </a>
                                             </div>
                                             <div>
                                                 <p class="namaikan">{{ $collection->title }}</p>
@@ -91,7 +73,7 @@
                 @endif
             </div>
         </div>
-        {{-- lorem  --}}
+
         {{-- <div class="col-12 text-center">
                 <p class="deskripsi mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                     tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.
