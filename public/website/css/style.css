@@ -952,6 +952,10 @@ ul {
     border-radius: 20px;
 }
 
+.img-thumbnail {
+    display: inline;
+}
+
 .spesifikasi {
     background-color: #ffffff66;
     box-shadow: 0 4px 8px 0 rgb(0 0 0 / 42%);

@@ -23,8 +23,7 @@
                     @endphp
                     @foreach ($photos as $photo)
                         <div class="swiper-slide">
-                            <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $photo) }}"
-                                style="display: block;">
+                            <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $photo) }}">
                         </div>
                     @endforeach
                 @else
