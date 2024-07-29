@@ -7,7 +7,7 @@
     <section class="hero-collection">
         <div class="justify-content-center align-items-center">
             <img class="banner" src="{{ asset("website/images/collectionbanner.png") }}" alt="Collection Banner">
-        </div> -->
+        </div> 
         </div>
     </section>
 
@@ -15,7 +15,28 @@
         <div class="container">
             <div class="row">
                 <div class="details col-lg-4">
-                    <img id="timeline-image" src="{{ asset("website/images/koi.png") }}">
+                    <div class="swiper ourSwiper">
+                        <div class="swiper-wrapper">
+                    @if (!empty($ourCollection->koi->photo))
+                    @php
+                        $photos = explode("|", $ourCollection->koi->photo);
+                    @endphp
+                    @foreach ($photos as $photo)
+                        <div class="swiper-slide">
+                            <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $photo) }}"
+                                style="display: block;">
+                        </div>
+                    @endforeach
+                @else
+                    <p>-</p>
+                @endif
+                        </div>
+                   
+                    {{-- <img id="timeline-image" src="{{ asset("website/images/koi.png") }}"> --}}
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
                 </div>
                 <div class="spesifikasi col-lg-8">
                     <div class="timeline">
@@ -72,3 +93,16 @@
 @section("script")
     <script src="{{ asset("website/js/timeline.js") }}"></script>
 @endsection
+<script type="module">
+    const swiper = new Swiper(".ourSwiper", {
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            type: "fraction",
+            clickable: true,
+        },
+    });
+</script>
