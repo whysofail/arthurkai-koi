@@ -7,76 +7,59 @@
     <section class="hero-collection">
         <div class="justify-content-center align-items-center">
             <img class="banner" src="{{ asset("website/images/collectionbanner.png") }}" alt="Collection Banner">
-            <!-- <div class="search">                                                                                                                                                                                                   </a>                                                                                                                                                                                                           </div> -->
+        </div> -->
         </div>
     </section>
 
     <section class="artists-section section-padding">
         <div class="container">
             <div class="row">
-
                 <div class="details col-lg-4">
                     <img id="timeline-image" src="{{ asset("website/images/koi.png") }}">
                 </div>
                 <div class="spesifikasi col-lg-8">
-                    <br>
-                    <p class="namaikan">{{ $ourCollection->title ?? "Unknown" }}</p>
-                    <hr>
-                    <div class="description">
-                        {!! $ourCollection->description ?? "No description." !!}
-                    </div>
-
-                    <div>
-                        @if (isset($ourCollection->koi))
-                            <div class="selected"
-                                data-date="{{ date("d/m/Y", strtotime($ourCollection->koi->created_at ?? "-")) }}">
-                                <p class="namaikan">{{ $ourCollection->koi->nickname ?? "No Nickname" }}</p>
-                                <p>Variety: {{ $ourCollection->koi->variety->name ?? "-" }}</p>
-                                <p>Breeder Farm: {{ $ourCollection->koi->breeder->name ?? "-" }}</p>
-                                <p>Gender: {{ $ourCollection->koi->gender ?? "-" }}</p>
-                                <p>Age: {{ \Carbon\Carbon::parse($ourCollection->koi->birthdate)->age ?? "-" }}
-                                    years</p>
-                                <p>Size: {{ $ourCollection->koi->size ?? "-" }}cm</p>
-                            </div>
-                        @endif
-                    </div>
                     <div class="timeline">
-                        <br>
-                        <p class="namaikan">Timeline</p>
-                        <hr>
+                        Timeline
                     </div>
                     <div class="cd-horizontal-timeline">
                         <div class="timeline">
                             <div class="events-wrapper">
                                 <div class="events">
                                     <ol>
-                                        <li><a href="#0" data-date="01/01/2020" class="selected">2020</a></li>
-                                        <li><a href="#0" data-date="01/01/2021">2021</a></li>
-                                        <li><a href="#0" data-date="01/01/2022">2022</a></li>
+                                        @foreach ($ourCollection->koi->history as $history)
+                                            <li><a href="#0"
+                                                    data-date="{{ "01/01/" . $history->year }}">{{ $history->year }}</a>
+                                            </li>
+                                        @endforeach
                                     </ol>
+
                                     <span class="filling-line" aria-hidden="true"></span>
                                 </div> <!-- .events -->
                             </div> <!-- .events-wrapper -->
+
                             <ul class="cd-timeline-navigation">
                                 <li><a href="#0" class="prev inactive">Prev</a></li>
                                 <li><a href="#0" class="next">Next</a></li>
                             </ul> <!-- .cd-timeline-navigation -->
                         </div> <!-- .timeline -->
+
                         <div class="events-content">
                             <ol>
-                                @if (isset($ourCollection->koi))
-                                    <li class="selected"
-                                        data-date="{{ date("d/m/Y", strtotime($ourCollection->koi->created_at ?? "-")) }}">
-                                        <p class="namaikan">{{ $ourCollection->koi->nickname ?? "No Nickname" }}</p>
-                                        <p>Variety: {{ $ourCollection->koi->variety->name ?? "-" }}</p>
-                                        <p>Gender: {{ $ourCollection->koi->gender ?? "-" }}</p>
-                                        <p>Age: {{ \Carbon\Carbon::parse($ourCollection->koi->birthdate)->age ?? "-" }}
-                                            years</p>
-                                        <p>Size: {{ $ourCollection->koi->size ?? "-" }}cm</p>
-                                        <p>Farm: {{ $ourCollection->koi->breeder->name ?? "-" }}</p>
+                                @foreach ($ourCollection->koi->history as $historyContent)
+                                    <li data-date="{{ "01/01/" . $historyContent->year }}"
+                                        class="@if ($loop->first) selected @endif">
+                                        <p>year : {{ $historyContent->year }}</p>
+                                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur ipsa ab tempore
+                                        ipsam quaerat deleniti sequi odio itaque dolore, veritatis nam ad provident
+                                        cupiditate nostrum tempora omnis ullam. Eos, quia!
+                                        <p class="namaikan">Ginrin Shinwa</p>
+                                        <p>Variety: -</p>
+                                        <p>Gender: Female</p>
+                                        <p>Age: -</p>
+                                        <p>Size: 16cm</p>
+                                        <p>Farm: -</p>
                                     </li>
-                                @endif
-
+                                @endforeach
                             </ol>
                         </div> <!-- .events-content -->
                     </div>
