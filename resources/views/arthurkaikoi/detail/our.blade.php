@@ -49,7 +49,7 @@
                             <p>Size: {{ $ourCollection->koi->size ?? "-" }}cm</p>
                         </div>
                     @endif
-                    @if (isset($ourCollection->koi->history))
+                    @if (empty($ourCollection->koi->history))
                         <div class="timeline">
                             Timeline
                         </div>
