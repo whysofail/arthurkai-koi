@@ -249,114 +249,32 @@
                 </div>
 
     </div>
-
     </form>
-
     <!-- ./row -->
-
     </section>
-
     </div>
-
     <!-- Control Sidebar -->
-
     <aside class="control-sidebar control-sidebar-dark">
-
         <!-- Control sidebar content goes here -->
-
     </aside>
 
     <!-- /.control-sidebar -->
 
 @endsection
-
 @section("script")
-
     <!-- Select2 -->
-
     <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
-
     <script>
-        $(document).ready(function() {
-            $('#image').on('change', function() {
-                //get the file name
-                var fileName = $(this).val();
-                //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            $('#description').summernote({
-                height: 635,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear']],
-                    ['font', ['strikethrough', 'superscript', 'subscript']],
-                    ['font', ['fontsize', 'color']],
-                    ['font', ['fontname']],
-                    ['para', ['ul', 'ol', 'listStyles', 'paragraph']],
-                    ['height', ['height']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['history', ['undo', 'redo']],
-                    ['view', ['codeview', 'fullscreen', 'findnreplace']],
-                    ['help', ['help']]
-                ],
-            });
-
-            $('.select2').select2()
-
-            //Initialize Select2 Elements
-            $('.select2bs4').select2({
-                theme: 'bootstrap4'
-            })
-
-        });
-
-
-        var rupiah = document.getElementById('pricesell_idr');
-        rupiah.addEventListener('keyup', function(e) {
-            rupiah.value = formatRupiah(this.value, 'Rp. ');
-        });
-
-        /* Fungsi */
-        function formatRupiah(angka, prefix) {
-            var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
-        }
-
-        // Function to format Japanese Yen
-        function formatJapaneseYen(number) {
-            return new Intl.NumberFormat('ja-JP', {
-                style: 'currency',
-                currency: 'JPY'
-            }).format(number);
-        }
-
-        // // Add an event listener to the input field
-        // document.getElementById('pricesell_jpy').addEventListener('input', function (event) {
-        //     // Get the input value as a number
-        //     let inputValue = parseFloat(event.target.value.replace(/[^\d.-]/g, ''));
-
-        //     // Check if the input is a valid number
-        //     if (!isNaN(inputValue)) {
-        //         // Format the number as Japanese Yen and update the input value
-        //         event.target.value = formatJapaneseYen(inputValue);
-        //     } else {
-        //         // If the input is not a valid number, clear the input value
-        //         event.target.value = '';
-        //     }
-        // });
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Form Error',
+                    body: '{{ $error }} \n Please check the form and try again.',
+                    autohide: true,
+                    delay: 5000,
+                });
+            @endforeach
+        @endif
     </script>
-
 @endsection

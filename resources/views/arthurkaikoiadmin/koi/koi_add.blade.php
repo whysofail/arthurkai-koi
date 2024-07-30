@@ -363,10 +363,6 @@
                                                         <input type="file" name="link_video[]"
                                                             class="myfrm form-control" onchange="link_video(event)"
                                                             accept="video/mp4,video/x-m4v,video/*">
-                                                        <div class="input-group-btn">
-                                                            <button class="btn btn-success btn-clickLV" type="button"><i
-                                                                    class="fldemo glyphicon glyphicon-plus"></i>Add</button>
-                                                        </div>
                                                     </div>
                                                     <div class="cloneLV hide" style="display: none;">
                                                         <div class="realprocodeLV control-group lst input-group"
@@ -388,41 +384,41 @@
 
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="input-group row">
-                                            <label for="link_trophy" class="col-sm-2 col-form-label">Link Trophy</label>
+                                            <label for="name_trophy" class="col-sm-2 col-form-label">Trophy Name</label>
+                                            <div class="col-sm-10" style="margin-bottom: 10px;">
+                                                <input type="text" class="form-control" name="name_trophy"
+                                                    value="{{ old("name_trophy") }}" id="name_trophy"
+                                                    placeholder="Event name">
+                                            </div>
+                                            <label for="link_trophy" class="col-sm-2 col-form-label">Trophy File</label>
                                             <div class="col-sm-10">
                                                 <input type="file" class="form-control" name="link_trophy"
                                                     value="{{ old("link_trophy") }}" id="link_trophy"
                                                     style="height: auto !important;">
 
                                             </div>
-                                            <label for="name_trophy" class="col-sm-2 col-form-label"></label>
-                                            <div class="col-sm-10" style="margin-top: 10px;">
-                                                <input type="text" class="form-control" name="name_trophy"
-                                                    value="{{ old("name_trophy") }}" id="name_trophy"
-                                                    placeholder="Nama Event">
-                                            </div>
+
                                         </div>
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="input-group row">
+                                            <label for="name_certificate" class="col-sm-2 col-form-label">Certificate
+                                                Name</label>
+                                            <div class="col-sm-10" style='margin-bottom: 10px;'>
+                                                <input type="text" class="form-control" name="name_certificate"
+                                                    value="{{ old("name_certificate") }}" id="name_certificate"
+                                                    placeholder="Certificate Name">
+                                            </div>
                                             <label for="link_certificate" class="col-sm-2 col-form-label">
-                                                Link
-                                                Certificate</label>
+                                                Certificate File</label>
                                             <div class="col-sm-10">
                                                 <input type="file" class="form-control" name="link_certificate"
                                                     value="{{ old("link_certificate") }}" id="link_certificate"
                                                     style="height: auto !important;">
                                             </div>
-                                            <label for="name_certificate" class="col-sm-2 col-form-label"></label>
-                                            <div class="col-sm-10" style='margin-top: 10px;'>
-                                                <input type="text" class="form-control" name="name_certificate"
-                                                    value="{{ old("name_certificate") }}" id="name_certificate"
-                                                    placeholder="Nama Event">
-                                            </div>
                                         </div>
                                     </div>
-
                                     <div class="col-sm-12" style="margin-top: 15px">
                                         <h2>Additional Information</h2>
                                         <hr>
@@ -513,6 +509,19 @@
     <!-- Select2 -->
 
     <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
+    <script>
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Form Error',
+                    body: '{{ $error }} \n Please check the form and try again.',
+                    autohide: true,
+                    delay: 5000,
+                });
+            @endforeach
+        @endif
+    </script>
 
     <script>
         $('#variety-select').select2();

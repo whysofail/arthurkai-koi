@@ -104,7 +104,6 @@
             </div><!-- /.container-fluid -->
 
         </div>
-
         <!-- /.content-header -->
 
         <section class="content-header">
@@ -157,36 +156,19 @@
                     </a>
 
                     <div class="card">
-
                         <div class="card-body">
-
                             <div class="content tab">
-
                                 <section id="section-1" class="content-current">
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
                                     <div class="col-sm-12" style="margin-top: 10px">
 
                                         <div class="form-group row">
 
                                             <label for="name" class="col-sm-2 col-form-label">Variety Name</label>
-
                                             <div class="col-sm-10">
-
                                                 <input type="text" class="form-control" name="name"
                                                     value="{{ old("name") }}" id="name">
-
                                             </div>
-
                                         </div>
-
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
@@ -226,6 +208,19 @@
     <!-- Select2 -->
 
     <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
+    <script>
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Form Error',
+                    body: '{{ $error }} \n Please check the form and try again.',
+                    autohide: true,
+                    delay: 5000,
+                });
+            @endforeach
+        @endif
+    </script>
     <script>
         $(document).ready(function() {
             $('#image').on('change', function() {

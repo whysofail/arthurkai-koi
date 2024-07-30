@@ -882,7 +882,8 @@ class C_ArthurkaikoiAdmin extends Controller
     public function koistore(Request $request)
     {
         $request->validate([
-            'variety' => ['required']
+            'variety' => ['required'],
+            'breeder' => ['required'],
         ]);
 
         $purchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : '';
@@ -1567,7 +1568,10 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function varietyupdate(request $request)
     {
-
+        $request->validate([
+            'name' => ['required'],
+            'code' => ['required']
+        ]);
         Variety::where('id', $request->id)->update([
             'name' => $request->name,
             'code' => $request->code,
@@ -1669,6 +1673,10 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function breederupdate(request $request)
     {
+        $request->validate([
+            'name' => ['required'],
+            'code' => ['required']
+        ]);
 
         Breeder::where('id', $request->id)->update([
             'name' => $request->name,
@@ -1701,6 +1709,11 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function agentstore(request $request)
     {
+        $request->validate([
+            'name' => ['required'],
+            'code' => ['required']
+        ]);
+
         Agent::create([
             'name' => $request->name,
             'location' => $request->location,
@@ -1720,13 +1733,16 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function agentupdate(request $request)
     {
-
+        $request->validate([
+            'name' => ['required'],
+            'code' => ['required']
+        ]);
         Agent::where('id', $request->id)->update([
-            'name' => $request->agent_name,
-            'location' => $request->agent_location,
-            'website' => $request->agent_website,
-            'owner' => $request->agent_owner,
-            'code' => $request->agent_code,
+            'name' => $request->name,
+            'location' => $request->location,
+            'website' => $request->website,
+            'owner' => $request->owner,
+            'code' => $request->code,
         ]);
 
         return redirect('/CMS/agent');
@@ -1800,6 +1816,11 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function ourcollectionstore(request $request)
     {
+        $request->validate([
+            'title' => ['required'],
+            'description' => ['required'],
+            'koi_id' => ['required'],
+        ]);
         if ($request->file('image') == null) {
             $image = $request->images;
         } else {
@@ -1824,6 +1845,12 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function ourcollectionupdate(request $request)
     {
+        $request->validate([
+            'title' => ['required'],
+            'description' => ['required'],
+            'koi_id' => ['required'],
+        ]);
+
         if ($request->file('image') == null) {
             $image = $request->images;
         } else {
@@ -1862,6 +1889,10 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function newsstore(request $request)
     {
+        $request->validate([
+            "title" => ['required'],
+            "description" => ['required']
+        ]);
         if ($request->file('image') == null) {
             $image = $request->images;
         } else {
@@ -1874,8 +1905,7 @@ class C_ArthurkaikoiAdmin extends Controller
         News::create([
             'title' => $request->title,
             'image' => $image,
-            'deskripsi' => $request->deskripsi,
-            'deskripsi_singkat' => $request->deskripsi_singkat,
+            'description' => $request->description,
         ]);
 
         return redirect('/CMS/news');
@@ -1889,6 +1919,10 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function newsupdate(request $request)
     {
+        $request->validate([
+            "title" => ['required'],
+            "description" => ['required']
+        ]);
         if ($request->file('image') == null) {
             $image = $request->images;
         } else {
@@ -1901,8 +1935,7 @@ class C_ArthurkaikoiAdmin extends Controller
         News::where('id', $request->id)->update([
             'title' => $request->title,
             'image' => $image,
-            'deskripsi' => $request->deskripsi,
-            'deskripsi_singkat' => $request->deskripsi_singkat,
+            'description' => $request->description,
         ]);
 
         return redirect('/CMS/news');
@@ -1910,7 +1943,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function newsdelete($id)
     {
-        News::where('id_news', $id)->delete();
+        News::where('id', $id)->delete();
         return redirect('/CMS/news');
     }
 

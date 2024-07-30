@@ -93,22 +93,16 @@
                                                 <input type="file" class="form-control" name="image"
                                                     value="{{ old("image") }}" id="image"
                                                     style="height: auto !important;">
-
                                             </div>
                                         </div>
                                     </div> --}}
                                     {{-- <div class="col-sm-12" style="margin-top: 20px;">
-
                                         <label>Deskripsi Singkat</label>
-
                                         <textarea id="deskripsi_singkat" name="deskripsi_singkat" class="form-control" rows="7" placeholder="">{{ old("deskripsi_singkat") }}</textarea>
-
                                     </div> --}}
 
                                     <div class="col-sm-12" style="margin-top: 20px;">
-
-                                        <label>Deskripsi</label>
-
+                                        <label>Description</label>
                                         <textarea id="description" name="description" rows="7">
                                       {{ old("description") }}
                                     </textarea>
@@ -162,7 +156,19 @@
     <!-- Summernote -->
 
     <script src="{{ asset("plugins/summernote/summernote-bs4.min.js") }}"></script>
-
+    <script>
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Form Error',
+                    body: '{{ $error }} \n Please check the form and try again.',
+                    autohide: true,
+                    delay: 5000,
+                });
+            @endforeach
+        @endif
+    </script>
     <script>
         $(document).ready(function() {
 

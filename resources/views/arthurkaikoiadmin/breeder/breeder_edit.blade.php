@@ -70,215 +70,6 @@
 
     <!-- Main Sidebar Container -->
 
-    <aside class="main-sidebar sidebar-dark-primary elevation-4"
-        style="background: #2c7abe; overflow-y: scroll; overflow-x: hidden;">
-
-        <!-- Brand Logo -->
-
-        <a href="{{ route("dashboard") }}" class="brand-link"
-            style="text-align: center; padding-top: 22px; padding-bottom: 22px;">
-
-            <img width="55" src="{{ asset("images/logo/koilogo.png") }}">
-
-        </a>
-
-        <!-- Sidebar -->
-
-        <div class="sidebar" style="background: #2c7abe">
-
-            <!-- Sidebar Menu -->
-
-            <nav class="mt-2">
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
-
-                    <li class="nav-item" style="border-bottom: 3px solid #0186fc; display:flex;">
-
-                        <a href="{{ route("cmskoi") }}" class="nav-link" style="height: 50px;">
-
-                            <i class="whitefont nav-icon far fa-image" style="font-size: 18px !important;"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi
-
-                            </p>
-
-                        </a>
-
-                        <a href="{{ route("cmskoigrid") }}" class="nav-link" style="text-align: right; height: 50px;">
-
-                            <i class="fa-solid fa-table-cells" style="font-size: 18px !important; color: white"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi<span> Grid</span>
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Setting
-
-                            Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsvariety") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Variety
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbloodline") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Bloodline
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; background: black;">
-
-                        <a href="{{ route("cmsbreeder") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Breeder
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmsagent") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Agent
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Live
-
-                            Website Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsourcollection") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Our Collection
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsnews") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                News
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsaboutus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                About Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmscontactus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Contact Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-            </nav>
-
-            <!-- /.sidebar-menu -->
-
-        </div>
-
-        <!-- /.sidebar -->
-
-    </aside>
-
     <!-- Content Wrapper. Contains page content -->
 
     <div class="content-wrapper" style="background: white;">
@@ -328,13 +119,11 @@
                         <h1>Breeder</h1>
 
                     </div>
-
                     <div class="col-sm-6">
-
                         <ol class="breadcrumb float-sm-right">
-
+                            <li class="breadcrumb-item"><a style="color: black">Dashboard</a></li>
+                            <li class="breadcrumb-item active" style="color: red">Edit Breeder</li>
                         </ol>
-
                     </div>
 
                 </div>
@@ -349,42 +138,56 @@
 
             @foreach ($breeder as $b)
                 <form action="{{ route("cmsbreederUpdate") }}" method="POST" enctype="multipart/form-data">
-
                     @csrf
-
-                    <input type="hidden" name="id" value="{{ $b->id_breeder }}">
-
+                    <input type="hidden" name="id" value="{{ $b->id }}">
                     <div class="col-sm-12">
-
                         <a href="{{ route("cmsbreeder") }}" class="btn btn-sm"
                             style="margin-bottom: 5px; border-radius: 20px 1px 10px; border: black solid 1px; ">
-
                             <i class="fas fa-arrow-circle-left" style="position: relative; right: 3%; top: 1px;"></i>
-
                             Back
-
                         </a>
 
                         <div class="card">
 
                             <div class="card-body">
-
                                 <div class="content tab">
-
                                     <section id="section-1" class="content-current">
+                                        <h1>Breeder Information</h1>
+                                        <hr>
+                                        <div class="col-sm-12" style="margin-top: 10px">
+                                            <div class="form-group row">
+                                                <label for="name" class="col-sm-2 col-form-label">Name</label>
+                                                <div class="col-sm-10">
+
+                                                    <input type="text" class="form-control" name="name"
+                                                        value="{{ old("name") ? old("name") : $b->name }}" id="name">
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
 
                                         <div class="col-sm-12" style="margin-top: 10px">
 
                                             <div class="form-group row">
+                                                <label for="location" class="col-sm-2 col-form-label">Location</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" name="location"
+                                                        value="{{ old("location") ? old("location") : $b->location }}"
+                                                        id="location">
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                                <label for="breeder_name"
-                                                    class="col-sm-2 col-form-label">breeder_name</label>
-
+                                        <div class="col-sm-12" style="margin-top: 10px">
+                                            <div class="form-group row">
+                                                <label for="contact" class="col-sm-2 col-form-label">Contact</label>
                                                 <div class="col-sm-10">
 
-                                                    <input type="text" class="form-control" name="breeder_name"
-                                                        value="{{ old("breeder_name") ? old("breeder_name") : $b->breeder_name }}"
-                                                        id="breeder_name">
+                                                    <input type="text" class="form-control" name="contact"
+                                                        value="{{ old("contact") ? old("contact") : $b->contact }}"
+                                                        id="contact">
 
                                                 </div>
 
@@ -396,14 +199,12 @@
 
                                             <div class="form-group row">
 
-                                                <label for="breeder_location"
-                                                    class="col-sm-2 col-form-label">breeder_location</label>
+                                                <label for="code" class="col-sm-2 col-form-label">Code</label>
 
                                                 <div class="col-sm-10">
 
-                                                    <input type="text" class="form-control" name="breeder_location"
-                                                        value="{{ old("breeder_location") ? old("breeder_location") : $b->breeder_location }}"
-                                                        id="breeder_location">
+                                                    <input type="text" class="form-control" name="code"
+                                                        value="{{ old("code") ? old("code") : $b->code }}" id="code">
 
                                                 </div>
 
@@ -412,60 +213,14 @@
                                         </div>
 
                                         <div class="col-sm-12" style="margin-top: 10px">
-
                                             <div class="form-group row">
-
-                                                <label for="breeder_contact"
-                                                    class="col-sm-2 col-form-label">breeder_contact</label>
-
+                                                <label for="website" class="col-sm-2 col-form-label">Website</label>
                                                 <div class="col-sm-10">
-
-                                                    <input type="text" class="form-control" name="breeder_contact"
-                                                        value="{{ old("breeder_contact") ? old("breeder_contact") : $b->breeder_contact }}"
-                                                        id="breeder_contact">
-
+                                                    <input type="text" class="form-control" name="website"
+                                                        value="{{ old("website") ? old("website") : $b->website }}"
+                                                        id="website">
                                                 </div>
-
                                             </div>
-
-                                        </div>
-
-                                        <div class="col-sm-12" style="margin-top: 10px">
-
-                                            <div class="form-group row">
-
-                                                <label for="breeder_code"
-                                                    class="col-sm-2 col-form-label">breeder_code</label>
-
-                                                <div class="col-sm-10">
-
-                                                    <input type="text" class="form-control" name="breeder_code"
-                                                        value="{{ old("breeder_code") ? old("breeder_code") : $b->breeder_code }}"
-                                                        id="breeder_code">
-
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-sm-12" style="margin-top: 10px">
-
-                                            <div class="form-group row">
-
-                                                <label for="breeder_website"
-                                                    class="col-sm-2 col-form-label">breeder_website</label>
-
-                                                <div class="col-sm-10">
-
-                                                    <input type="text" class="form-control" name="breeder_website"
-                                                        value="{{ old("breeder_website") ? old("breeder_website") : $b->breeder_website }}"
-                                                        id="breeder_website">
-
-                                                </div>
-
-                                            </div>
-
                                         </div>
 
                                         <div class="col-sm-12 mt-3" style="margin-top: 50px">
@@ -514,155 +269,18 @@
     <!-- Select2 -->
 
     <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
-
     <script>
-        $(document).ready(function() {
-            $('#link_video').on('change', function() {
-                //get the file name
-                var fileName = $(this).val();
-                //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            var promoImagelinkvideo = function(event) {
-                var outputourBrands = document.getElementById('link_video');
-                outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-                outputourBrands.onload = function() {
-                    URL.revokeObjectURL(outputourBrands.src) // free memory
-                }
-            };
-
-            $('#photo_highlight').on('change', function() {
-                //get the file name
-                var fileName = $(this).val();
-                //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            var Imagephotohighlight = function(event) {
-                var outputourBrands = document.getElementById('photo_highlight');
-                outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-                outputourBrands.onload = function() {
-                    URL.revokeObjectURL(outputourBrands.src) // free memory
-                }
-            };
-
-            $('#link_photo').on('change', function() {
-                //get the file name
-                var fileName = $(this).val();
-                //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            var Imagelinkphoto = function(event) {
-                var outputourBrands = document.getElementById('link_photo');
-                outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-                outputourBrands.onload = function() {
-                    URL.revokeObjectURL(outputourBrands.src) // free memory
-                }
-            };
-
-            $('#link_trophy').on('change', function() {
-                //get the file name
-                var fileName = $(this).val();
-                //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            var Imagelinktrophy = function(event) {
-                var outputourBrands = document.getElementById('link_trophy');
-                outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-                outputourBrands.onload = function() {
-                    URL.revokeObjectURL(outputourBrands.src) // free memory
-                }
-            };
-
-            $('#link_certificate').on('change', function() {
-                //get the file name
-                var fileName = $(this).val();
-                //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            });
-
-            var Imagelinkcertificate = function(event) {
-                var outputourBrands = document.getElementById('link_certificate');
-                outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-                outputourBrands.onload = function() {
-                    URL.revokeObjectURL(outputourBrands.src) // free memory
-                }
-            };
-
-            $('#description').summernote({
-                height: 635,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear']],
-                    ['font', ['strikethrough', 'superscript', 'subscript']],
-                    ['font', ['fontsize', 'color']],
-                    ['font', ['fontname']],
-                    ['para', ['ul', 'ol', 'listStyles', 'paragraph']],
-                    ['height', ['height']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['history', ['undo', 'redo']],
-                    ['view', ['codeview', 'fullscreen', 'findnreplace']],
-                    ['help', ['help']]
-                ],
-            });
-
-            $('.select2').select2()
-
-            //Initialize Select2 Elements
-            $('.select2bs4').select2({
-                theme: 'bootstrap4'
-            })
-
-        });
-
-
-        var rupiah = document.getElementById('pricesell_idr');
-        rupiah.addEventListener('keyup', function(e) {
-            rupiah.value = formatRupiah(this.value, 'Rp. ');
-        });
-
-        /* Fungsi */
-        function formatRupiah(angka, prefix) {
-            var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
-        }
-
-        var yen = document.getElementById('pricesell_jpy');
-        yen.addEventListener('keyup', function(e) {
-            yen.value = formatYen(this.value, '¥ ');
-        });
-
-        /* Fungsi */
-        function formatYen(angka, prefix) {
-            var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? '¥ ' + rupiah : '');
-        }
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Form Error',
+                    body: '{{ $error }} \n Please check the form and try again.',
+                    autohide: true,
+                    delay: 5000,
+                });
+            @endforeach
+        @endif
     </script>
 
 @endsection

@@ -51,10 +51,9 @@
                                                 <th>No</th>
                                                 <th>Action</th>
                                                 <th>Title</th>
-                                                <th>image</th>
+                                                <th>Image</th>
                                                 <th>Description</th>
                                             </tr>
-
                                         </thead>
                                         <tbody>
                                             <?php $no = 1; ?>

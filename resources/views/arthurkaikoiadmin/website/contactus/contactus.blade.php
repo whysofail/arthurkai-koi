@@ -5,37 +5,21 @@
 @section("content")
 
     <div class="content-wrapper" style="background: white;">
-
         <!-- Content Header (Page header) -->
-
         <div class="content-header">
-
             <div class="container-fluid">
-
                 <div class="row mb-2">
-
                     <div class="col-sm-6">
-
                         {{-- <h1 class="m-0">Chart</h1> --}}
-
                     </div><!-- /.col -->
-
                     <div class="col-sm-6">
-
                         <ol class="breadcrumb float-sm-right">
-
                             <li class="breadcrumb-item"><a href="#"></a></li>
-
                             <li class="breadcrumb-item active"></li>
-
                         </ol>
-
                     </div><!-- /.col -->
-
                 </div><!-- /.row -->
-
             </div><!-- /.container-fluid -->
-
         </div>
 
         <!-- /.content-header -->
@@ -62,10 +46,11 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th></th>
-                                                <th>nama</th>
-                                                <th>email</th>
-                                                <th>no_wa</th>
+                                                <th>Actions</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>WhatsApp Number</th>
+                                                <th>Message</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -75,51 +60,38 @@
                                                     <td>{{ $no }}</td>
                                                     <td>
                                                         <span style="display: flex !important">
-                                                            <a href="{{ route("cmscontactusDelete", $c->id_contactus) }}"
+                                                            <a href="{{ route("cmscontactusDelete", $c->id) }}"
                                                                 type="button" class="btn btn-danger btn-xs">Delete</a>
                                                         </span>
                                                     </td>
-                                                    <td>{{ $c->nama }}</td>
+                                                    <td>{{ $c->name }}</td>
                                                     <td>{{ $c->email }}</td>
                                                     <td>{{ $c->whatsapp }}</td>
+                                                    <td>
+                                                        {{ Str::limit($o->description, 25, "...") }}
+                                                    </td>
                                                 </tr>
                                                 <?php $no++; ?>
                                             @endforeach
-
                                         </tbody>
-
                                     </table>
-
                                 </div>
-
                                 <!-- /.card-body -->
-
                             </div>
-
                             <!-- /.card -->
-
                         </div>
-
                         <!-- /.col -->
-
                     </div>
-
                     <!-- /.row -->
-
                 </div>
-
                 <!-- /.content -->
-
             </div>
-
         </section>
 
         <!-- Control Sidebar -->
 
         <aside class="control-sidebar control-sidebar-dark">
-
             <!-- Control sidebar content goes here -->
-
         </aside>
 
         <!-- /.control-sidebar -->

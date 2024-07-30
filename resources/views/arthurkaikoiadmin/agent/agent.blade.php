@@ -127,6 +127,7 @@
             <!-- Control sidebar content goes here -->
         </aside>
         <!-- /.control-sidebar -->
+
     @endsection
     @section("script")
     @endsection
