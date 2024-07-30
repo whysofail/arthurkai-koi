@@ -36,53 +36,56 @@
                         <div class="swiper-button-prev"></div>
                     </div>
                 </div>
-                <div class="spesifikasi col-lg-8">
-                    <div class="timeline">
-                        Timeline
-                    </div>
-                    <div class="cd-horizontal-timeline">
+                @if (isset($ourCollection->koi->history))
+                    <div class="spesifikasi col-lg-8">
                         <div class="timeline">
-                            <div class="events-wrapper">
-                                <div class="events">
-                                    <ol>
-                                        @foreach ($ourCollection->koi->history as $history)
-                                            <li><a href="#0"
-                                                    data-date="{{ "01/01/" . $history->year }}">{{ $history->year }}</a>
-                                            </li>
-                                        @endforeach
-                                    </ol>
+                            Timeline
+                        </div>
+                        <div class="cd-horizontal-timeline">
+                            <div class="timeline">
+                                <div class="events-wrapper">
+                                    <div class="events">
+                                        <ol>
+                                            @foreach ($ourCollection->koi->history as $history)
+                                                <li><a href="#0"
+                                                        data-date="{{ "01/01/" . $history->year }}">{{ $history->year }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ol>
 
-                                    <span class="filling-line" aria-hidden="true"></span>
-                                </div> <!-- .events -->
-                            </div> <!-- .events-wrapper -->
+                                        <span class="filling-line" aria-hidden="true"></span>
+                                    </div> <!-- .events -->
+                                </div> <!-- .events-wrapper -->
 
-                            <ul class="cd-timeline-navigation">
-                                <li><a href="#0" class="prev inactive">Prev</a></li>
-                                <li><a href="#0" class="next">Next</a></li>
-                            </ul> <!-- .cd-timeline-navigation -->
-                        </div> <!-- .timeline -->
+                                <ul class="cd-timeline-navigation">
+                                    <li><a href="#0" class="prev inactive">Prev</a></li>
+                                    <li><a href="#0" class="next">Next</a></li>
+                                </ul> <!-- .cd-timeline-navigation -->
+                            </div> <!-- .timeline -->
 
-                        <div class="events-content">
-                            <ol>
-                                @foreach ($ourCollection->koi->history as $historyContent)
-                                    <li data-date="{{ "01/01/" . $historyContent->year }}"
-                                        class="@if ($loop->first) selected @endif">
-                                        <p>year : {{ $historyContent->year }}</p>
-                                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur ipsa ab tempore
-                                        ipsam quaerat deleniti sequi odio itaque dolore, veritatis nam ad provident
-                                        cupiditate nostrum tempora omnis ullam. Eos, quia!
-                                        <p class="namaikan">Ginrin Shinwa</p>
-                                        <p>Variety: -</p>
-                                        <p>Gender: Female</p>
-                                        <p>Age: -</p>
-                                        <p>Size: 16cm</p>
-                                        <p>Farm: -</p>
-                                    </li>
-                                @endforeach
-                            </ol>
-                        </div> <!-- .events-content -->
+                            <div class="events-content">
+                                <ol>
+                                    @foreach ($ourCollection->koi->history as $historyContent)
+                                        <li data-date="{{ "01/01/" . $historyContent->year }}"
+                                            class="@if ($loop->first) selected @endif">
+                                            <p>year : {{ $historyContent->year }}</p>
+                                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur ipsa ab
+                                            tempore
+                                            ipsam quaerat deleniti sequi odio itaque dolore, veritatis nam ad provident
+                                            cupiditate nostrum tempora omnis ullam. Eos, quia!
+                                            <p class="namaikan">Ginrin Shinwa</p>
+                                            <p>Variety: -</p>
+                                            <p>Gender: Female</p>
+                                            <p>Age: -</p>
+                                            <p>Size: 16cm</p>
+                                            <p>Farm: -</p>
+                                        </li>
+                                    @endforeach
+                                </ol>
+                            </div> <!-- .events-content -->
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
     </section>
