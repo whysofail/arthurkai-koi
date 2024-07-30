@@ -163,7 +163,15 @@
                             <div class="content tab">
 
                                 <section id="section-1" class="content-current">
-
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
                                     <div class="col-sm-12" style="margin-top: 10px">
 
                                         <div class="form-group row">
@@ -182,60 +190,33 @@
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="form-group row">
-
                                             <label for="code" class="col-sm-2 col-form-label">Variety Code</label>
-
                                             <div class="col-sm-10">
-
                                                 <input type="text" class="form-control" name="code"
                                                     value="{{ old("code") }}" id="code">
-
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                     <div class="col-sm-12" style="margin-top: 50px">
-
                                         <div class="float-right">
-
                                             <button type="submit" class="btn btn-success">Save</button>
-
                                         </div>
-
                                     </div>
-
                                 </section>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
     </div>
-
     </form>
-
     <!-- ./row -->
-
     </section>
-
     </div>
-
     <!-- Control Sidebar -->
-
     <aside class="control-sidebar control-sidebar-dark">
-
         <!-- Control sidebar content goes here -->
-
     </aside>
-
     <!-- /.control-sidebar -->
 
 @endsection
@@ -245,7 +226,6 @@
     <!-- Select2 -->
 
     <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
-
     <script>
         $(document).ready(function() {
             $('#image').on('change', function() {

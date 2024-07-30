@@ -881,6 +881,10 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function koistore(Request $request)
     {
+        $request->validate([
+            'variety' => ['required']
+        ]);
+
         $purchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : '';
 
         // Retrieve related models
@@ -921,7 +925,6 @@ class C_ArthurkaikoiAdmin extends Controller
             'certificate' => $link_certificates,
             'status' => $request->status,
         ]);
-
         return redirect('/CMS/koi/detail/' . $koi->id);
     }
 
@@ -1543,6 +1546,11 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function varietystore(request $request)
     {
+        $request->validate([
+            'name' => ['required'],
+            'code' => ['required']
+        ]);
+
         Variety::create([
             'name' => $request->name,
             'code' => $request->code,
@@ -1589,6 +1597,10 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function bloodlinestore(request $request)
     {
+        $request->validate([
+            'name' => ['required'],
+            'code' => ['required']
+        ]);
         Bloodline::create([
             'name' => $request->bloodline_name,
             'code' => $request->bloodline_code,
@@ -1634,6 +1646,10 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function breederstore(request $request)
     {
+        $request->validate([
+            'name' => ['required'],
+            'code' => ['required']
+        ]);
         Breeder::create([
             'name' => $request->name,
             'location' => $request->location,

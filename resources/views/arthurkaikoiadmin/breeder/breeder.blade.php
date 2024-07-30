@@ -93,28 +93,17 @@
         <section class="content">
 
             <div class="container-fluid">
-
                 <div class="row">
-
                     <div class="col-12">
-
                         <div class="card">
-
                             <div class="row">
-
                                 <div class="col-sm-8">
-
                                     <a href="{{ route("cmsbreederAdd") }}">
-
                                         <button type="button" class="btn btn-success"
                                             style=" background: green; color: white; "><b>+ Add Breeder</b></button>
-
                                     </a>
-
                                 </div>
-
                             </div>
-
                             <div class="card">
 
                                 <!-- /.card-header -->
