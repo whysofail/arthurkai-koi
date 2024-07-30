@@ -99,7 +99,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false" style="margin-top: 20px;">
                 <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Setting
-                        Koi</span></li>
+                        Live Website</span></li>
                 @foreach ($webItem as $webNav)
                     <?php
                     $isActive = Request::is("CMS" . $webNav["path"] . "*");

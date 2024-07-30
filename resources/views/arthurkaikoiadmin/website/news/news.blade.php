@@ -48,112 +48,64 @@
                                     <table id="example1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-
                                                 <th>No</th>
-
-                                                <th></th>
-
-                                                <th>title</th>
-
+                                                <th>Action</th>
+                                                <th>Title</th>
                                                 <th>image</th>
-
-                                                <th>deskripsi_singkat</th>
-
-                                                <th>deskripsi</th>
-
+                                                <th>Description</th>
                                             </tr>
 
                                         </thead>
-
                                         <tbody>
-
                                             <?php $no = 1; ?>
-
                                             @foreach ($news as $n)
                                                 <tr>
-
                                                     <td>{{ $no }}</td>
-
                                                     <td>
-
                                                         <span style="display: flex !important">
-
-                                                            <a href="{{ route("cmsnewsEdit", $n->id_news) }}" type="button"
+                                                            <a href="{{ route("cmsnewsEdit", $n->id) }}" type="button"
                                                                 class="btn btn-info btn-xs">Edit</a> |
-
-                                                            <a href="{{ route("cmsnewsDelete", $n->id_news) }}"
-                                                                type="button" class="btn btn-danger btn-xs">Delete</a>
-
+                                                            <a href="{{ route("cmsnewsDelete", $n->id) }}" type="button"
+                                                                class="btn btn-danger btn-xs">Delete</a>
                                                         </span>
-
                                                     </td>
-
                                                     <td>{{ $n->title }}</td>
-
                                                     <td>
-
                                                         @if ($n->image != null)
                                                             <div class="swiper-slide">
-
                                                                 <img width="125" class="img-thumbnail"
                                                                     src="{{ asset("img/koi/website/news/" . $n->image) }}">
-
                                                             </div>
                                                         @else
                                                             -
                                                         @endif
 
                                                     </td>
-
-                                                    <td> {{ $n->deskripsi_singkat }}</td>
-
                                                     <td>{!! $n->deskripsi !!}</td>
-
                                                 </tr>
-
                                                 <?php $no++; ?>
                                             @endforeach
-
                                         </tbody>
-
                                     </table>
-
                                 </div>
-
                                 <!-- /.card-body -->
-
                             </div>
-
                             <!-- /.card -->
-
                         </div>
-
                         <!-- /.col -->
-
                     </div>
-
                     <!-- /.row -->
-
                 </div>
-
                 <!-- /.content -->
-
             </div>
-
         </section>
-
         <!-- Control Sidebar -->
-
         <aside class="control-sidebar control-sidebar-dark">
-
             <!-- Control sidebar content goes here -->
-
         </aside>
 
         <!-- /.control-sidebar -->
 
     @endsection
-
     @section("script")
-
     @endsection
