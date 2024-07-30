@@ -36,8 +36,20 @@
                         <div class="swiper-button-prev"></div>
                     </div>
                 </div>
-                @if (isset($ourCollection->koi->history))
-                    <div class="spesifikasi col-lg-8">
+                <div class="spesifikasi col-lg-8">
+                    @if (isset($ourCollection->koi))
+                        <div class="selected"
+                            data-date="{{ date("d/m/Y", strtotime($ourCollection->koi->created_at ?? "-")) }}">
+                            <p class="namaikan">{{ $ourCollection->koi->nickname ?? "No Nickname" }}</p>
+                            <p>Variety: {{ $ourCollection->koi->variety->name ?? "-" }}</p>
+                            <p>Breeder Farm: {{ $ourCollection->koi->breeder->name ?? "-" }}</p>
+                            <p>Gender: {{ $ourCollection->koi->gender ?? "-" }}</p>
+                            <p>Age: {{ \Carbon\Carbon::parse($ourCollection->koi->birthdate)->age ?? "-" }}
+                                years</p>
+                            <p>Size: {{ $ourCollection->koi->size ?? "-" }}cm</p>
+                        </div>
+                    @endif
+                    @if (isset($ourCollection->koi->history))
                         <div class="timeline">
                             Timeline
                         </div>
@@ -84,8 +96,8 @@
                                 </ol>
                             </div> <!-- .events-content -->
                         </div>
-                    </div>
-                @endif
+                    @endif
+                </div>
             </div>
         </div>
     </section>
