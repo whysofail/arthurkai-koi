@@ -7,7 +7,7 @@
     <section class="hero-collection">
         <div class="justify-content-center align-items-center">
             <img class="banner" src="{{ asset("website/images/collectionbanner.png") }}" alt="Collection Banner">
-        </div> 
+        </div>
         </div>
     </section>
 
@@ -17,25 +17,24 @@
                 <div class="details col-lg-4">
                     <div class="swiper ourSwiper">
                         <div class="swiper-wrapper">
-                    @if (!empty($ourCollection->koi->photo))
-                    @php
-                        $photos = explode("|", $ourCollection->koi->photo);
-                    @endphp
-                    @foreach ($photos as $photo)
-                        <div class="swiper-slide">
-                            <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $photo) }}">
+                            @if (!empty($ourCollection->koi->photo))
+                                @php
+                                    $photos = explode("|", $ourCollection->koi->photo);
+                                @endphp
+                                @foreach ($photos as $photo)
+                                    <div class="swiper-slide">
+                                        <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $photo) }}">
+                                    </div>
+                                @endforeach
+                            @else
+                                <img src="{{ asset("img/assets/broken.png") }}" class="img" style="object-fit: contain;"
+                                    alt="Placeholder">
+                            @endif
                         </div>
-                    @endforeach
-                @else
-                    <p>-</p>
-                @endif
-                        </div>
-                   
-                    {{-- <img id="timeline-image" src="{{ asset("website/images/koi.png") }}"> --}}
-                    <div class="swiper-pagination"></div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
                 </div>
                 <div class="spesifikasi col-lg-8">
                     <div class="timeline">
