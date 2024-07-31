@@ -17,7 +17,7 @@ class MakeNewsTable extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->string('image')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class MakeNewsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('news');   
+        Schema::dropIfExists('news');
     }
 }

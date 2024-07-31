@@ -131,9 +131,7 @@
 @section("script")
 
     <!-- Summernote -->
-
     <script src="{{ asset("plugins/summernote/summernote-bs4.min.js") }}"></script>
-
     <script>
         $(document).ready(function() {
 

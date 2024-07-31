@@ -236,15 +236,10 @@
         });
     </script>
 
-    {{-- <script>
-        $(function() {
-            $(".btn").href(function() {
-                $('#loader').show();
-            });
-        });
-    </script> --}}
-
     @yield("script")
+    {{-- Toast --}}
+    @include("partials.toast.error")
+
 
 </body>
 

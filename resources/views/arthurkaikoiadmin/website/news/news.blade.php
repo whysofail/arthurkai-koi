@@ -80,7 +80,9 @@
                                                         @endif
 
                                                     </td>
-                                                    <td>{!! $n->deskripsi !!}</td>
+                                                    <td>
+                                                        <p>{{Str::limit(strip_tags($n->description), 25, "...")}}</p>
+                                                    </td>
                                                 </tr>
                                                 <?php $no++; ?>
                                             @endforeach

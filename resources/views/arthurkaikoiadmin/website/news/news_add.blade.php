@@ -89,7 +89,7 @@
                                             <label for="image" class="col-sm-2 col-form-label">Image</label>
                                             <div class="col-sm-10">
                                                 <input type="file" class="form-control" name="image"
-                                                    value="{{ old("image") }}" id="image"
+                                                    value="{{ old("image") }}" id="image" accept="image/*"
                                                     style="height: auto !important;">
                                             </div>
                                         </div>
@@ -150,20 +150,6 @@
 @section("script")
     <!-- Summernote -->
     <script src="{{ asset("plugins/summernote/summernote-bs4.min.js") }}"></script>
-    <script>
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                $(document).Toasts('create', {
-                    class: 'bg-danger',
-                    title: 'Form Error',
-                    body: '{{ $error }} \n Please check the form and try again.',
-                    autohide: true,
-                    delay: 5000,
-                });
-            @endforeach
-        @endif
-    </script>
-
     <script>
         $(document).ready(function() {
 

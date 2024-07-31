@@ -114,7 +114,7 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th></th>
+                                                <th>Actions</th>
                                                 <th>Breeder Name</th>
                                                 <th>Location</th>
                                                 <th>Contact</th>
@@ -136,21 +136,13 @@
                                                                 class="btn btn-danger btn-xs">Delete</a>
 
                                                         </span>
-
                                                     </td>
-
                                                     <td>{{ $b->name }}</td>
-
                                                     <td>{{ $b->location }}</td>
-
                                                     <td>{{ $b->contact }}</td>
-
                                                     <td>{{ $b->code }}</td>
-
                                                     <td>{{ $b->website }}</td>
-
                                                 </tr>
-
                                                 <?php $no++; ?>
                                             @endforeach
 

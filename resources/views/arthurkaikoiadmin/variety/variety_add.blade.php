@@ -160,13 +160,11 @@
                             <div class="content tab">
                                 <section id="section-1" class="content-current">
                                     <div class="col-sm-12" style="margin-top: 10px">
-
                                         <div class="form-group row">
-
                                             <label for="name" class="col-sm-2 col-form-label">Variety Name</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="name"
-                                                    value="{{ old("name") }}" id="name">
+                                                    value="{{ old("name") }}" id="name" required>
                                             </div>
                                         </div>
                                     </div>
@@ -176,7 +174,7 @@
                                             <label for="code" class="col-sm-2 col-form-label">Variety Code</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="code"
-                                                    value="{{ old("code") }}" id="code">
+                                                    value="{{ old("code") }}" id="code" required>
                                             </div>
                                         </div>
                                     </div>
@@ -203,24 +201,12 @@
 
 @endsection
 
+
 @section("script")
 
-    <!-- Select2 -->
+<!-- Select2 -->
 
     <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
-    <script>
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                $(document).Toasts('create', {
-                    class: 'bg-danger',
-                    title: 'Form Error',
-                    body: '{{ $error }} \n Please check the form and try again.',
-                    autohide: true,
-                    delay: 5000,
-                });
-            @endforeach
-        @endif
-    </script>
     <script>
         $(document).ready(function() {
             $('#image').on('change', function() {

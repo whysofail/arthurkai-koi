@@ -93,12 +93,6 @@
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
     </div>
-    <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-default" data-dismiss="modal"><i
-                class="fas fa-long-arrow-alt-left"></i></button>
-        {{-- <a href="{{ route('cmskoiDelete', $k->id) }}"
-                    type="button" class="btn btn-danger">Delete</a> --}}
-    </div>
 </div>
 </div>
 </div>
@@ -144,10 +138,6 @@
                     <div class="swiper-button-prev"></div>
                 </div>
             </div>
-        </div>
-        <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-default" data-dismiss="modal"><i
-                    class="fas fa-long-arrow-alt-left"></i></button>
         </div>
     </div>
 </div>
