@@ -46,7 +46,7 @@
                             <a class="nav-link @yield("our")" href="{{ route("our") }}">Our Collection</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @yield("news")" href="{{ route("news") }}">News</a>
+                            <a class="nav-link @yield("news")" href="#">News</a>
                         </li>
                         <a class="navbar-brand active" href="{{ route("homepage") }}">
                             <img src="{{ asset("website/images/logom.png") }}" class="logokoi">
@@ -55,7 +55,7 @@
                             <a class="nav-link @yield("aboutus")" href="{{ route("aboutus") }}">About Us</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @yield("contact")" href="{{ route("contactus") }}">Contact</a>
+                            <a class="nav-link @yield("contact")" href="#">Contact</a>
                         </li>
                     </ul>
                 </div>
