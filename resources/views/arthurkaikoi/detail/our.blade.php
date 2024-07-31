@@ -42,11 +42,23 @@
                             data-date="{{ date("d/m/Y", strtotime($ourCollection->koi->created_at ?? "-")) }}">
                             <p class="namaikan">{{ $ourCollection->koi->nickname ?? "No Nickname" }}</p>
                             {!! $ourCollection->description ?? "No Description" !!}
-                            <p><b>Variety:</b> -</p>
-                            <p><b>Gender:</b> Female</p>
-                            <p><b>Age:</b> -</p>
-                            <p><b>Size:</b> 16cm</p>
-                            <p><b>Farm:</b> -</p>
+                            <p><b>Variety : &nbsp;</b>{{$ourCollection->koi->variety->name}}</p>
+                            @if ($ourCollection->koi->birthdate)
+                                    @php
+                                        $umur = \Carbon\Carbon::parse($ourCollection->koi->birthdate)->diff(\Carbon\Carbon::now());
+                                        $umurTahun = $umur->y;
+                                        $umurBulan = $umur->m;
+                                        $age = $umurTahun . 'yr ' . $umurBulan . 'm';
+                                    @endphp
+                                @else
+                                    @php
+                                        $age = '-';
+                                    @endphp
+                                @endif
+                            <p><b>Gender: </b>{{$ourCollection->koi->gender}}</p>
+                            <p><b>Age: </b>{{$age}}</p>
+                            <p><b>Size: </b>{{$ourCollection->koi->size}}</p>
+                            <p><b>Farm: </b>{{$ourCollection->koi->breeder->name}}</p>
                         </div>
                     @endif
                     @if (empty($ourCollection->koi->history))
