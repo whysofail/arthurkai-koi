@@ -42,11 +42,11 @@
                             data-date="{{ date("d/m/Y", strtotime($ourCollection->koi->created_at ?? "-")) }}">
                             <p class="namaikan">{{ $ourCollection->koi->nickname ?? "No Nickname" }}</p>
                             {!! $ourCollection->description ?? "No Description" !!}
-                            <p>Variety: -</p>
-                            <p>Gender: Female</p>
-                            <p>Age: -</p>
-                            <p>Size: 16cm</p>
-                            <p>Farm: -</p>
+                            <p><b>Variety:</b> -</p>
+                            <p><b>Gender:</b> Female</p>
+                            <p><b>Age:</b> -</p>
+                            <p><b>Size:</b> 16cm</p>
+                            <p><b>Farm:</b> -</p>
                         </div>
                     @endif
                     @if (empty($ourCollection->koi->history))
