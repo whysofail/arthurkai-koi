@@ -364,7 +364,7 @@
                                                             class="myfrm form-control" onchange="link_video(event)"
                                                             accept="video/mp4,video/x-m4v,video/*">
                                                     </div>
-                                                    <div class="cloneLV hide" style="display: none;">
+                                                    {{-- <div class="cloneLV hide" style="display: none;">
                                                         <div class="realprocodeLV control-group lst input-group"
                                                             style="margin-top:10px">
                                                             <input type="file" name="link_video[]"
@@ -376,7 +376,7 @@
                                                                     Remove</button>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </div>
                                         </div>

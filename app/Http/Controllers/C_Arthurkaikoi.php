@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\OurCollection;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 use App\Models\Koi;
 use App\Models\AboutUs;
-
 
 class C_Arthurkaikoi extends Controller
 {
@@ -25,7 +23,7 @@ class C_Arthurkaikoi extends Controller
 
     public function our()
     {
-        $ourCollection = OurCollection::with('koi')->paginate(8);
+        $ourCollection = OurCollection::with('koi')->paginate(10);
         return view('arthurkaikoi.our', compact('ourCollection'));
     }
 

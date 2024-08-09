@@ -263,27 +263,27 @@
                                                         style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
                                                         <a style="text-decoration: underline; color:black; font-size: 1.25em;"
                                                             href="{{ route("cmskoidetail", $k->id) }}">
-                                                            {{ $k->code }}</a>
+                                                            {{ $k->code ?? "-" }}</a>
                                                     </h6>
                                                     <table
                                                         style="width: 100%; padding: 10px; text-align: left; font-size: 14px;">
                                                         <tr>
                                                             <td style="padding: 10px;"><strong>Variety</strong></td>
                                                             <td style="padding: 10px;">:</td>
-                                                            <td style="padding: 10px;">{{ $k->variety->name }}</td>
+                                                            <td style="padding: 10px;">{{ $k->variety->name ?? "-" }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td style="padding: 10px;"><strong>Breeder Name</strong>
                                                             </td>
                                                             <td style="padding: 10px;">:</td>
-                                                            <td style="padding: 10px;">{{ $k->breeder->name }}</td>
+                                                            <td style="padding: 10px;">{{ $k->breeder->name ?? "-" }}</td>
 
                                                         </tr>
 
                                                         <tr>
                                                             <td style="padding: 10px;"><strong>Gender</strong></td>
                                                             <td style="padding: 10px;">:</td>
-                                                            <td style="padding: 10px;">{{ $k->gender }}</td>
+                                                            <td style="padding: 10px;">{{ $k->gender ?? "-" }}</td>
                                                         </tr>
 
                                                         <tr>

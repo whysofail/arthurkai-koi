@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             VarietySeeder::class,
             BloodlineSeeder::class,
             KoiSeeder::class,
+            OurCollectionSeeder::class,
         ]);
     }
 }

@@ -2,6 +2,20 @@
 @section("title", "Arthurkai - KOI | Our Collection")
 @section("our", "active")
 @section("css")
+    <style>
+        [aria-disabled="true"] {
+            display: none;
+        }
+
+        [rel="prev"],
+        [rel="next"] {
+            display: none;
+        }
+
+        span[aria-current="page"]>span {
+            background-color: #99D8FA !important;
+        }
+    </style>
 @endsection
 @section("content")
     <section class="hero-collection">
@@ -19,7 +33,6 @@
     <section class="artists-section section-padding" id="section_2">
         <div class="container">
             <div class="galeri">
-                {{ $ourCollection }}
                 @if ($ourCollection !== null)
                     @foreach ($ourCollection as $collection)
                         <div class="artists-thumb">
@@ -54,7 +67,9 @@
                 @endif
             </div>
             <div class="pagination">
-                <a href="page2.html" class="next">Next</a>
+                {{ $ourCollection->links() }}
+
+                {{-- <a href="page2.html" class="next">Next</a> --}}
             </div>
         </div>
     </section>
