@@ -256,7 +256,14 @@
                                                                 @endif
                                                             </div>
                                                         @else
-                                                            <p>No photos available</p>
+                                                            <div class="photo-item"
+                                                                style="display: flex; flex-direction: column; align-items: center;">
+                                                                <img width="250" height="200"
+                                                                    src="{{ asset("img/assets/broken.png") }}"
+                                                                    class="img" style="object-fit: contain;"
+                                                                    alt="Placeholder">
+                                                                <p>No photos available</p>
+                                                            </div>
                                                         @endif
                                                     </a>
                                                     <h6
