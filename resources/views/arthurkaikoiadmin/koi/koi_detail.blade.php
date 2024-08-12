@@ -322,11 +322,18 @@
                                     @if (!empty($koi->photo))
                                         @foreach (explode("|", $koi->photo) as $image)
                                             <div class="swiper-slide">
-                                                <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $image) }}">
+                                                @if (file_exists(public_path("img/koi/photo/" . $image)))
+                                                    <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $image) }}"
+                                                        alt="Koi Photo">
+                                                @else
+                                                    <img class="img-thumbnail" src="{{ asset("img/assets/broken.png") }}"
+                                                        alt="Image Not Found">
+                                                @endif
                                             </div>
                                         @endforeach
                                     @endif
                                 </div>
+
                                 <div class="swiper-button-next"></div>
                                 <div class="swiper-button-prev"></div>
 
@@ -601,22 +608,23 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td><strong>Bloodline</strong></td>
-                                                        <td>:</td>
-                                                        <td style="padding: 10px">
-                                                            {{ $koi->bloodline ? $koi->bloodline->name : "-" }}</td>
-                                                    </tr>
-                                                    <tr>
                                                         <td><strong>Breeder</strong></td>
                                                         <td>:</td>
                                                         <td style="padding: 10px">
                                                             {{ $koi->breeder ? $koi->breeder->name : "-" }}</td>
                                                     </tr>
+                                                    <tr>
+                                                        <td><strong>Bloodline</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->bloodline ? $koi->bloodline->name : "-" }}</td>
+                                                    </tr>
 
                                                     <tr>
                                                         <td><strong>Size</strong></td>
                                                         <td>:</td>
-                                                        <td style="padding: 10px">{{ $koi->size ? $koi->size : "-" }}
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->size ? $koi->size . " cm" : "-" }}
                                                         </td>
                                                     </tr>
 
@@ -657,32 +665,30 @@
                                                         <td><strong>Price Buy (IDR)</strong></td>
                                                         <td>:</td>
                                                         <td style="padding: 10px">
-                                                            {{ $koi->price_buy_idr ?? "-" }}</td>
+                                                            {{ isset($koi->price_buy_idr) ? "IDR " . number_format($koi->price_buy_idr, 0, ",", ".") : "-" }}
+                                                        </td>
+
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Price Buy (JPY)</strong></td>
                                                         <td>:</td>
                                                         <td style="padding: 10px">
-                                                            {{ $koi->price_buy_jpy ?? "-" }}</td>
+                                                            {{ isset($koi->price_buy_jpy) ? "¥ " . number_format($koi->price_buy_jpy, 0, ",", ".") : "-" }}
+                                                        </td>
                                                     </tr>
 
                                                     <tr>
                                                         <td><strong>Sell Price (IDR)</strong></td>
                                                         <td>:</td>
                                                         <td style="padding: 10px">
-
-                                                            {{ $koi->price_sell_idr ?? "-" }}
-
+                                                            {{ isset($koi->price_sell_idr) ? "IDR " . number_format($koi->price_sell_idr, 0, ",", ".") : "-" }}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Sell Price (JPY)</strong></td>
-
                                                         <td>:</td>
-
                                                         <td style="padding: 10px">
-                                                            {{ $koi->price_sell_jpy ?? "-" }}
-
+                                                            {{ isset($koi->price_sell_jpy) ? "¥ " . number_format($koi->price_sell_jpy, 0, ",", ".") : "-" }}
                                                         </td>
 
                                                     </tr>
@@ -862,20 +868,45 @@
                                 var historyItem = $('<li>').addClass('tl-item');
                                 historyItem.append(
                                     '<div class="timestamp" style="display: flex; gap: 0.25em;">' +
-                                    year + '</div>');
+                                    year + '</div>'
+                                );
 
                                 if (item.link_photo) {
                                     var photos = item.link_photo.split('|');
                                     $.each(photos, function(i, photo) {
-                                        historyItem.append(
-                                            '<img style="width: 10%" class="img-thumbnail" src="{{ asset("img/koi/photo/") }}/' +
-                                            photo + '" alt="Photo">');
+                                        var imgPath =
+                                            "{{ asset("img/koi/photo/") }}/" +
+                                            photo;
+
+                                        // Check if the image exists
+                                        $.ajax({
+                                            url: imgPath,
+                                            type: 'HEAD',
+                                            success: function() {
+                                                historyItem.append(
+                                                    '<img style="width: 10%" class="img-thumbnail" src="' +
+                                                    imgPath +
+                                                    '" alt="Photo">'
+                                                );
+                                            },
+                                            error: function() {
+                                                historyItem.append(
+                                                    '<img style="width: 10%" class="img-thumbnail" src="{{ asset("img/assets/broken.png") }}" alt="Photo">'
+                                                );
+                                            }
+                                        });
                                     });
+                                } else {
+                                    historyItem.append(
+                                        '<img style="width: 10%" class="img-thumbnail" src="{{ asset("img/assets/broken.png") }}" alt="Photo">'
+                                    );
                                 }
 
                                 historyItem.append(
                                     '<br><div style="font-weight: bold; font-size: 16px;">Size: ' +
-                                    item.size + ' CM</div>');
+                                    item.size + ' CM</div>'
+                                );
+
                                 $('#historyList').append(historyItem);
                             });
                         });
@@ -914,6 +945,7 @@
                                     );
                                 });
                             }
+
                         },
                         error: function(xhr) {
                             console.error('Error fetching history data.');

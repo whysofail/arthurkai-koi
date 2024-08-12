@@ -11,7 +11,7 @@ class KoiSeeder extends Seeder
     public function run()
     {
         // Path to your CSV file in public/csv
-        $filePath = public_path('csv/kois.csv');
+        $filePath = public_path('csv/koi_updated.csv');
         $currentTimestamp = Carbon::now();
 
         // Read and parse the CSV file
@@ -35,7 +35,7 @@ class KoiSeeder extends Seeder
                     'birthdate' => $this->nullIfEmpty($this->parseDate($record['Birth Year & Month'], 'M Y')),
                     'purchase_date' => $this->nullIfEmpty($this->parseDate($record['Purchase Date'])),
                     'seller' => $this->nullIfEmpty($record['Seller Agent']),
-                    'size' => $this->nullIfEmpty($record['Size']),
+                    'size' => $this->nullIfEmpty($record['Size (cm)']),
                     'handler' => $this->nullIfEmpty($record['Handling Agent']),
                     'price_buy_jpy' => $this->nullIfEmpty($this->convertToInt($record['Price Buy ( JPY )'])),
                     'price_buy_idr' => $this->nullIfEmpty($this->convertToInt($record['Price Buy ( IDR )'])),
@@ -51,7 +51,7 @@ class KoiSeeder extends Seeder
                     'death_date' => $this->nullIfEmpty($this->parseDate($record['Date of Death'])),
                     'death_note' => $this->nullIfEmpty($record['Death Note']),
                     'created_at' => $currentTimestamp,
-                    'updated_at' => $this->nullIfEmpty($this->parseDate($record['updated date'])) ?: $currentTimestamp,
+                    'updated_at' => $currentTimestamp,
                 ];
             }
         }
@@ -66,13 +66,13 @@ class KoiSeeder extends Seeder
     }
     private function convertToInt($value)
     {
-        return is_numeric($value) ? (int)$value : null;
+        return is_numeric($value) ? (int) $value : null;
     }
     private function parseDate($date, $format = 'M Y')
     {
-        if($date === ' '){
+        if ($date === ' ') {
             return null;
-        }else{
+        } else {
             return $date ? Carbon::createFromFormat($format, $date)->startOfMonth() : null;
         }
     }

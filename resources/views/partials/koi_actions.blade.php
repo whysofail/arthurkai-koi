@@ -82,7 +82,7 @@
                                 </div>
                             @endforeach
                         @else
-                            <p>-</p>
+                            <p>No Video</p>
                         @endif
 
                     </div>
@@ -123,8 +123,13 @@
                             @endphp
                             @foreach ($photos as $photo)
                                 <div class="swiper-slide">
-                                    <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $photo) }}"
-                                        style="display: block;">
+                                    @if (file_exists(public_path("img/koi/photo/" . $photo)))
+                                        <img class="img-thumbnail" src="{{ asset("img/koi/photo/" . $photo) }}"
+                                            alt="Koi Photo" style="display: block;">
+                                    @else
+                                        <img class="img-thumbnail" src="{{ asset("img/assets/broken.png") }}"
+                                            alt="Image Not Found" style="display: block;">
+                                    @endif
                                 </div>
                             @endforeach
                         @else
@@ -133,13 +138,13 @@
                     </div>
                 </div>
             </div>
-                    <div class="swiper-pagination"></div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                </div>
-            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
         </div>
     </div>
+</div>
+</div>
 </div>
 </div>
 
