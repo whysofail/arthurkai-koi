@@ -10,7 +10,7 @@
         .content_box {
             border: 1px black solid;
             padding: 15px;
-            padding-bottom: 3em;
+            padding-bottom: 5em;
             text-align: center;
             min-height: 36em;
             max-height: 44em;
