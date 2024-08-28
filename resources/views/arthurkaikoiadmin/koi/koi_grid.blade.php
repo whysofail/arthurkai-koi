@@ -461,9 +461,8 @@
                                                         </tr>
                                                     </table>
 
-                                                    <div class="grid_1 simpleCart_shelfItem">
-                                                        <div class="item_add"
-                                                            style="padding-left: 10px; padding-right: 10px; padding-bottom: 25px; padding-top: 25px; display: inline-flex;">
+                                                    <div class="grid_1 simpleCart_shelfItem" style="margin-top: 32px;">
+                                                        <div class="item_add" style="display: inline-flex;">
                                                             <span style="display: flex !important; gap: 2px;">
                                                                 <a href="{{ route("cmskoiEdit", $k->id) }}"
                                                                     class="btn btn-warning btn-xs" style="width: 30px"><i
@@ -482,8 +481,7 @@
                                                             </span>
                                                         </div>
 
-                                                        <div class="item_add"
-                                                            style="padding-left: 10px; padding-right: 10px; padding-bottom: 25px; padding-top: 25px; display: inline-flex;">
+                                                        <div class="item_add" style="display: inline-flex;">
 
                                                             <span style="display: flex !important;">
 
