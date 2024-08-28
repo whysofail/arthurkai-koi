@@ -241,7 +241,7 @@
                                                                             <img class="img-fluid card-img-top"
                                                                                 src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
                                                                                 alt="Photo"
-                                                                                style="object-fit: cover; width: 100%; max-height: 400px;">
+                                                                                style="object-fit: cover; width: 100%; height: 400px;">
                                                                         </div>
                                                                         <br>
                                                                     @else
