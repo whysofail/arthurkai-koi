@@ -116,8 +116,12 @@
         }
 
         .photo-item {
-            height: 300px;
+            height: 320px;
             width: 100%;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            flex-wrap: wrap;
         }
 
         .photo-item img {
