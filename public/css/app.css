@@ -1,5 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);
 @charset "UTF-8";
+
+/* updated 28 august */
 /*!
  * Bootstrap v5.1.3 (https://getbootstrap.com/)
  * Copyright 2011-2021 The Bootstrap Authors
@@ -11632,6 +11634,10 @@ fieldset:disabled .btn {
     }
 }
 
+.photo-item {
+    height: 400px;
+    width: 100%;
+}
 .photo-item img {
     max-height: 400px;
 }
