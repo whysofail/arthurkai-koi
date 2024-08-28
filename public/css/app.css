@@ -11632,6 +11632,10 @@ fieldset:disabled .btn {
     }
 }
 
+.photo-item {
+    height: 400px;
+    width: 100%;
+}
 .photo-item img {
     max-height: 400px;
 }
