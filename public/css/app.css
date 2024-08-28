@@ -1,5 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);
 @charset "UTF-8";
+
 /*!
  * Bootstrap v5.1.3 (https://getbootstrap.com/)
  * Copyright 2011-2021 The Bootstrap Authors
@@ -11591,37 +11592,5 @@ fieldset:disabled .btn {
 
     .d-print-none {
         display: none !important;
-    }
-}
-
-.grid-table {
-    width: 100%;
-    text-align: left;
-    font-size: 14px;
-    border-collapse: collapse; /* Ensures borders are collapsed */
-}
-
-.grid-table td {
-    padding: 5px 5px; /* Adds padding inside cells */
-    vertical-align: top; /* Aligns text to the top of each cell */
-    border-bottom: 1px solid #ddd; /* Adds a border below each row */
-    min-height: 100px; /* Sets a minimum height for rows */
-    overflow: hidden; /* Hides any overflowing content */
-    word-wrap: break-word; /* Ensures long words wrap onto the next line */
-    box-sizing: border-box; /* Ensures padding and border are included in the height */
-}
-
-.grid-table td:nth-child(2) {
-    width: 1%; /* Keeps the colon aligned and prevents wrapping */
-    white-space: nowrap; /* Prevents wrapping of the colon */
-}
-
-.grid-table td:last-child {
-    color: #333; /* Adjusts text color */
-}
-
-@media only screen and (max-width: 900px) {
-    .grid-table {
-        min-height: 16em;
     }
 }

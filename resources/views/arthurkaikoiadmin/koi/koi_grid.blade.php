@@ -10,7 +10,7 @@
         .content_box {
             border: 1px black solid;
             padding: 15px;
-            padding-bottom: 3em;
+            padding-bottom: 5em;
             text-align: center;
             min-height: 36em;
             max-height: 44em;
@@ -76,6 +76,68 @@
             cursor: auto;
             background-color: #fff;
             border-color: #000000 !important;
+        }
+
+        .grid-table {
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+            border-collapse: collapse;
+            /* Ensures borders are collapsed */
+        }
+
+        .grid-table td {
+            padding: 5px 5px;
+            /* Adds padding inside cells */
+            vertical-align: top;
+            /* Aligns text to the top of each cell */
+            border-bottom: 1px solid #ddd;
+            /* Adds a border below each row */
+            min-height: 100px;
+            /* Sets a minimum height for rows */
+            overflow: hidden;
+            /* Hides any overflowing content */
+            word-wrap: break-word;
+            /* Ensures long words wrap onto the next line */
+            box-sizing: border-box;
+            /* Ensures padding and border are included in the height */
+        }
+
+        .grid-table td:nth-child(2) {
+            width: 1%;
+            /* Keeps the colon aligned and prevents wrapping */
+            white-space: nowrap;
+            /* Prevents wrapping of the colon */
+        }
+
+        .grid-table td:last-child {
+            color: #333;
+            /* Adjusts text color */
+        }
+
+        .photo-item {
+            height: 320px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            flex-wrap: wrap;
+        }
+
+        .photo-item img {
+            max-height: 300px;
+        }
+
+        @media only screen and (max-width: 900px) {
+            .grid-table {
+                min-height: 16em;
+            }
+        }
+
+        @media only screen and (max-width: 600px) {
+            .grid-table {
+                min-height: 2em;
+            }
         }
     </style>
 
@@ -241,7 +303,7 @@
                                                                             <img class="img-fluid card-img-top"
                                                                                 src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
                                                                                 alt="Photo"
-                                                                                style="object-fit: cover; width: 100%; height: auto;">
+                                                                                style="object-fit: contain;">
                                                                         </div>
                                                                         <br>
                                                                     @else
@@ -399,9 +461,9 @@
                                                         </tr>
                                                     </table>
 
-                                                    <div class="grid_1 simpleCart_shelfItem">
-                                                        <div class="item_add"
-                                                            style="padding-left: 10px; padding-right: 10px; padding-bottom: 25px; padding-top: 25px; display: inline-flex;">
+                                                    <div class="grid_1 simpleCart_shelfItem"
+                                                        style="margin-top: 32px; padding-bottom: 16px;">
+                                                        <div class="item_add" style="display: inline-flex;">
                                                             <span style="display: flex !important; gap: 2px;">
                                                                 <a href="{{ route("cmskoiEdit", $k->id) }}"
                                                                     class="btn btn-warning btn-xs" style="width: 30px"><i
@@ -420,8 +482,7 @@
                                                             </span>
                                                         </div>
 
-                                                        <div class="item_add"
-                                                            style="padding-left: 10px; padding-right: 10px; padding-bottom: 25px; padding-top: 25px; display: inline-flex;">
+                                                        <div class="item_add" style="display: inline-flex;">
 
                                                             <span style="display: flex !important;">
 
