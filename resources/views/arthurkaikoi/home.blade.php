@@ -55,7 +55,7 @@
                                                                 class="artists-image img-fluid">
                                                         @else
                                                             <img src="{{ asset("img/assets/broken.png") }}" class="img"
-                                                                style="object-fit: contain;" alt="Placeholder">
+                                                                 alt="Placeholder">
                                                         @endif
                                                     @endif
                                                 </a>
