@@ -10,8 +10,10 @@
         .content_box {
             border: 1px black solid;
             padding: 15px;
+            padding-bottom: 3em;
             text-align: center;
-            height: 36em;
+            min-height: 36em;
+            max-height: 44em;
         }
 
         a:hover {
@@ -219,9 +221,8 @@
                                 <div class="card-body pb-0">
                                     <div class="row">
                                         @foreach ($koi as $k)
-                                            <div class="col-sm-3"
+                                            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3 mb-4"
                                                 style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
-
                                                 <div class="content_box"><a href="{{ route("cmskoidetail", $k->id) }}">
                                                         @if (!empty($k->photo))
                                                             @php
@@ -237,69 +238,64 @@
                                                                     @endphp
                                                                     @if (file_exists($photoPath))
                                                                         <div class="photo-item">
-                                                                            <img width="250" height="200"
+                                                                            <img class="img-fluid card-img-top"
                                                                                 src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
-                                                                                style="object-fit: contain;">
+                                                                                alt="Photo"
+                                                                                style="object-fit: cover; width: 100%; height: auto;">
                                                                         </div>
                                                                         <br>
                                                                     @else
-                                                                        <div class="photo-item"
-                                                                            style="display: flex; flex-direction: column; align-items: center;">
-                                                                            <img width="250" height="200"
-                                                                                src="{{ asset("img/assets/broken.png") }}"
-                                                                                class="img"
-                                                                                style="object-fit: contain;"
+                                                                        <div class="photo-item">
+                                                                            <img src="{{ asset("img/assets/broken.png") }}"
+                                                                                class="img-fluid card-img-top"
+                                                                                style="object-fit: cover; width: 100%; height: auto;"
                                                                                 alt="Placeholder">
-                                                                            <span>{{ $firstPhoto }} (not found)</span>
                                                                         </div>
                                                                     @endif
                                                                 @endif
                                                             </div>
                                                         @else
-                                                            <div class="photo-item"
-                                                                style="display: flex; flex-direction: column; align-items: center;">
-                                                                <img width="250" height="200"
-                                                                    src="{{ asset("img/assets/broken.png") }}"
-                                                                    class="img" style="object-fit: contain;"
+                                                            <div class="photo-item">
+                                                                <img src="{{ asset("img/assets/broken.png") }}"
+                                                                    class="img-fluid card-img-top"
+                                                                    style="object-fit: cover; width: 100%; height: auto;"
                                                                     alt="Placeholder">
-                                                                <p>No photos available</p>
                                                             </div>
                                                         @endif
                                                     </a>
-                                                    <h6
-                                                        style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
+                                                    <h6>
                                                         <a style="text-decoration: underline; color:black; font-size: 1.25em;"
                                                             href="{{ route("cmskoidetail", $k->id) }}">
                                                             {{ $k->code ?? "-" }}</a>
                                                     </h6>
-                                                    <table
-                                                        style="width: 100%; padding: 10px; text-align: left; font-size: 14px;">
+                                                    <table class="grid-table"
+                                                        style="width: 100%;  text-align: left; font-size: 14px;">
                                                         <tr>
-                                                            <td style="padding: 10px;"><strong>Variety</strong></td>
-                                                            <td style="padding: 10px;">:</td>
-                                                            <td style="padding: 10px;">{{ $k->variety->name ?? "-" }}</td>
+                                                            <td style=""><strong>Variety</strong></td>
+                                                            <td style="">:</td>
+                                                            <td style="">{{ $k->variety->name ?? "-" }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td style="padding: 10px;"><strong>Breeder Name</strong>
+                                                            <td style=""><strong>Breeder Name</strong>
                                                             </td>
-                                                            <td style="padding: 10px;">:</td>
-                                                            <td style="padding: 10px;">{{ $k->breeder->name ?? "-" }}</td>
+                                                            <td style="">:</td>
+                                                            <td style="">{{ $k->breeder->name ?? "-" }}</td>
 
                                                         </tr>
 
                                                         <tr>
-                                                            <td style="padding: 10px;"><strong>Gender</strong></td>
-                                                            <td style="padding: 10px;">:</td>
-                                                            <td style="padding: 10px;">{{ $k->gender ?? "-" }}</td>
+                                                            <td style=""><strong>Gender</strong></td>
+                                                            <td style="">:</td>
+                                                            <td style="">{{ $k->gender ?? "-" }}</td>
                                                         </tr>
 
                                                         <tr>
 
-                                                            <td style="padding: 10px;"><strong>Age</strong></td>
+                                                            <td style=""><strong>Age</strong></td>
 
-                                                            <td style="padding: 10px;">:</td>
+                                                            <td style="">:</td>
 
-                                                            <td style="padding: 10px;">
+                                                            <td style="">
 
                                                                 @if ($k->birth)
                                                                     @php
@@ -320,11 +316,11 @@
 
                                                         <tr>
 
-                                                            <td style="padding: 10px;"><strong>Status</strong></td>
+                                                            <td style=""><strong>Status</strong></td>
 
-                                                            <td style="padding: 10px;">:</td>
+                                                            <td style="">:</td>
 
-                                                            <td style="padding: 10px;">
+                                                            <td style="">
 
                                                                 <div class="btn-group">
 
@@ -379,45 +375,31 @@
 
                                                                             <input type="hidden" name="id"
                                                                                 value="{{ $k->id }}">
-
                                                                             <input type="hidden" name="n_status"
                                                                                 value="Sold">
-
                                                                             <button
                                                                                 class="dropdown-item btn-sm">Sold</button>
-
                                                                         </form>
 
                                                                         <form action="{{ route("cmsstatusupdate") }}"
                                                                             method="POST">
-
                                                                             @csrf
-
                                                                             <input type="hidden" name="id"
                                                                                 value="{{ $k->id }}">
-
                                                                             <input type="hidden" name="n_status"
                                                                                 value="Death">
 
                                                                             <button
                                                                                 class="dropdown-item btn-sm">Death</button>
-
                                                                         </form>
-
                                                                     </div>
-
                                                                 </div>
-
                                                             </td>
-
                                                             </td>
-
                                                         </tr>
-
                                                     </table>
 
                                                     <div class="grid_1 simpleCart_shelfItem">
-
                                                         <div class="item_add"
                                                             style="padding-left: 10px; padding-right: 10px; padding-bottom: 25px; padding-top: 25px; display: inline-flex;">
                                                             <span style="display: flex !important; gap: 2px;">
@@ -436,7 +418,6 @@
                                                                     style="background: black;">Details</a>
 
                                                             </span>
-
                                                         </div>
 
                                                         <div class="item_add"
@@ -526,11 +507,8 @@
 
                                                                                 {{-- <a href="{{ route('cmskoiDelete', $k->id) }}"
                                                     type="button" class="btn btn-danger">Delete</a> --}}
-
                                                                             </div>
-
                                                                         </div>
-
                                                                     </div>
 
                                                                 </div>
@@ -726,65 +704,38 @@
                                                                         <button type="button" class="close"
                                                                             data-dismiss="modal" aria-label="Close">
                                                                             <span aria-hidden="true">&times;</span>
-
                                                                         </button>
-
                                                                     </div>
-
                                                                     <div class="modal-body">
-
                                                                         <p>Apakah kamu yakin ingin hapus?&hellip;</p>
-
                                                                     </div>
 
                                                                     <div class="modal-footer justify-content-between">
-
                                                                         <button type="button" class="btn btn-default"
                                                                             data-dismiss="modal">Close</button>
-
                                                                         <a href="{{ route("cmskoigridDelete", $k->id) }}"
                                                                             type="button"
                                                                             class="btn btn-danger">Delete</a>
-
                                                                     </div>
-
                                                                 </div>
-
                                                                 <!-- /.modal-content -->
-
                                                             </div>
-
                                                             <!-- /.modal-dialog -->
-
                                                         </div>
-
                                                         <!-- /.modal -->
-
                                                         {{-- <div class="item_add"><span class="item_price"><a href="#">See Price</a></span></div> --}}
-
                                                     </div>
-
                                                 </div>
-
                                             </div>
                                         @endforeach
-
                                         <div class="clearfix"></div>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </section>
 
         <!-- end content -->
@@ -813,27 +764,19 @@
                                     href="{{ $koi->appends($queryParams)->url($i) }}">{{ $i }}</a>
                             </li>
                         @endfor
-
                         <!-- Halaman terakhir -->
                         @if ($koi->currentPage() < $koi->lastPage() - 2)
                             @if ($koi->currentPage() < $koi->lastPage() - 3)
                                 <li class="page-item disabled"><span class="page-link">...</span></li>
                             @endif
-
                             <li class="page-item"><a class="page-link"
                                     href="{{ $koi->appends($queryParams)->url($koi->lastPage()) }}">{{ $koi->lastPage() }}</a>
                             </li>
-
                         @endif
-
                     @endif
-
                 </ul>
-
             </nav>
-
         </div>
-
     @endsection
 
     @section("script")
