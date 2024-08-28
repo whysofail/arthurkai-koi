@@ -693,6 +693,7 @@ iframe {
 .artists-image-wrap {
     position: relative;
     width: auto;
+    height: 450px;
     padding-bottom: 100%; 
     overflow: hidden;
 }
