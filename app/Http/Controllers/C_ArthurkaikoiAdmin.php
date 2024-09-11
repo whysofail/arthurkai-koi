@@ -1893,6 +1893,7 @@ class C_ArthurkaikoiAdmin extends Controller
             "title" => ['required'],
             "description" => ['required']
         ]);
+        $slug = Str::slug($request->title);
         if ($request->file('image') == null) {
             $image = $request->images;
         } else {
@@ -1904,6 +1905,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
         News::create([
             'title' => $request->title,
+            'slug' => $slug,
             'image' => $image,
             'description' => $request->description,
         ]);
@@ -1923,6 +1925,8 @@ class C_ArthurkaikoiAdmin extends Controller
             "title" => ['required'],
             "description" => ['required']
         ]);
+        $slug = Str::slug($request->title);
+
         if ($request->file('image') == null) {
             $image = $request->images;
         } else {
@@ -1934,6 +1938,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
         News::where('id', $request->id)->update([
             'title' => $request->title,
+            'slug' => $slug,
             'image' => $image,
             'description' => $request->description,
         ]);

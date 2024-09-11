@@ -21,6 +21,7 @@ Route::get('/', [C_Arthurkaikoi::class, 'index'])->name('homepage')->withoutMidd
 Route::get('our', [C_Arthurkaikoi::class, 'our'])->name('our')->withoutMiddleware('auth');
 Route::get('our/detail/{id}', [C_Arthurkaikoi::class, 'our_detail'])->name('ourdetail')->withoutMiddleware('auth');
 Route::get('news', [C_Arthurkaikoi::class, 'news'])->name('news')->withoutMiddleware('auth');
+Route::get('news/{slug}', [C_Arthurkaikoi::class, 'news_details'])->name('news.detail')->withoutMiddleware('auth');
 Route::get('aboutus', [C_Arthurkaikoi::class, 'aboutus'])->name('aboutus')->withoutMiddleware('auth');
 Route::get('contactus', [C_Arthurkaikoi::class, 'contactus'])->name('contactus')->withoutMiddleware('auth');
 

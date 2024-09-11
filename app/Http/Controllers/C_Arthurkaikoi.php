@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Koi;
 use App\Models\AboutUs;
+use App\Models\News;
 
 class C_Arthurkaikoi extends Controller
 {
@@ -18,7 +19,8 @@ class C_Arthurkaikoi extends Controller
     public function index()
     {
         $ourCollection = OurCollection::with('koi')->limit(4)->get();
-        return view('arthurkaikoi.home', compact('ourCollection'));
+        $news = News::latest()->limit(3)->get();
+        return view('arthurkaikoi.home', compact('ourCollection', 'news'));
     }
 
     public function our()
@@ -35,12 +37,14 @@ class C_Arthurkaikoi extends Controller
 
     public function news()
     {
-        return view('arthurkaikoi.news');
+        $news = News::latest()->paginate(10);
+        return view('arthurkaikoi.news', compact('news'));
     }
 
-    public function news_detail()
+    public function news_details($slug)
     {
-        return view('arthurkaikoi.news_detail');
+        $news = News::where('slug', $slug)->first();
+        return view('arthurkaikoi.news_detail', compact('news'));
     }
 
     public function aboutus()

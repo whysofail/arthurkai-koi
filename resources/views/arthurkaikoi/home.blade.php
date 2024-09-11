@@ -89,12 +89,32 @@
     <section class="about-section section-padding">
         <div class="container">
             <div class="row justify-content-center">
-
                 <div class="col-12 text-center">
                     <h2 class="mb-4">Event</h1>
                 </div>
+                @if (count($news) >= 1)
+                    @foreach ($news as $news)
+                        <div class="boxcard col-lg-4 col-12">
+                            <div class="event-thumb">
+                                <img class="thumbnail" src="{{ asset("img/koi/website/news/" . $news->image) }}">
+                                <div class="card-details">
+                                    <h3 class="bold namaikan">{{ $news->title }}</h3>
+                                    <p>{{ $news->updated_at->format("F j, Y") }}</p>
+                                    <p class="eventdesc">
+                                        {{ $news->description }}
+                                    </p>
+                                    <a href="{{ route("news.detail", $news->slug) }}" class="buttonevent seemore">See
+                                        More
+                                    </a>
+                                </div>
 
-                <div class="boxcard col-lg-4 col-12">
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <h2>Hi there, currently there's no News listed.</h2>
+                @endif
+                {{-- <div class="boxcard col-lg-4 col-12">
                     <div class="event-thumb">
                         <img class="thumbnail" src="{{ asset("website/images/articlekoi.jpg") }}">
                         <div class="card-details">
@@ -109,41 +129,8 @@
                         </div>
 
                     </div>
-                </div>
-                <div class="boxcard col-lg-4 col-12">
-                    <div class="event-thumb">
-                        <img class="thumbnail" src="{{ asset("website/images/articlekoi.jpg") }}">
-                        <div class="card-details">
-                            <p class="bold namaikan"> EVENT NAME </p>
-                            <p>21 Feb 2024</p>
-
-                            <p class="eventdesc"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse
-                                ultrices gravida.
-                                Risus commodo viverra maecenas accumsan lacus vel facilisis.</p>
-                            <a href="#" class="buttonevent seemore">See More >></a>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="boxcard col-lg-4 col-12">
-                    <div class="event-thumb">
-                        <img class="thumbnail" src="{{ asset("website/images/articlekoi.jpg") }}">
-                        <div class="card-details">
-                            <p class="bold namaikan"> EVENT NAME </p>
-                            <p>21 Feb 2024</p>
-
-                            <p class="eventdesc"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse
-                                ultrices gravida.
-                                Risus commodo viverra maecenas accumsan lacus vel facilisis.</p>
-                            <a href="#" class="buttonevent seemore">See More >></a>
-                        </div>
-
-                    </div>
-                </div>
+                </div> --}}
     </section>
-
     <section class="article-section section-padding">
         <div class="container">
             <div class="row contentart justify-content-center">

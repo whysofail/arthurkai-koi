@@ -68,7 +68,6 @@
             </div>
             <div class="pagination">
                 {{ $ourCollection->links() }}
-
                 {{-- <a href="page2.html" class="next">Next</a> --}}
             </div>
         </div>
