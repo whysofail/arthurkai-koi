@@ -53,6 +53,7 @@
                                                 <th>Title</th>
                                                 <th>Image</th>
                                                 <th>Description</th>
+                                                <th>Category</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -61,9 +62,9 @@
                                                 <tr>
                                                     <td>{{ $no }}</td>
                                                     <td>
-                                                        <span style="display: flex !important">
+                                                        <span style="display: flex !important; gap: 4px;">
                                                             <a href="{{ route("cmsnewsEdit", $n->id) }}" type="button"
-                                                                class="btn btn-info btn-xs">Edit</a> |
+                                                                class="btn btn-info btn-xs">Edit</a>
                                                             <a href="{{ route("cmsnewsDelete", $n->id) }}" type="button"
                                                                 class="btn btn-danger btn-xs">Delete</a>
                                                         </span>
@@ -81,7 +82,10 @@
 
                                                     </td>
                                                     <td>
-                                                        <p>{{Str::limit(strip_tags($n->description), 25, "...")}}</p>
+                                                        <p>{{ Str::limit(strip_tags($n->description), 25, "...") }}</p>
+                                                    </td>
+                                                    <td>
+                                                        {{ Str::ucfirst($n->type) }}
                                                     </td>
                                                 </tr>
                                                 <?php $no++; ?>

@@ -37,7 +37,7 @@ class C_Arthurkaikoi extends Controller
 
     public function news()
     {
-        $news = News::latest()->paginate(10);
+        $news = News::where('type', 'LIKE', 'news')->latest()->paginate(10);
         return view('arthurkaikoi.news', compact('news'));
     }
 

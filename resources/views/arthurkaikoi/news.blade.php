@@ -21,7 +21,8 @@
                         </div>
                         <div>
                             <p class="namaikan">{{ $item->title }}</p>
-                            <p class="jenisikan">{{ $item->description ?? "-" }}</p>
+                            <p class="jenisikan">{!! $item->description ?? "-" !!}</p>
+                            {{ $item->type }}
                         </div>
                     </div>
                 @endforeach

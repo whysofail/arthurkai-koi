@@ -55,7 +55,7 @@
                                                                 class="artists-image img-fluid">
                                                         @else
                                                             <img src="{{ asset("img/assets/broken.png") }}" class="img"
-                                                                 alt="Placeholder">
+                                                                alt="Placeholder">
                                                         @endif
                                                     @endif
                                                 </a>
@@ -106,6 +106,7 @@
                                     <a href="{{ route("news.detail", $news->slug) }}" class="buttonevent seemore">See
                                         More
                                     </a>
+                                    {{ $news->type }}
                                 </div>
 
                             </div>

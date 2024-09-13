@@ -1,6 +1,6 @@
 @extends("layouts.apparthuradm")
 
-@section("title", "News")
+@section("title", "Posts")
 
 @section("css")
 
@@ -19,7 +19,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">News</h1>
+                        <h1 class="m-0">Post</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -45,7 +45,7 @@
 
                     <div class="col-sm-6">
 
-                        <h1>News</h1>
+                        <h1>Posts</h1>
 
                     </div>
 
@@ -93,28 +93,35 @@
                                                     style="height: auto !important;">
                                             </div>
                                         </div>
-
                                     </div>
-                                    <div class="col-sm-12" style="margin-top: 20px;">
-
+                                    <div class="col-sm-12"
+                                        style="margin-top: 20px; justify-content: space-between; display: flex;">
                                         <label>Description</label>
-
-                                        <textarea id="description" name="description" rows="7">
-                                      {{ old("description") }}
-                                    </textarea>
-
+                                        <div class="col-sm-10" style="align-self: flex-end;">
+                                            <textarea id="description" name="description" rows="5" class="">
+                                                {{ old("description") }}
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" style="margin-top: 10px">
+                                        <div class="input-group row">
+                                            <label for="image" class="col-sm-2 col-form-label">Category</label>
+                                            <div class="col-sm-10">
+                                                <select name="category" id="category" class="form-select">
+                                                    @foreach ($postTypes as $postType)
+                                                        <option value="{{ $postType->value }}">{{ $postType->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 50px">
-
                                         <div class="float-right">
-
                                             <button type="submit" class="btn btn-success">Save</button>
-
                                         </div>
-
                                     </div>
-
                                 </section>
 
                             </div>
