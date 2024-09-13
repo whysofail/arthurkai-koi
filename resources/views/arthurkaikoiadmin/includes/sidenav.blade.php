@@ -62,7 +62,7 @@
                 [
                     "path" => "/news",
                     "route" => "cmsnews",
-                    "label" => "News",
+                    "label" => "Posts",
                 ],
                 [
                     "path" => "/aboutus",

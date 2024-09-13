@@ -1,6 +1,6 @@
 @extends("layouts.apparthuradm")
 
-@section("title", "News")
+@section("title", "Post")
 
 @section("css")
 
@@ -171,7 +171,7 @@
 
                             <p class="whitefont">
 
-                                News
+                                Post
 
                             </p>
 
@@ -320,7 +320,7 @@
 
                     @csrf
 
-                    <input type="hidden" name="id" value="{{ $n->id_news }}">
+                    <input type="hidden" name="id" value="{{ $n->id }}">
 
                     <div class="col-sm-12">
 
@@ -345,7 +345,7 @@
 
                                             <div class="form-group row">
 
-                                                <label for="title" class="col-sm-2 col-form-label">title</label>
+                                                <label for="title" class="col-sm-2 col-form-label">Title</label>
 
                                                 <div class="col-sm-10">
 
@@ -360,47 +360,44 @@
                                         </div>
 
                                         <div class="col-sm-12">
-
-                                            <label>Image</label><br>
-
-                                            <div class="input-group">
-
+                                            <label>Image</label>
+                                            <div>
                                                 <img src="{{ asset("img/koi/website/news/" . $n->image) }}"
                                                     id="imageAbout" class="img-thumbnail" style="width: 200px;">
-
+                                            </div>
+                                            <div class="input-group">
                                                 <div class="custom-file">
-
                                                     <input type="file" name="image" accept="image/*"
                                                         class="custom-file-input" id="imageInput"
                                                         onchange="promoImage(event)">
-
                                                     <label class="custom-file-label" for="imageInput"
                                                         id="imageLabel">{{ old("image") ? old("image") : $n->image }}</label>
-
                                                     <input type="hidden" name="images" value="{{ $n->image }}">
-
                                                 </div>
-
                                             </div>
 
                                         </div>
 
                                         <div class="col-sm-12" style="margin-top: 20px;">
-
-                                            <label>Deskripsi Singkat</label>
-
-                                            <textarea id="deskripsi_singkat" name="deskripsi_singkat" class="form-control" rows="7" placeholder=""> {{ old("deskripsi_singkat") ? old("deskripsi_singkat") : $n->deskripsi_singkat }}</textarea>
-
+                                            <label>Description</label>
+                                            <textarea id="description" name="description" rows="7">
+                                             {{ old("description") ? old("description") : $n->description }}
+                                            </textarea>
                                         </div>
-
-                                        <div class="col-sm-12" style="margin-top: 20px;">
-
-                                            <label>Deskripsi</label>
-
-                                            <textarea id="deskripsi" name="deskripsi" rows="7">
-                                        {{ old("deskripsi") ? old("deskripsi") : $n->deskripsi }}
-                                    </textarea>
-
+                                        <div class="col-sm-12" style="margin-top: 10px;">
+                                            <div class="input-group row">
+                                                <label for="category" class="col-sm-2 col-form-label">Category</label>
+                                                <div class="col-sm-10">
+                                                    <select name="category" id="category" class="form-select">
+                                                        @foreach ($postTypes as $postType)
+                                                            <option value="{{ $postType->value }}"
+                                                                {{ $n->type === $postType->value ? "selected" : "" }}>
+                                                                {{ $postType->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="col-sm-12 mt-3" style="margin-top: 50px">
@@ -468,7 +465,7 @@
 
     <script>
         $(document).ready(function() {
-            $('#deskripsi').summernote({
+            $('#description').summernote({
                 height: 400,
                 toolbar: [
                     // [groupName, [list of button]]

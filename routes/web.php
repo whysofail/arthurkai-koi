@@ -5,6 +5,8 @@ use App\Http\Controllers\C_Arthurkaikoi;
 use App\Http\Controllers\C_ArthurkaikoiAdmin;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\KoiController;
+use App\Enums\PostType;
+
 
 
 //FITUR CLEAR
@@ -17,6 +19,9 @@ Route::get('/clear', function () {
 //     return view('welcome');
 // });
 
+Route::get('/enum-test', function () {
+    return PostType::News->value;
+});
 Route::get('/', [C_Arthurkaikoi::class, 'index'])->name('homepage')->withoutMiddleware('auth');
 Route::get('our', [C_Arthurkaikoi::class, 'our'])->name('our')->withoutMiddleware('auth');
 Route::get('our/detail/{id}', [C_Arthurkaikoi::class, 'our_detail'])->name('ourdetail')->withoutMiddleware('auth');

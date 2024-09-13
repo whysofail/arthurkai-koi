@@ -22,6 +22,7 @@ use App\Models\AboutUs;
 use App\Models\ContactUs;
 use App\Models\News;
 use App\Models\OurCollection;
+use App\Enums\PostType;
 
 
 
@@ -1884,7 +1885,8 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function newsadd()
     {
-        return view('arthurkaikoiadmin.website.news.news_add');
+        $postTypes = PostType::cases();
+        return view('arthurkaikoiadmin.website.news.news_add', compact('postTypes'));
     }
 
     public function newsstore(request $request)
@@ -1908,6 +1910,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'slug' => $slug,
             'image' => $image,
             'description' => $request->description,
+            'type' => $request->category,
         ]);
 
         return redirect('/CMS/news');
@@ -1915,8 +1918,9 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function newsedit($id)
     {
-        $news = News::where('id_news', $id)->get();
-        return view('arthurkaikoiadmin.website.news.news_edit', compact('news'));
+        $postTypes = PostType::cases();
+        $news = News::where('id', $id)->get();
+        return view('arthurkaikoiadmin.website.news.news_edit', compact('news','postTypes'));
     }
 
     public function newsupdate(request $request)
@@ -1937,10 +1941,11 @@ class C_ArthurkaikoiAdmin extends Controller
         }
 
         News::where('id', $request->id)->update([
-            'title' => $request->title,
+            'title' => $request->input('title'),
             'slug' => $slug,
             'image' => $image,
-            'description' => $request->description,
+            'description' => $request->input('description'),
+            'type' => $request->input('category'),
         ]);
 
         return redirect('/CMS/news');
