@@ -112,7 +112,7 @@
                         </div>
                     @endforeach
                 @else
-                    <h2>Hi there, currently there's no News listed.</h2>
+                    <h4>Hi there, currently there's no News listed.</h4>
                 @endif
                 {{-- <div class="boxcard col-lg-4 col-12">
                     <div class="event-thumb">
@@ -133,7 +133,7 @@
     </section>
     <section class="article-section section-padding">
         <div class="container">
-            <div class="row contentart justify-content-center">
+            {{-- <div class="row contentart justify-content-center">
                 <div class="col-lg-6 col-12">
                     <div class="article">
                         <h3>Article</h3>
@@ -146,7 +146,7 @@
                 <div class="col-lg-6 col-12">
                     <img class="articleimg" src="{{ asset("website/images/koi.jpg") }}">
                 </div>
-            </div>
+            </div> --}}
             <div class="row infoart justify-content-center">
                 <div class="col-lg-5 col-12">
                     <img class="articleimg" src="{{ asset("website/images/koi.jpg") }}">
