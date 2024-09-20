@@ -12,27 +12,28 @@
     <section class="artists-section section-padding" id="section_2">
         <div class="container">
             <div class="row">
-            <div class="galeri">
-                @foreach ($news as $item)
-                    <div class="artists-thumb">
-                        <div class="photo">
-                            <a href="{{ route("news.detail", $item->slug) }}">
-                                <img src="{{ asset("img/koi/photo/" . $item->image) }}" alt="{{ $item->title }}">
-                            </a>
+                <div class="galeri">
+                    @foreach ($news as $item)
+                        <div class="artists-thumb">
+                            <div class="photo">
+                                <a href="{{ route("news.detail", $item->slug) }}">
+                                    <img src="{{ asset("img/koi/website/news/" . $item->image) }}"
+                                        alt="{{ $item->title }}">
+                                </a>
+                            </div>
+                            <div>
+                                <p class="namaikan">{{ $item->title }}</p>
+                                <p class="jenisikan">{!! $item->description ?? "-" !!}</p>
+                                {{ $item->type }}
+                            </div>
                         </div>
-                        <div>
-                            <p class="namaikan">{{ $item->title }}</p>
-                            <p class="jenisikan">{!! $item->description ?? "-" !!}</p>
-                            {{ $item->type }}
-                        </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
+                <div class="pagination">
+                    {{ $news->links() }}
+                    {{-- <a href="page2.html" class="next">Next</a> --}}
+                </div>
             </div>
-            <div class="pagination">
-                {{ $news->links() }}
-                {{-- <a href="page2.html" class="next">Next</a> --}}
-            </div>
-        </div>
         </div>
     </section>
 @endsection
