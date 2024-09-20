@@ -682,6 +682,8 @@ iframe {
     position: relative;
     overflow: hidden;
     margin-bottom: 30px;
+    background-color: white;
+    border-radius: 3px;
 }
 
 .artists-image {

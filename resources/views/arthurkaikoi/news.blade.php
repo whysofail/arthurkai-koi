@@ -11,6 +11,7 @@
     </section>
     <section class="artists-section section-padding" id="section_2">
         <div class="container">
+            <div class="row">
             <div class="galeri">
                 @foreach ($news as $item)
                     <div class="artists-thumb">
@@ -31,6 +32,7 @@
                 {{ $news->links() }}
                 {{-- <a href="page2.html" class="next">Next</a> --}}
             </div>
+        </div>
         </div>
     </section>
 @endsection
