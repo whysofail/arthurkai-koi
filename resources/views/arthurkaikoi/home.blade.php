@@ -101,7 +101,8 @@
                                     <h3 class="bold namaikan">{{ $news->title }}</h3>
                                     <p>{{ $news->updated_at->format("F j, Y") }}</p>
                                     <p class="eventdesc">
-                                        {{ $news->description }}
+                                        {{ Str::limit($news->description, 100, "...") }}
+
                                     </p>
                                     <a href="{{ route("news.detail", $news->slug) }}" class="buttonevent seemore">See
                                         More

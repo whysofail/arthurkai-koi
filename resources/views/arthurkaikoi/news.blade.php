@@ -23,7 +23,8 @@
                             </div>
                             <div>
                                 <p class="namaikan">{{ $item->title }}</p>
-                                <p class="jenisikan">{!! $item->description ?? "-" !!}</p>
+
+                                <p class="jenisikan">{!! Str::limit($item->description, 40, "...") ?? "-" !!}</p>
                                 {{ $item->type }}
                             </div>
                         </div>
