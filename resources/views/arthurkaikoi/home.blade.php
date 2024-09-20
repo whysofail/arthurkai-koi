@@ -86,7 +86,9 @@
         </div>
     </section>
 
-    <section class="about-section section-padding">
+
+    {{-- NEWS --}}
+    {{-- <section class="about-section section-padding">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 text-center">
@@ -130,8 +132,8 @@
                         </div>
 
                     </div>
-                </div> --}}
-    </section>
+                </div>
+    </section> --}}
     <section class="article-section section-padding">
         <div class="container">
             {{-- <div class="row contentart justify-content-center">
