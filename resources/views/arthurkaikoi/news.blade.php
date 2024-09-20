@@ -17,7 +17,7 @@
                         <div class="artists-thumb">
                             <div class="photo">
                                 <a href="{{ route("news.detail", $item->slug) }}">
-                                    <img src="{{ asset("img/koi/website/news/" . $item->image) }}"
+                                    <img class="imagenews" src="{{ asset("img/koi/website/news/" . $item->image) }}"
                                         alt="{{ $item->title }}">
                                 </a>
                             </div>
