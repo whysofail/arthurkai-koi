@@ -858,6 +858,13 @@ iframe {
     transition: transform 0.2s;
 }
 
+.photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 20px;
+}
+
 .photo:hover {
     transform: scale(1.05);
 }
