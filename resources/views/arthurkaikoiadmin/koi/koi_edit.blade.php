@@ -389,6 +389,7 @@
                                                                             </div>
                                                                             <span
                                                                                 class="photo-filename">{{ $photo }}</span>
+                                                                                <input type="hidden" name="existing_photos[]" value="{{ $photo }}">
                                                                         </div>
                                                                     @endif
                                                                 @endforeach

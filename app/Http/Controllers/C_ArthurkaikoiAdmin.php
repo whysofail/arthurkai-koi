@@ -1178,30 +1178,56 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function koiupdate(Request $request)
     {
+        // Fetch the existing Koi record
         $koi = Koi::find($request->id);
 
+        // Handle new uploads
+        $newPhotos = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
+        $newVideos = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
+        $linkTrophies = $this->handleSingleFileUpload($request->file('link_trophy'), 'img/koi/trophy');
+        $linkCertificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
 
-        $image = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
-        $imagev = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
-        $link_trophys = $this->handleSingleFileUpload($request->file('link_trophy'), 'img/koi/trophy');
-        $link_certificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
+        // Handle edited photos dynamically
+        $editPhotos = [];
+        foreach ($request->file() as $key => $file) {
+            if (str_starts_with($key, 'edit_photo_')) {
+                $photoName = str_replace('edit_photo_', '', $key); // Extract original photo name
+                $editPhotos[$photoName] = $file; // Store the uploaded file
+            }
+        }
+
+        // Update photos in the database
+        $currentPhotos = explode('|', $koi->photo); // Current photos from DB
 
         // Handle photo removals
         if ($request->has('remove_photos')) {
             foreach ($request->remove_photos as $photo) {
                 $photoPath = public_path('img/koi/photo/' . $photo);
                 if (file_exists($photoPath)) {
-                    unlink($photoPath);
+                    unlink($photoPath); // Remove the file
                 }
             }
-            // Remove from database record
-            $currentPhotos = explode('|', $koi->photo);
-            $updatedPhotos = array_diff($currentPhotos, $request->remove_photos);
-        } else {
-            $updatedPhotos = explode('|', $koi->photo);
+            // Remove these from the current photo list
+            $currentPhotos = array_diff($currentPhotos, $request->remove_photos);
         }
 
-        // Determine new Koi code if necessary
+        // Replace existing photos with edited ones
+        foreach ($editPhotos as $oldPhoto => $newPhoto) {
+            // Remove the old photo from the server
+            $oldPhotoPath = public_path('img/koi/photo/' . $oldPhoto);
+            if (file_exists($oldPhotoPath)) {
+                unlink($oldPhotoPath);
+            }
+
+            // Save the new edited photo
+            $newPhotoPath = $newPhoto->store('img/koi/photo', 'public');
+            $currentPhotos = array_replace($currentPhotos, [$oldPhoto => basename($newPhotoPath)]);
+        }
+
+        // Merge new photos with existing ones
+        $updatedPhotos = array_merge($currentPhotos, $newPhotos);
+
+        // Handle Koi code updates (sequence, variety, breeder, purchase date)
         $variety = Variety::find($request->variety);
         $breeder = Breeder::find($request->breeder);
         $purchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : '';
@@ -1218,12 +1244,11 @@ class C_ArthurkaikoiAdmin extends Controller
 
         // Generate new Koi code if any base parameter changes
         if ($isVarietyChanged || $isBreederChanged || $isPurchaseDateChanged) {
-            $variety = Variety::find($request->variety);
-            $breeder = Breeder::find($request->breeder);
             $sequence = $this->generateSequence($variety, $breeder, $purchaseDateJson);
             $koiCode = $variety->code . $breeder->code . $purchaseDate . $sequence;
         } else {
             $koiCode = $koi->code;
+            $sequence = $koi->sequence; // Use existing sequence if no change
         }
 
         // Update Koi record
@@ -1233,7 +1258,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'variety_id' => $request->variety,
             'breeder_id' => $request->breeder,
             'bloodline_id' => $request->bloodline,
-            'sequence' => $sequence ?? $koi->sequence, // Update only if sequence is changed
+            'sequence' => $sequence,
             'size' => $request->size,
             'birthdate' => $request->birth ? Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth() : $koi->birthdate,
             'gender' => $request->gender,
@@ -1244,14 +1269,17 @@ class C_ArthurkaikoiAdmin extends Controller
             'price_sell_idr' => $request->pricesell_idr ? (int) $request->pricesell_idr : $koi->price_sell_idr,
             'price_sell_jpy' => $request->pricesell_jpy ? (int) $request->pricesell_jpy : $koi->price_sell_jpy,
             'location' => $request->location,
-            'photo' => implode('|', $image) ?: $koi->photo,
-            'video' => implode('|', $imagev) ?: $koi->video,
-            'trophy' => $link_trophys ?: $koi->trophy,
-            'certificate' => $link_certificates ?: $koi->certificate,
+            'photo' => implode('|', $updatedPhotos), // Update photos
+            'video' => implode('|', $newVideos) ?: $koi->video,
+            'trophy' => $linkTrophies ?: $koi->trophy,
+            'certificate' => $linkCertificates ?: $koi->certificate,
             'status' => $request->status,
         ]);
+
+        // Redirect after successful update
         return redirect('/CMS/koi');
     }
+
 
 
     public function koigupdate(request $request)
@@ -1920,7 +1948,7 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $postTypes = PostType::cases();
         $news = News::where('id', $id)->get();
-        return view('arthurkaikoiadmin.website.news.news_edit', compact('news','postTypes'));
+        return view('arthurkaikoiadmin.website.news.news_edit', compact('news', 'postTypes'));
     }
 
     public function newsupdate(request $request)
