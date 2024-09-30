@@ -25,6 +25,8 @@ use App\Models\OurCollection;
 use App\Enums\PostType;
 
 
+use Illuminate\Support\Facades\Log;
+
 
 
 class C_ArthurkaikoiAdmin extends Controller
@@ -1179,75 +1181,90 @@ class C_ArthurkaikoiAdmin extends Controller
     public function koiupdate(Request $request)
     {
         // Fetch the existing Koi record
+        // dd($request->file());
         $koi = Koi::find($request->id);
 
-        // Handle new uploads
+        // Current photos from the Koi record
+        $currentPhotos = explode('|', $koi->photo);
+        Log::warning('Current photo : ', $currentPhotos);
+        // Initialize an array to hold updated photos
+        $updatedPhotos = array_map(function ($photo) {
+            return str_replace(' ', '_', $photo); // Replace spaces with underscores
+        }, $currentPhotos);
+        Log::warning('Mapped current photos', $updatedPhotos);
+
+
+        // Handle new uploads (new photos, videos, trophies, certificates)
         $newPhotos = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
         $newVideos = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
         $linkTrophies = $this->handleSingleFileUpload($request->file('link_trophy'), 'img/koi/trophy');
         $linkCertificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
 
-        // Handle edited photos dynamically
-        $editPhotos = [];
+        // Handle edited photos
         foreach ($request->file() as $key => $file) {
-            if (str_starts_with($key, 'edit_photo_')) {
-                $photoName = str_replace('edit_photo_', '', $key); // Extract original photo name
-                $editPhotos[$photoName] = $file; // Store the uploaded file
-            }
-        }
+            if (str_starts_with($key, 'edit_photo_') && $file && $file->isValid()) {
+                // Extract the index from the key (the number after "edit_photo_")
+                preg_match('/edit_photo_(\d+)/', $key, $matches);
+                $index = isset($matches[1]) ? (int) $matches[1] : null; // Get the index
 
-        // Update photos in the database
-        $currentPhotos = explode('|', $koi->photo); // Current photos from DB
+                // Check if the index is valid
+                if ($index !== null && isset($updatedPhotos[$index])) {
+                    // Handle the file upload
+                    $newPhotoPath = $this->handleSingleFileUpload($file, 'img/koi/photo');
+                    if ($newPhotoPath) {
+                        $newFileName = basename($newPhotoPath); // Get the new uploaded file name
+                        Log::warning('Replacing photo at index ' . $index . ' with new file:', [$newFileName]);
 
-        // Handle photo removals
-        if ($request->has('remove_photos')) {
-            foreach ($request->remove_photos as $photo) {
-                $photoPath = public_path('img/koi/photo/' . $photo);
-                if (file_exists($photoPath)) {
-                    unlink($photoPath); // Remove the file
+                        // Replace the existing entry with the new file name
+                        $updatedPhotos[$index] = $newFileName;
+                    } else {
+                        Log::warning('Failed to upload new file for index ' . $index);
+                    }
+                } else {
+                    Log::warning('Invalid index or index not found for key: ', [$key]);
                 }
             }
-            // Remove these from the current photo list
-            $currentPhotos = array_diff($currentPhotos, $request->remove_photos);
         }
 
-        // Replace existing photos with edited ones
-        foreach ($editPhotos as $oldPhoto => $newPhoto) {
-            // Remove the old photo from the server
-            $oldPhotoPath = public_path('img/koi/photo/' . $oldPhoto);
-            if (file_exists($oldPhotoPath)) {
-                unlink($oldPhotoPath);
+        Log::warning('Updated photos after editing:', $updatedPhotos);
+
+        // Handle photo removals if any
+        if ($request->has('remove_photos')) {
+            Log::warning('Photo to be removed : ', $request->remove_photos);
+            foreach ($request->remove_photos as $photo) {
+                // $photoPath = public_path('img/koi/photo/' . $photo);
+                // if (file_exists($photoPath)) {
+                //     unlink($photoPath); // Remove the file
+                // }
             }
-
-            // Save the new edited photo
-            $newPhotoPath = $newPhoto->store('img/koi/photo', 'public');
-            $currentPhotos = array_replace($currentPhotos, [$oldPhoto => basename($newPhotoPath)]);
+            // Remove these from the updated photos list
+            $updatedPhotos = array_diff($updatedPhotos, $request->remove_photos);
+            Log::info('Updated photos after removal:', $updatedPhotos);
         }
 
-        // Merge new photos with existing ones
-        $updatedPhotos = array_merge($currentPhotos, $newPhotos);
+        // Merge new photos with the existing ones
+        $finalPhotos = array_merge($updatedPhotos, $newPhotos);
+
+        Log::info('Final photos after operations', $finalPhotos);
 
         // Handle Koi code updates (sequence, variety, breeder, purchase date)
         $variety = Variety::find($request->variety);
         $breeder = Breeder::find($request->breeder);
         $purchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : '';
-        $purchaseDateJson = Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth();
 
-        // Normalize dates
-        $purchaseDateJson = Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth()->format('Y-m-d');
-        $currentPurchaseDate = $koi->purchase_date ? Carbon::parse($koi->purchase_date)->format('Y-m-d') : null;
+        // Normalize purchase date
+        $purchaseDateJson = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth()->format('Y-m-d') : null;
 
         // Check if any base parameter has changed
         $isVarietyChanged = $koi->variety_id != $request->variety;
         $isBreederChanged = $koi->breeder_id != $request->breeder;
-        $isPurchaseDateChanged = $currentPurchaseDate != $purchaseDateJson;
 
         // Generate new Koi code if any base parameter changes
-        if ($isVarietyChanged || $isBreederChanged || $isPurchaseDateChanged) {
+        if ($isVarietyChanged || $isBreederChanged) {
             $sequence = $this->generateSequence($variety, $breeder, $purchaseDateJson);
             $koiCode = $variety->code . $breeder->code . $purchaseDate . $sequence;
         } else {
-            $koiCode = $koi->code;
+            $koiCode = $koi->code; // Use existing Koi code if no change
             $sequence = $koi->sequence; // Use existing sequence if no change
         }
 
@@ -1269,7 +1286,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'price_sell_idr' => $request->pricesell_idr ? (int) $request->pricesell_idr : $koi->price_sell_idr,
             'price_sell_jpy' => $request->pricesell_jpy ? (int) $request->pricesell_jpy : $koi->price_sell_jpy,
             'location' => $request->location,
-            'photo' => implode('|', $updatedPhotos), // Update photos
+            'photo' => implode('|', $finalPhotos), // Update photos in DB
             'video' => implode('|', $newVideos) ?: $koi->video,
             'trophy' => $linkTrophies ?: $koi->trophy,
             'certificate' => $linkCertificates ?: $koi->certificate,
@@ -1277,8 +1294,9 @@ class C_ArthurkaikoiAdmin extends Controller
         ]);
 
         // Redirect after successful update
-        return redirect('/CMS/koi');
+        return redirect('/CMS/koi/edit/' . $koi->id)->with('success', 'Koi record updated successfully.');
     }
+
 
 
 

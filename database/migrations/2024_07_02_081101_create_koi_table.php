@@ -18,7 +18,7 @@ class CreateKoiTable extends Migration
             $table->string('code')->nullable();
             $table->string('nickname')->nullable();
             $table->date('birthdate')->nullable();
-            $table->enum('gender',['Male','Female','Unknown'])->nullable();
+            $table->enum('gender', ['Male', 'Female', 'Unknown'])->nullable();
             $table->unsignedBigInteger('breeder_id')->nullable();
             $table->unsignedBigInteger('bloodline_id')->nullable();
             $table->unsignedBigInteger('variety_id')->nullable();
@@ -34,7 +34,7 @@ class CreateKoiTable extends Migration
             $table->string('handler')->nullable();
             $table->date('purchase_date')->nullable();
             $table->string('location')->nullable();
-            $table->string('photo')->nullable();
+            $table->text('photo')->nullable();
             $table->string('video')->nullable();
             $table->string('trophy')->nullable();
             $table->string('certificate')->nullable();
@@ -42,7 +42,7 @@ class CreateKoiTable extends Migration
             $table->string('buyer_name')->nullable();
             $table->date('death_date')->nullable();
             $table->text('death_note')->nullable();
-            $table->enum('status', ['Available','Sold','Death'])->default('Available');
+            $table->enum('status', ['Available', 'Sold', 'Death'])->default('Available');
             $table->timestamps();
             $table->foreign('breeder_id')->references('id')->on('breeder')->onDelete('set null');
             $table->foreign('variety_id')->references('id')->on('variety')->onDelete('set null');

@@ -367,6 +367,7 @@
                                                             <div id="existing-photos">
                                                                 @foreach ($photos as $photo)
                                                                     @if (!empty($photo))
+                                                                   
                                                                         <div class="photo-item"
                                                                             style="margin-bottom: 10px;">
                                                                             <div
@@ -377,11 +378,11 @@
                                                                                 <div>
                                                                                     <input type="file"
                                                                                         class="form-control-file edit-photo"
-                                                                                        name="edit_photo_{{ $photo }}"
+                                                                                        name="edit_photo_{{$loop->index}}"
                                                                                         style="display: none;">
                                                                                     <button type="button"
                                                                                         class="btn btn-primary btn-sm edit-photo-button"
-                                                                                        data-target="input[name='edit_photo_{{ $photo }}']">Edit</button>
+                                                                                        data-target="input[name='edit_photo_{{$loop->index}}']">Edit</button>
                                                                                     <button type="button"
                                                                                         class="btn btn-danger btn-sm remove-photo"
                                                                                         data-photo="{{ $photo }}">Remove</button>
@@ -399,8 +400,6 @@
                                                         @endif
                                                     </div>
 
-                                                    <div class="input-group realprocodeLP control-group lst incrementLP">
-                                                    </div>
 
                                                     <!-- Input for uploading new photos -->
 
@@ -433,20 +432,26 @@
                                                         <input type="hidden" name="photo_highlights" value="">
                                                     @else
                                                     @endif
-                                                    <div class="input-group-btn">
-                                                        <button class="btn btn-success btn-clickLP" type="button"><i
-                                                                class="fldemo glyphicon glyphicon-plus"></i>Add</button>
-                                                    </div>
+                                         
                                                 </div>
-                                                <div class="cloneLP hide" style="display: none;">
-                                                    <div class="realprocodeLP control-group lst input-group"
-                                                        style="margin: 1em 0 1em;">
-                                                        <input type="file" name="link_photo[]"
-                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)">
+                                                <div class="input-group realprocodeLP control-group lst incrementLP">
+                                                    <!-- Existing inputs will be appended here -->
+                                                </div>
+                                                
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-success btn-clickLP" type="button">
+                                                        <i class="fldemo glyphicon glyphicon-plus"></i> Add
+                                                    </button>
+                                                </div>
+                                                
+                                                <!-- Template for cloning -->
+                                                <div class="cloneLP" style="display: none;">
+                                                    <div class="realprocodeLP control-group lst input-group" style="margin: 1em 0 1em;">
+                                                        <input type="file" name="link_photo[]" class="myfrm form-control" onchange="Imagelinkphoto(event)">
                                                         <div class="input-group-btn">
-                                                            <button class="btn btn-danger" type="button"><i
-                                                                    class="fldemo glyphicon glyphicon-remove"></i>
-                                                                Remove</button>
+                                                            <button class="btn btn-danger" type="button">
+                                                                <i class="fldemo glyphicon glyphicon-remove"></i> Remove
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -832,14 +837,18 @@
         });
 
         $(document).ready(function() {
-            $(".btn-clickLP").click(function() {
-                var lsthmtl = $(".cloneLP").html();
-                $(".incrementLP").after(lsthmtl);
-            });
-            $("body").on("click", ".btn-danger", function() {
-                $(this).parents(".realprocodeLP").remove();
-            });
-        });
+    $(".btn-clickLP").click(function() {
+        // Clone the template
+        var newInput = $(".cloneLP").children().first().clone(); // Clone the first child
+        newInput.find('input[type="file"]').val(''); // Clear the value of the input
+        $(".incrementLP").append(newInput); // Append the cloned input below the existing ones
+    });
+
+    $("body").on("click", ".btn-danger", function() {
+        $(this).closest(".realprocodeLP").remove(); // Remove the specific input group
+    });
+});
+
 
         $(document).ready(function() {
             $("body").on("click", ".remove-photo", function() {
