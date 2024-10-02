@@ -69,6 +69,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function getDataKoi(Request $request)
     {
+        // Columns mapping
         $columns = [
             0 => 'id',
             1 => 'action',
@@ -92,15 +93,14 @@ class C_ArthurkaikoiAdmin extends Controller
             19 => 'death_note',
             20 => 'bloodline'
         ];
+    
         $totalData = Koi::count();
-        $totalFiltered = $totalData;
-
         $limit = $request->input('length');
         $start = $request->input('start');
         $orderColumnIndex = $request->input('order.0.column');
         $orderDir = $request->input('order.0.dir');
         $orderColumn = $columns[$orderColumnIndex];
-
+    
         // Handle dynamic ordering for variety and price columns
         switch ($orderColumn) {
             case 'variety':
@@ -119,24 +119,15 @@ class C_ArthurkaikoiAdmin extends Controller
                 $order = "koi.$orderColumn";
                 break;
         }
-
+    
+        // Initial query for filtering
         $query = Koi::select('koi.*')
             ->leftJoin('variety', 'koi.variety_id', '=', 'variety.id')
             ->leftJoin('breeder', 'koi.breeder_id', '=', 'breeder.id')
             ->with(['history', 'breeder', 'variety']);
-        // Order by price columns if applicable
-        if (is_array($order)) {
-            foreach ($order as $col) {
-                $query->orderBy($col, $orderDir);
-            }
-        } else {
-            $query->orderBy($order, $orderDir);
-        }
-        if (empty($request->input('search.value'))) {
-            $kois = $query->offset($start)
-                ->limit($limit)
-                ->get();
-        } else {
+    
+        // Search filter
+        if (!empty($request->input('search.value'))) {
             $search = $request->input('search.value');
             $query->where(function ($query) use ($search) {
                 $query->where('koi.code', 'LIKE', "%{$search}%")
@@ -146,14 +137,24 @@ class C_ArthurkaikoiAdmin extends Controller
                         $query->where('name', 'LIKE', "%{$search}%");
                     });
             });
-
-            $kois = $query->offset($start)
-                ->limit($limit)
-                ->get();
-
-            $totalFiltered = $query->count();
         }
-
+    
+        // Count filtered results before applying pagination
+        $totalFiltered = $query->count();
+    
+        // Apply ordering logic
+        if (is_array($order)) {
+            foreach ($order as $col) {
+                $query->orderBy($col, $orderDir);
+            }
+        } else {
+            $query->orderBy($order, $orderDir);
+        }
+    
+        // Apply pagination
+        $kois = $query->offset($start)->limit($limit)->get();
+    
+        // Prepare the data for the response
         $data = [];
         if (!empty($kois)) {
             foreach ($kois as $index => $koi) {
@@ -189,16 +190,18 @@ class C_ArthurkaikoiAdmin extends Controller
                 $data[] = $nestedData;
             }
         }
-
+    
+        // JSON response
         $json_data = [
             "draw" => intval($request->input('draw')),
             "recordsTotal" => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
             "data" => $data
         ];
-
+    
         echo json_encode($json_data);
     }
+    
 
 
     public function getDataKoiZA(Request $request)
