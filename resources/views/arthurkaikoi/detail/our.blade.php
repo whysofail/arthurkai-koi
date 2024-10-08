@@ -55,10 +55,46 @@
                                         $age = '-';
                                     @endphp
                                 @endif
-                            <p><b>Gender: </b>{{$ourCollection->koi->gender}}</p>
+
+                                <table border="0">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Gender</strong></td>
+                                            <td>:</td>
+                                            <td style="padding: 10px">
+                                                {{$ourCollection->koi->gender}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Age</strong></td>
+                                            <td>:</td>
+                                            <td style="padding: 10px">
+                                                {{$age}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Size</strong></td>
+                                            <td>:</td>
+                                            <td style="padding: 10px">
+                                                {{$ourCollection->koi->size}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Farm</strong></td>
+                                            <td>:</td>
+                                            <td style="padding: 10px">
+                                                {{$ourCollection->koi->breeder->name}}
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+
+                                </table>
+
+                            {{-- <p><b>Gender: </b>{{$ourCollection->koi->gender}}</p>
                             <p><b>Age: </b>{{$age}}</p>
                             <p><b>Size: </b>{{$ourCollection->koi->size}}</p>
-                            <p><b>Farm: </b>{{$ourCollection->koi->breeder->name}}</p>
+                            <p><b>Farm: </b>{{$ourCollection->koi->breeder->name}}</p> --}}
                         </div>
                     @endif
                     @if (empty($ourCollection->koi->history))
