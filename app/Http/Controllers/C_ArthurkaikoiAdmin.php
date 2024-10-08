@@ -93,14 +93,14 @@ class C_ArthurkaikoiAdmin extends Controller
             19 => 'death_note',
             20 => 'bloodline'
         ];
-    
+
         $totalData = Koi::count();
         $limit = $request->input('length');
         $start = $request->input('start');
         $orderColumnIndex = $request->input('order.0.column');
         $orderDir = $request->input('order.0.dir');
         $orderColumn = $columns[$orderColumnIndex];
-    
+
         // Handle dynamic ordering for variety and price columns
         switch ($orderColumn) {
             case 'variety':
@@ -119,13 +119,13 @@ class C_ArthurkaikoiAdmin extends Controller
                 $order = "koi.$orderColumn";
                 break;
         }
-    
+
         // Initial query for filtering
         $query = Koi::select('koi.*')
             ->leftJoin('variety', 'koi.variety_id', '=', 'variety.id')
             ->leftJoin('breeder', 'koi.breeder_id', '=', 'breeder.id')
             ->with(['history', 'breeder', 'variety']);
-    
+
         // Search filter
         if (!empty($request->input('search.value'))) {
             $search = $request->input('search.value');
@@ -138,10 +138,10 @@ class C_ArthurkaikoiAdmin extends Controller
                     });
             });
         }
-    
+
         // Count filtered results before applying pagination
         $totalFiltered = $query->count();
-    
+
         // Apply ordering logic
         if (is_array($order)) {
             foreach ($order as $col) {
@@ -150,10 +150,10 @@ class C_ArthurkaikoiAdmin extends Controller
         } else {
             $query->orderBy($order, $orderDir);
         }
-    
+
         // Apply pagination
         $kois = $query->offset($start)->limit($limit)->get();
-    
+
         // Prepare the data for the response
         $data = [];
         if (!empty($kois)) {
@@ -190,7 +190,7 @@ class C_ArthurkaikoiAdmin extends Controller
                 $data[] = $nestedData;
             }
         }
-    
+
         // JSON response
         $json_data = [
             "draw" => intval($request->input('draw')),
@@ -198,10 +198,10 @@ class C_ArthurkaikoiAdmin extends Controller
             "recordsFiltered" => intval($totalFiltered),
             "data" => $data
         ];
-    
+
         echo json_encode($json_data);
     }
-    
+
 
 
     public function getDataKoiZA(Request $request)
@@ -914,7 +914,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'nickname' => $request->nickname,
             'variety_id' => $request->variety,
             'breeder_id' => $request->breeder,
-            'bloodline_id' => $request->bloodline,
+            'bloodline_id' => is_string($request->bloodline) ? 1 : $request->bloodline,
             'sequence' => $sequence,
             'size' => $request->size,
             'birthdate' => $request->birth ? Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth() : null,
