@@ -73,25 +73,27 @@ class C_ArthurkaikoiAdmin extends Controller
         $columns = [
             0 => 'id',
             1 => 'action',
-            2 => 'code',
-            3 => 'nickname',
-            4 => 'variety',
-            5 => 'breeder',
-            6 => 'gender',
-            7 => 'birthdate',
-            8 => 'age',
-            9 => 'purchase_date',
-            10 => 'size',
-            11 => 'seller',
-            12 => 'handler',
-            13 => 'price_buy',
-            14 => 'price_sell',
-            15 => 'location',
-            16 => 'date_of_sell',
-            17 => 'buyer_name',
-            18 => 'date_of_death',
-            19 => 'death_note',
-            20 => 'bloodline'
+            2 => 'photo',
+            3 => 'code',
+            4 => 'nickname',
+            5 => 'variety',
+            6 => 'bloodline',
+            7 => 'breeder',
+            8 => 'gender',
+            9 => 'birthdate',
+            10 => 'age',
+            11 => 'purchase_date',
+            12 => 'size',
+            13 => 'seller',
+            14 => 'handler',
+            15 => 'price_buy',
+            16 => 'price_sell',
+            17 => 'location',
+            18 => 'date_of_sell',
+            19 => 'buyer_name',
+            20 => 'date_of_death',
+            21 => 'death_note',
+            22 => 'photo_pdf',
         ];
 
         $totalData = Koi::count();
@@ -161,9 +163,15 @@ class C_ArthurkaikoiAdmin extends Controller
                 $nestedData['index'] = $start + $index + 1;
                 $nestedData['id'] = $koi->id;
                 $nestedData['action'] = view('partials.koi_actions', ['k' => $koi])->render();
+                $photos = explode('|', $koi->photo); // Split the photo string into an array
+                $firstPhoto = $photos[0] ?? null;
+                $nestedData['photo'] = !empty($photos)
+                    ? '<img src="' . asset('img/koi/photo/' . htmlspecialchars($firstPhoto)) . '" class="img-fluid" alt="Koi Photo" />'
+                    : null; // Get the first photo safely
+
                 $nestedData['code'] = $koi->code;
-                $nestedData['nickname'] = $koi->nickname ?? '-';
-                $nestedData['variety'] = optional($koi->variety)->name ?? '-';
+                $nestedData['nickname'] = $koi->nickname ?? null;
+                $nestedData['variety'] = optional($koi->variety)->name ?? null;
                 $nestedData['gender'] = $koi->gender;
                 $nestedData['birth'] = $koi->birthdate;
                 if ($koi->birthdate) {
@@ -178,8 +186,10 @@ class C_ArthurkaikoiAdmin extends Controller
                 $nestedData['size'] = $koi->size ?? '';
                 $nestedData['seller'] = $koi->seller;
                 $nestedData['handler'] = $koi->handler;
-                $nestedData['price_buy'] = 'IDR: ' . number_format($koi->price_buy_idr ?? 0) . '<br>JPY: ' . number_format($koi->price_buy_jpy ?? 0);
-                $nestedData['price_sell'] = 'IDR: ' . number_format($koi->price_sell_idr ?? 0) . '<br>JPY: ' . number_format($koi->price_sell_jpy ?? 0);
+                $nestedData['price_buy'] = 'IDR: ' . number_format($koi->price_buy_idr ?? 0, 0, ',', '.') . '<br>' .
+                    'JPY: ' . number_format($koi->price_buy_jpy ?? 0, 0, ',', '.');
+                $nestedData['price_sell'] = 'IDR: ' . number_format($koi->price_sell_idr ?? 0, 0, ',', '.') . '<br>' .
+                    'JPY: ' . number_format($koi->price_sell_jpy ?? 0, 0, ',', '.');
                 $nestedData['location'] = $koi->location;
                 $nestedData['date_of_sell'] = $koi->sell_date;
                 $nestedData['buyer_name'] = $koi->buyer_name;
@@ -187,6 +197,18 @@ class C_ArthurkaikoiAdmin extends Controller
                 $nestedData['death_note'] = $koi->death_note;
                 $nestedData['breeder'] = optional($koi->breeder)->name ?? '';
                 $nestedData['bloodline'] = optional($koi->bloodline)->name ?? '';
+                if ($firstPhoto) {
+                    $imagePath = public_path('img/koi/photo/' . htmlspecialchars($firstPhoto));
+                    if (file_exists($imagePath)) {
+                        $imageData = base64_encode(file_get_contents($imagePath));
+                        $mimeType = mime_content_type($imagePath);
+                        $nestedData['photo_pdf'] = 'data:' . $mimeType . ';base64,' . $imageData;
+                    } else {
+                        $nestedData['photo_pdf'] = null;
+                    }
+                } else {
+                    $nestedData['photo_pdf'] = null;
+                }
                 $data[] = $nestedData;
             }
         }

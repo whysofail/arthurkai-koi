@@ -20,6 +20,7 @@
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="{{ asset("plugins/overlayScrollbars/css/OverlayScrollbars.min.css") }}">
     <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="{{ asset("plugins/datatables-bs4/css/dataTables.bootstrap4.min.css") }}">
     <link rel="stylesheet" href="{{ asset("plugins/datatables-responsive/css/responsive.bootstrap4.min.css") }}">
     <link rel="stylesheet" href="{{ asset("plugins/datatables-buttons/css/buttons.bootstrap4.min.css") }}">
@@ -170,6 +171,7 @@
     <script src="{{ asset("plugins/bootstrap/js/bootstrap.bundle.min.js") }}"></script>
     <!-- DataTables  & Plugins -->
     <script src="{{ asset("plugins/datatables/jquery.dataTables.min.js") }}"></script>
+    
 
     <script src="{{ asset("plugins/datatables-responsive/js/dataTables.responsive.min.js") }}"></script>
     <script src="{{ asset("plugins/datatables-responsive/js/responsive.bootstrap4.min.js") }}"></script>
@@ -222,9 +224,9 @@
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["excel", "pdf", "print"]
+                "buttons": ["excel", "pdf", "print"],
+                "pageLength" : 25,
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
         });
     </script>
 

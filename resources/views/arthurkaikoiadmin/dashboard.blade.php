@@ -261,7 +261,7 @@
 
                                 </div>
 
-                                <div class="col-sm-5">
+                                {{-- <div class="col-sm-5">
 
                                     <div class="btn-group">
 
@@ -288,7 +288,7 @@
 
                                     </div>
 
-                                </div>
+                                </div> --}}
 
                                 <div class="col-sm-3">
 
@@ -297,13 +297,9 @@
                             </div>
 
                             <div class="card">
-
                                 <!-- /.card-header -->
-
                                 <div class="card-body">
-
-                                    <table id="dataKoi" class="table table-bordered table-striped"
-                                        style="width: 100% !important;">
+                                    <table id="dataKoi" class="table table-bordered table-striped">
 
                                         <thead>
 
@@ -313,6 +309,8 @@
 
                                                 <th>Actions</th>
 
+                                                <th>Photo</th>
+
                                                 <th>Koi Code</th>
 
                                                 <th>Nickname</th>
@@ -320,6 +318,8 @@
                                                 <th>Variety</th>
 
                                                 <th>Breeder</th>
+
+                                                <th>Bloodline</th>
 
                                                 <th>Gender</th>
 
@@ -340,15 +340,7 @@
                                                 <th>Sell Price</th>
 
                                                 <th>Keeping Location</th>
-
-                                                <th>Date Of Sell</th>
-
-                                                <th>Buyer Name</th>
-
-                                                <th>Date of Death</th>
-
-                                                <th>Death Note</th>
-                                                <th>Bloodline</th>
+                                                
 
                                             </tr>
 
@@ -402,121 +394,81 @@
 
         <script type="text/javascript">
             $(document).ready(function() {
+                // Function to convert image URL to Base64
+        
                 var table = $('#dataKoi').DataTable({
                     processing: true,
                     serverSide: true,
-                    responsive: true,
+                    scrollX: true,
                     ajax: {
                         url: '{!! route("getDataKoi") !!}',
                         type: 'GET'
                     },
-                    columns: [{
-                            data: 'index',
-                            name: 'index',
-                            orderable: false,
-                            searchable: false
-                        },
-                        {
-                            data: 'action',
-                            name: 'action',
-                            orderable: false,
-                            searchable: false
-                        },
-                        {
-                            data: 'code',
-                            name: 'code'
-                        },
-                        {
-                            data: 'nickname',
-                            name: 'nickname'
-                        },
-                        {
-                            data: 'variety',
-                            name: 'variety'
-                        },
-                        {
-                            data: 'breeder',
-                            name: 'breeder'
-                        },
-                        {
-                            data: 'gender',
-                            name: 'gender'
-                        },
-                        {
-                            data: 'birth',
-                            name: 'birthdate'
-                        },
-                        {
-                            data: 'age',
-                            name: 'age',
-                            orderable: false,
-                            searchable: false
-                        },
-                        {
-                            data: 'purchase_date',
-                            name: 'purchase_date'
-                        },
-                        {
-                            data: 'size',
-                            name: 'size'
-                        },
-                        {
-                            data: 'seller',
-                            name: 'seller'
-                        },
-                        {
-                            data: 'handler',
-                            name: 'handler'
-                        },
-                        {
-                            data: 'price_buy',
-                            name: 'price_buy',
-                            width: '15%'
-                        },
-                        {
-                            data: 'price_sell',
-                            name: 'price_sell',
-                            width: '12.5%'
-                        },
-                        {
-                            data: 'location',
-                            name: 'location'
-                        },
-                        {
-                            data: 'date_of_sell',
-                            name: 'date_of_sell'
-                        },
-                        {
-                            data: 'buyer_name',
-                            name: 'buyer_name'
-                        },
-                        {
-                            data: 'date_of_death',
-                            name: 'date_of_death'
-                        },
-                        {
-                            data: 'death_note',
-                            name: 'death_note'
-                        },
-                        {
-                            data: 'bloodline',
-                            name: 'bloodline'
-                        }
+                    columns: [
+                        { data: 'index', name: 'index', orderable: false, searchable: false },
+                        { data: 'action', name: 'action', orderable: false, searchable: false },
+                        { data: 'photo', name: 'photo', orderable: false, searchable: false },
+                        { data: 'code', name: 'code' },
+                        { data: 'nickname', name: 'nickname' },
+                        { data: 'variety', name: 'variety' },
+                        { data: 'breeder', name: 'breeder' },
+                        { data: 'bloodline', name: 'bloodline' },
+                        { data: 'gender', name: 'gender' },
+                        { data: 'birth', name: 'birthdate' },
+                        { data: 'age', name: 'age', orderable: false, searchable: false },
+                        { data: 'purchase_date', name: 'purchase_date' },
+                        { data: 'size', name: 'size' },
+                        { data: 'seller', name: 'seller' },
+                        { data: 'handler', name: 'handler' },
+                        { data: 'price_buy', name: 'price_buy', width: '15%' },
+                        { data: 'price_sell', name: 'price_sell', width: '12.5%' },
+                        { data: 'location', name: 'location' },
+                        { data: 'photo_pdf', name: 'photo_pdf', visible: false },
                     ],
-                    // order: [[2, 'asc']], // Urutkan berdasarkan kolom kedua (koi_code)
-                    dom: 'lBfrtip', // This controls the layout of the table
-                    buttons: [{
+                    dom: 'lBfrtip',
+                    buttons: [
+                        {
                             extend: 'excel',
                             exportOptions: {
-                                columns: [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                                columns: [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16]
                             }
                         },
                         {
-                            extend: 'pdf',
+                            extend: 'pdfHtml5',
+                            orientation: 'landscape',
+                            pageSize: 'legal',
                             exportOptions: {
-                                columns: [2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                                columns: [0, 18, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16]
+                            },
+                            customize: function(doc) {
+                            let rows = doc.content[1].table.body;
+
+                            for (let i = 1; i < rows.length; i++) {
+                                if (rows[i][1].text) {
+                                    const base64Image = rows[i][1].text;
+
+                                    // Directly assign the Base64 string to the image property
+                                    rows[i][1] = {
+                                        image: base64Image,
+                                        width: 100,
+                                        height: 100,
+                                    };
+                                }
+                            }
+
+                            // Additional formatting for specific columns (e.g., price columns)
+                            for (let i = 1; i < rows.length; i++) {
+                                for (let j = 0; j < rows[i].length; j++) {
+                                    const cellText = rows[i][j].text;
+                                    if (cellText && cellText.includes('IDR:') && cellText.includes('JPY:')) {
+                                        const parts = cellText.split('JPY:');
+                                        rows[i][j].text = [parts[0].trim(), 'JPY:' + parts[1].trim()];
+                                    }
+                                }
                             }
                         },
+                    },
+
                         {
                             extend: 'print',
                             exportOptions: {
@@ -524,24 +476,21 @@
                             }
                         }
                     ],
-
-                    lengthMenu: [ // Custom lengthMenu options
+                    lengthMenu: [
                         [10, 25, 50, 100, 200, 500],
-                        [10, 25, 50, 100, 200, 500] // labels for options
+                        [10, 25, 50, 100, 200, 500]
                     ],
                     drawCallback: function(settings) {
                         var api = this.api();
                         var pageInfo = api.page.info();
-                        api.column(0, {
-                            page: 'current'
-                        }).nodes().each(function(cell, i) {
+                        api.column(0, { page: 'current' }).nodes().each(function(cell, i) {
                             cell.innerHTML = i + 1 + pageInfo.start;
                         });
                     }
                 });
             });
         </script>
-
+        
         <script>
             var swiper = new Swiper(".mySwiper", {
                 spaceBetween: 30,
