@@ -1652,8 +1652,8 @@ class C_ArthurkaikoiAdmin extends Controller
     public function bloodlinestore(request $request)
     {
         $request->validate([
-            'name' => ['required'],
-            'code' => ['required']
+            'bloodline_name' => ['required'],
+            'bloodline_code' => ['required']
         ]);
         Bloodline::create([
             'name' => $request->bloodline_name,
