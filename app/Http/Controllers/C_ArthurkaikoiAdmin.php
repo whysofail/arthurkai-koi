@@ -73,6 +73,9 @@ class C_ArthurkaikoiAdmin extends Controller
                     })
                     ->orWhereHas('breeder', function ($q) use ($search) {
                         $q->where('name', 'LIKE', "%$search%");
+                    })
+                    ->orWhereHas('bloodline', function ($q) use ($search) {
+                        $q->where('name', 'LIKE', "%$search%");
                     });
             });
         }

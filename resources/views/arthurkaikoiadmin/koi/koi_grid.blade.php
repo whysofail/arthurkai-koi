@@ -308,9 +308,14 @@
 
                                 <div class="card-body pb-0">
                                     <div class="row koi-grid" id="koi-grid">
-                                        @foreach ($koi as $k)
-                                            @include('arthurkaikoiadmin.koi.koi_grid_item', ['k' => $k])
-                                        @endforeach
+                                        @if($koi && $koi->isNotEmpty())
+                                            @foreach ($koi as $k)
+                                                @include('arthurkaikoiadmin.koi.koi_grid_item', ['k' => $k])
+                                            @endforeach
+                                        @else
+                                            <p>No results found</p>
+                                        @endif
+
                                         <div class="clearfix"></div>
                                     </div>
                                 </div>
