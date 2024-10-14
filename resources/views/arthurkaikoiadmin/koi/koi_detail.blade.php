@@ -629,13 +629,13 @@
                                                     </tr>
 
                                                     <tr>
-                                                        <td><strong>Birthday Year & Month</strong></td>
+                                                        <td><strong>Birthdate</strong></td>
                                                         <td>:</td>
                                                         <td style="padding: 10px">
                                                             {{ $koi->birthdate ? $koi->birthdate : "-" }}
                                                         </td>
-
                                                     </tr>
+
                                                     <tr>
                                                         <td><strong>Age</strong></td>
                                                         <td>:</td>
@@ -691,6 +691,27 @@
                                                             {{ isset($koi->price_sell_jpy) ? "¥ " . number_format($koi->price_sell_jpy, 0, ",", ".") : "-" }}
                                                         </td>
 
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Handling Agent</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->handler->name ?? "-" }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Seller Agent</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->seller->name ?? "-" }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Keeping Location</strong></td>
+                                                        <td>:</td>
+                                                        <td style="padding: 10px">
+                                                            {{ $koi->location ?? "-" }}
+                                                        </td>
                                                     </tr>
 
                                                 </tbody>

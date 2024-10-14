@@ -50,7 +50,10 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function koi(Request $request)
     {
-        $layout = $request->query('layout');
+        // Get the layout and search query
+        $layout = $request->query('layout', 'list'); // Default to 'list' if not provided
+        $search = $request->query('search'); // Get the search query
+
         $validLayouts = ['list', 'grid'];
 
         if (!in_array($layout, $validLayouts)) {
@@ -58,14 +61,32 @@ class C_ArthurkaikoiAdmin extends Controller
         }
 
         $koitotal = Koi::count();
+        $koiQuery = Koi::query(); // Start with a base query
+
+        // If the layout is 'grid' and a search term is provided, apply the filter
+        if ($layout === 'grid' && $search) {
+            $koiQuery->where(function ($query) use ($search) {
+                $query->where('code', 'LIKE', "%$search%")
+                    ->orWhere('nickname', 'LIKE', "%$search%")
+                    ->orWhereHas('variety', function ($q) use ($search) {
+                        $q->where('name', 'LIKE', "%$search%");
+                    })
+                    ->orWhereHas('breeder', function ($q) use ($search) {
+                        $q->where('name', 'LIKE', "%$search%");
+                    });
+            });
+        }
+
+        // Paginate the results based on the layout
         if ($layout === 'list') {
-            $koi = Koi::all();
-            return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi'));
+            $koi = $koiQuery->get(); // Get all results for list layout
+            return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi', 'layout'));
         } else {
-            $koi = koi::latest()->paginate(8);
-            return view('arthurkaikoiadmin.koi.koi_grid', compact('koitotal', 'koi'));
+            $koi = $koiQuery->latest()->paginate(8)->appends(['layout' => $layout, 'search' => $search]); // Append layout and search parameters for pagination
+            return view('arthurkaikoiadmin.koi.koi_grid', compact('koitotal', 'koi', 'layout', 'search'));
         }
     }
+
 
     public function getDataKoi(Request $request)
     {

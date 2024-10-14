@@ -75,26 +75,26 @@ class KoiController extends Controller
 
         return response()->json(['success' => 'History data saved successfully.']);
     }
-
     public function searchKoi(Request $request)
     {
-        $query = strtoupper($request->input('query'));
+        $query = $request->input('query');
 
-        // Perform the search query
-        $results = Koi::with('variety', 'breeder')->leftJoin('variety', 'koi.variety_id', '=', 'variety.id')
+        $results = Koi::leftJoin('variety', 'koi.variety_id', '=', 'variety.id')
             ->leftJoin('breeder', 'koi.breeder_id', '=', 'breeder.id')
             ->where(function ($q) use ($query) {
                 $q->whereRaw('LOWER(koi.code) LIKE ?', ['%' . strtolower($query) . '%'])
+                    ->orWhereRaw('LOWER(koi.nickname) LIKE ?', ['%' . strtolower($query) . '%'])
                     ->orWhereRaw('LOWER(variety.name) LIKE ?', ['%' . strtolower($query) . '%'])
                     ->orWhereRaw('LOWER(breeder.name) LIKE ?', ['%' . strtolower($query) . '%']);
             })
             ->select('koi.*', 'variety.name as variety_name', 'breeder.name as breeder_name')
-            ->get();
+            ->paginate(8); // Keep pagination
 
-
-        // Return the results as JSON
         return response()->json($results);
     }
+
+
+
 
 
 }
