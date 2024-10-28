@@ -148,16 +148,15 @@
                                             <div class="form-group row">
                                                 <label for="variety" class="col-sm-2 col-form-label">Variety</label>
                                                 <div class="col-sm-10">
-                                                    <select class="form-control select2" name="variety"
-                                                        style="width: 100%;">
-                                                        <option value="{{ $k->variety->id }}"
+                                                    <select class="form-control select2" name="variety" style="width: 100%;">
+                                                        <option value="{{ $k->variety->id ?? 1 }}"
                                                             {{ $k->variety->name == $k->variety->name ? "selected" : "" }}>
-                                                            {{ $k->variety->name }}</option>
+                                                            {{ $k->variety->name ?? 'Unknown' }}</option>
                                                         @foreach ($variety as $v)
-                                                            <option value="{{ $v->id }}">
+                                                            <option value="{{ $v->id }}" {{ $k->variety->id == $v->id ? 'selected' : '' }}>
                                                                 {{ $v->name }}</option>
                                                         @endforeach
-                                                    </select>
+                                                    </select>                                                    
                                                 </div>
                                             </div>
                                         </div>
