@@ -150,13 +150,13 @@
                                                 <div class="col-sm-10">
                                                     <select class="form-control select2" name="variety" style="width: 100%;">
                                                         <option value="{{ $k->variety->id ?? 1 }}"
-                                                            {{ $k->variety->name == $k->variety->name ? "selected" : "" }}>
+                                                            {{ isset($k->variety) && $k->variety->id == ($k->variety->id ?? 1) ? "selected" : "" }}>
                                                             {{ $k->variety->name ?? 'Unknown' }}</option>
                                                         @foreach ($variety as $v)
-                                                            <option value="{{ $v->id }}" {{ $k->variety->id == $v->id ? 'selected' : '' }}>
+                                                            <option value="{{ $v->id }}" {{ isset($k->variety) && $k->variety->id == $v->id ? 'selected' : '' }}>
                                                                 {{ $v->name }}</option>
                                                         @endforeach
-                                                    </select>                                                    
+                                                    </select>                                                                                                    
                                                 </div>
                                             </div>
                                         </div>
