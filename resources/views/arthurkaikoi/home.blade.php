@@ -62,7 +62,7 @@
                                             </div>
                                             <div>
                                                 <p class="namaikan">{{ $collection->title }}</p>
-                                                <p class="jenisikan">{{ $collection->koi->variety->name }}</p>
+                                                <p class="jenisikan">{{ $collection->koi->variety->name ?? '-' }}</p>
                                             </div>
                                     @endif
                                 </div>
