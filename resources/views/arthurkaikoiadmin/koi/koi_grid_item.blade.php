@@ -78,10 +78,9 @@ style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
             <td style="">:</td>
 
             <td style="">
-
-                @if ($k->birth)
+                @if ($k->birthdate)
                     @php
-                        $umur = \Carbon\Carbon::parse($k->birth)->diff(
+                        $umur = \Carbon\Carbon::parse($k->birthdate)->diff(
                             \Carbon\Carbon::now(),
                         );
                         $umurTahun = $umur->y;
@@ -94,6 +93,12 @@ style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
 
             </td>
 
+        </tr>
+
+        <tr>
+            <td style=""><strong>Size</strong></td>
+            <td style="">:</td>
+            <td style="">{{ $k->size. ' cm' ?? "-" }}</td>
         </tr>
 
         <tr>
