@@ -15,7 +15,7 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
                     @endphp
                     @if (file_exists($photoPath))
                         <div class="photo-item">
-                            <img class="img-fluid card-img-top"
+                            <img class="card-img-top"
                                 src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
                                 alt="Photo"
                                 style="object-fit: contain;">
@@ -23,7 +23,7 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
                     @else
                         <div class="photo-item">
                             <img src="{{ asset("img/assets/broken.png") }}"
-                                class="img-fluid card-img-top"
+                                class="card-img-top"
                                 style="object-fit: cover; width: 100%; height: auto;"
                                 alt="Placeholder">
                         </div>
@@ -33,7 +33,7 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
         @else
             <div class="photo-item">
                 <img src="{{ asset("img/assets/broken.png") }}"
-                    class="img-fluid card-img-top"
+                    class="card-img-top"
                     style="object-fit: cover; width: 100%; height: auto;"
                     alt="Placeholder">
             </div>

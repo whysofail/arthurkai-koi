@@ -434,7 +434,7 @@
                     const imgData = canvas.toDataURL('image/png');
 
                     // Calculate aspect ratio for proper sizing
-                    const aspectRatio = 10.5 / 18;
+                    const aspectRatio = 8.5 / 18;
                     let itemWidth, itemHeight;
 
                     if (aspectRatio > maxItemWidth / maxItemHeight) {
