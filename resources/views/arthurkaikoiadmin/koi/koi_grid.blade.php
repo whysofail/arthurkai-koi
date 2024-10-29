@@ -399,13 +399,13 @@
             // PDF layout settings
             const pageWidth = 210; // A4 page width in mm
             const pageHeight = 297; // A4 page height in mm
-            const horizontalMargin = 10; // Horizontal margin
-            const verticalMargin = 5; // Reduced vertical margin
-            const verticalSpacing = 10; // Additional vertical spacing between items
+            const horizontalMargin = 4; // Horizontal margin
+            const verticalMargin = 4; // Reduced vertical margin
+            const verticalSpacing = 8; // Additional vertical spacing between items
 
 
-            const maxItemWidth = (pageWidth - (3 * horizontalMargin)) / 2;
-            const maxItemHeight = (pageHeight - (3 * verticalMargin) - verticalSpacing) / 2;
+            const maxItemWidth = (pageWidth - (1 * horizontalMargin)) / 2;
+            const maxItemHeight = (pageHeight - (2 * verticalMargin) - verticalSpacing) / 2;
             console.log({maxItemHeight, maxItemWidth})
 
             const positions = [
@@ -430,11 +430,11 @@
 
                 try {
                     // Generate canvas from the entire item
-                    const canvas = await html2canvas(item, { scale: 2, logging: false, useCORS: true });
+                    const canvas = await html2canvas(item, { scale: 1, logging: false, useCORS: true });
                     const imgData = canvas.toDataURL('image/png');
 
                     // Calculate aspect ratio for proper sizing
-                    const aspectRatio = 8.5 / 18;
+                    const aspectRatio = 2/4.5;
                     let itemWidth, itemHeight;
 
                     if (aspectRatio > maxItemWidth / maxItemHeight) {
@@ -443,7 +443,7 @@
                         itemHeight = itemWidth / aspectRatio;
                     } else {
                         // Item is taller than the space
-                        itemHeight = maxItemHeight * 1.05;
+                        itemHeight = maxItemHeight * 1;
                         itemWidth = itemHeight * aspectRatio;
                     }
 

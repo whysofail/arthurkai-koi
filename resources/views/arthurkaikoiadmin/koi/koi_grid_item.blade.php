@@ -18,12 +18,15 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
                             <img class="card-img-top"
                                 src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
                                 alt="Photo"
+                                id="photo-item"
+
                                 style="object-fit: contain;">
                         </div>
                     @else
                         <div class="photo-item">
                             <img src="{{ asset("img/assets/broken.png") }}"
                                 class="card-img-top"
+                                id="photo-item"
                                 style="object-fit: cover; width: 100%; height: auto;"
                                 alt="Placeholder">
                         </div>
@@ -35,6 +38,7 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
                 <img src="{{ asset("img/assets/broken.png") }}"
                     class="card-img-top"
                     style="object-fit: cover; width: 100%; height: auto;"
+                    id="photo-item"
                     alt="Placeholder">
             </div>
         @endif
