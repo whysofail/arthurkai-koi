@@ -20,7 +20,6 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
                                 alt="Photo"
                                 style="object-fit: contain;">
                         </div>
-                        <br>
                     @else
                         <div class="photo-item">
                             <img src="{{ asset("img/assets/broken.png") }}"
@@ -42,7 +41,7 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
     </a>
     <h6>
         <a style="text-decoration: underline; color:black; font-size: 1.25em;"
-            href="{{ route("cmskoidetail", $k->id) }}">
+            href="{{ route("cmskoidetail", $k->id) }}" id='koi-code'>
             {{ $k->code ?? "-" }}</a>
     </h6>
     <table class="grid-table"
@@ -111,25 +110,31 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
 
                 <div class="btn-group">
 
-                    <button class="btn-light" disabled
+                    <button class="btn-light"
+                        id='btn-min'
+                        disabled
                         style="font-size: 14px;">-</button>
 
                     @if ($k->status == "Available")
                         <button type="button"
+                            id="btn-status"
                             class="btn btn-sm btn-success"
                             style="font-size: 12px;">Available</button>
                     @elseif($k->status == "Sold")
                         <button type="button"
+                            id="btn-status"
                             class="btn btn-sm btn-danger"
                             style="font-size: 12px;">Sold</button>
                     @elseif($k->status == "Death")
                         <button type="button"
+                            id="btn-status"
                             class="btn btn-sm btn-default"
                             style="background: purple; color: white; font-size: 12px;">Death</button>
                     @else
                     @endif
 
                     <button type="button"
+                        id='btn-dropdown'
                         class="btn btn-default btn-xs dropdown-toggle dropdown-icon"
                         data-toggle="dropdown">
 

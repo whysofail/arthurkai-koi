@@ -144,7 +144,6 @@
         }
 
         .photo-item {
-            height: 320px;
             width: 100%;
             display: flex;
             justify-content: center;
@@ -342,96 +341,149 @@
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                const printButton = document.getElementById('print-koi-grid');
-        
-                printButton.addEventListener('click', async function () {
-                    try {
-                        console.log('Print button clicked');
-                        const originalText = printButton.innerText;
-                        printButton.innerText = 'Generating PDF...';
-        
-                        // Hide simpleCart shelf items
-                        let simpleCartItems = document.querySelectorAll('.simpleCart_shelfItem');
-                        simpleCartItems.forEach(item => {
-                            item.style.display = 'none';
-                        });
-        
-                        // Adjust content box padding
-                        let contentBoxItems = document.querySelectorAll('.content_box');
-                        contentBoxItems.forEach(item => {
-                            item.style.paddingBottom = '0';
-                            item.style.paddingTop = '0';
-                        });
-        
-                        console.log('Hidden simpleCart_shelfItem elements');
-        
-                        // Initialize PDF document
-                        const { jsPDF } = window.jspdf;
-                        const pdf = new jsPDF('p', 'mm', 'a4');
-        
-                        let koiGridItems = document.querySelectorAll('#koi-grid-item');
-                        if (!koiGridItems.length) {
-                            throw new Error("No koi grid items found!");
-                        }
-                        console.log(`Found ${koiGridItems.length} koi grid items`);
-        
-                        // PDF layout settings
-                        const pageWidth = 210; // A4 page width in mm
-                        const pageHeight = 297; // A4 page height in mm
-                        const margin = 10; // Margin around the page
-                        const itemWidth = (pageWidth - (3 * margin)) / 2;
-                        const itemHeight = (pageHeight - (3 * margin)) / 2;
-        
-                        // Define positions for items in PDF
-                        const positions = [
-                            { x: margin, y: margin },
-                            { x: margin + itemWidth + margin, y: margin },
-                            { x: margin, y: margin + itemHeight + margin },
-                            { x: margin + itemWidth + margin, y: margin + itemHeight + margin }
-                        ];
-        
-                        for (let i = 0; i < koiGridItems.length; i++) {
-                            const item = koiGridItems[i];
-                            const positionIndex = i % 4;
-        
-                            // Add a new page if necessary
-                            if (positionIndex === 0 && i !== 0) {
-                                pdf.addPage();
-                                console.log(`Added new page for item ${i + 1}`);
-                            }
-        
-                            const position = positions[positionIndex];
-        
-                            try {
-                                const canvas = await html2canvas(item, { scale: 2 });
-                                const imgData = canvas.toDataURL('image/png');
-                                pdf.addImage(imgData, 'PNG', position.x, position.y, itemWidth, itemHeight);
-                                console.log(`Added item ${i + 1} to PDF at position (${position.x}, ${position.y}) on page ${Math.floor(i / 4) + 1}`);
-                            } catch (canvasError) {
-                                console.error(`Error generating canvas for item ${i + 1}:`, canvasError);
-                            }
-                        }
-        
-                        console.log('All items processed. Saving PDF...');
-                        pdf.save('koi-grid.pdf');
-        
-                        // Re-display simpleCart shelf items
-                        simpleCartItems.forEach(item => {
-                            item.style.display = '';
-                        });
-                        console.log('Re-displayed simpleCart_shelfItem elements');
-        
-                        printButton.innerText = originalText;
-                    } catch (error) {
-                        console.error('Error during PDF generation:', error);
-                        printButton.innerText = originalText;
-                    }
-                });
+    const printButton = document.getElementById('print-koi-grid');
+
+    printButton.addEventListener('click', async function () {
+        try {
+            console.log('Print button clicked');
+            const originalText = printButton.innerText;
+            printButton.innerText = 'Generating PDF...';
+
+            // Hide simpleCart shelf items
+            let simpleCartItems = document.querySelectorAll('.simpleCart_shelfItem');
+            simpleCartItems.forEach(item => {
+                item.style.display = 'none';
             });
+
+            // Adjust content box padding
+            let contentBoxItems = document.querySelectorAll('.content_box');
+            contentBoxItems.forEach(item => {
+                item.style.cssText = 'padding: 0 !important;';
+
+            });
+
+            // Adjust koi code padding
+            let koiCodeItems = document.querySelectorAll('#koi-code');
+            koiCodeItems.forEach(item => {
+                item.style.padding = '0';
+            });
+
+            let btnMin = document.querySelectorAll('#btn-min');
+            btnMin.forEach(item => {
+                item.style.cssText = 'padding: 0 !important; display: none !important;';
+            });
+
+            let btnDropdown = document.querySelectorAll('#btn-dropdown');
+            btnDropdown.forEach(item => {
+                item.style.cssText = 'padding: 0 !important; display:none !important;';
+            });
+
+            // Remove styling for btn-status
+            let btnStatusItems = document.querySelectorAll('#btn-status');
+            btnStatusItems.forEach(item => {
+                item.style.cssText = 'background: none !important; border: none; padding: 0 !important; color: inherit; font: inherit;';
+            });
+
+            console.log('Adjusted styles for elements');
+
+            // Initialize PDF document
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            let koiGridItems = document.querySelectorAll('#koi-grid-item');
+            if (!koiGridItems.length) {
+                throw new Error("No koi grid items found!");
+            }
+            console.log(`Found ${koiGridItems.length} koi grid items`);
+
+            // PDF layout settings
+            const pageWidth = 210; // A4 page width in mm
+            const pageHeight = 297; // A4 page height in mm
+            const horizontalMargin = 10; // Horizontal margin
+            const verticalMargin = 5; // Reduced vertical margin
+
+            const maxItemWidth = (pageWidth - (3 * horizontalMargin)) / 2;
+            const maxItemHeight = (pageHeight - (3 * verticalMargin)) / 2;
+
+            const positions = [
+                { x: horizontalMargin, y: verticalMargin },
+                { x: horizontalMargin + maxItemWidth + horizontalMargin, y: verticalMargin },
+                { x: horizontalMargin, y: verticalMargin + maxItemHeight + verticalMargin },
+                { x: horizontalMargin + maxItemWidth + horizontalMargin, y: verticalMargin + maxItemHeight + verticalMargin }
+            ];
+
+            // Loop through each koi grid item
+            for (let i = 0; i < koiGridItems.length; i++) {
+                const item = koiGridItems[i];
+                const positionIndex = i % 4;
+
+                // Add a new page if necessary
+                if (positionIndex === 0 && i !== 0) {
+                    pdf.addPage();
+                    console.log(`Added new page for item ${i + 1}`);
+                }
+
+                const position = positions[positionIndex];
+
+                try {
+                    // Generate canvas from the entire item
+                    const canvas = await html2canvas(item, { scale: 2, logging: false, useCORS: true });
+                    const imgData = canvas.toDataURL('image/png');
+
+                    // Calculate aspect ratio for proper sizing
+                    const aspectRatio = canvas.width / canvas.height;
+                    let itemWidth, itemHeight;
+
+                    if (aspectRatio > maxItemWidth / maxItemHeight) {
+                        // Item is wider than the space
+                        itemWidth = maxItemWidth;
+                        itemHeight = itemWidth / aspectRatio;
+                    } else {
+                        // Item is taller than the space
+                        itemHeight = maxItemHeight;
+                        itemWidth = itemHeight * aspectRatio;
+                    }
+
+                    // Center the item in its allocated space
+                    const xOffset = (maxItemWidth - itemWidth) / 2;
+                    const yOffset = (maxItemHeight - itemHeight) / 2;
+
+                    pdf.addImage(imgData, 'PNG', position.x + xOffset, position.y + yOffset, itemWidth, itemHeight);
+                    console.log(`Added item ${i + 1} to PDF at position (${position.x + xOffset}, ${position.y + yOffset}) with size ${itemWidth}x${itemHeight} on page ${Math.floor(i / 4) + 1}`);
+                } catch (canvasError) {
+                    console.error(`Error generating canvas for item ${i + 1}:`, canvasError);
+                }
+            }
+
+            console.log('All items processed. Saving PDF...');
+            pdf.save('koi-grid.pdf');
+
+            // Restore original styles
+            simpleCartItems.forEach(item => {
+                item.style.display = '';
+            });
+            contentBoxItems.forEach(item => {
+                item.style.display = '';
+            });
+            btnStatusItems.forEach(item => {
+                item.style.cssText = '';
+            });
+            btnMin.forEach(item => {
+                item.style.cssText = '';
+            });
+            btnDropdown.forEach(item => {
+                item.style.cssText = '';
+            });
+            console.log('Restored original styles');
+
+            printButton.innerText = originalText;
+        } catch (error) {
+            console.error('Error during PDF generation:', error);
+            printButton.innerText = originalText;
+        }
+    });
+});
         </script>
-        
-        
-        
         
         
         
