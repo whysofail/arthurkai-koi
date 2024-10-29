@@ -401,15 +401,18 @@
             const pageHeight = 297; // A4 page height in mm
             const horizontalMargin = 10; // Horizontal margin
             const verticalMargin = 5; // Reduced vertical margin
+            const verticalSpacing = 10; // Additional vertical spacing between items
+
 
             const maxItemWidth = (pageWidth - (3 * horizontalMargin)) / 2;
-            const maxItemHeight = (pageHeight - (3 * verticalMargin)) / 2;
+            const maxItemHeight = (pageHeight - (3 * verticalMargin) - verticalSpacing) / 2;
+            console.log({maxItemHeight, maxItemWidth})
 
             const positions = [
                 { x: horizontalMargin, y: verticalMargin },
-                { x: horizontalMargin + maxItemWidth + horizontalMargin, y: verticalMargin },
-                { x: horizontalMargin, y: verticalMargin + maxItemHeight + verticalMargin },
-                { x: horizontalMargin + maxItemWidth + horizontalMargin, y: verticalMargin + maxItemHeight + verticalMargin }
+                { x: pageWidth / 2 + horizontalMargin / 2, y: verticalMargin },
+                { x: horizontalMargin, y: verticalMargin + maxItemHeight + verticalSpacing },
+                { x: pageWidth / 2 + horizontalMargin / 2, y: verticalMargin + maxItemHeight + verticalSpacing }
             ];
 
             // Loop through each koi grid item
@@ -431,7 +434,7 @@
                     const imgData = canvas.toDataURL('image/png');
 
                     // Calculate aspect ratio for proper sizing
-                    const aspectRatio = canvas.width / canvas.height;
+                    const aspectRatio = 10.5 / 18;
                     let itemWidth, itemHeight;
 
                     if (aspectRatio > maxItemWidth / maxItemHeight) {
@@ -440,7 +443,7 @@
                         itemHeight = itemWidth / aspectRatio;
                     } else {
                         // Item is taller than the space
-                        itemHeight = maxItemHeight;
+                        itemHeight = maxItemHeight * 1.05;
                         itemWidth = itemHeight * aspectRatio;
                     }
 
