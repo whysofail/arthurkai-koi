@@ -1644,8 +1644,8 @@ class C_ArthurkaikoiAdmin extends Controller
     public function varietystore(request $request)
     {
         $request->validate([
-            'name' => ['required'],
-            'code' => ['required']
+            'name' => ['required', 'unique:variety,name'], // Ensure 'name' is unique in the 'variety' table
+            'code' => ['required', 'unique:variety,code']  // Ensure 'code' is unique in the 'varieties' table
         ]);
 
         Variety::create([
@@ -1662,19 +1662,45 @@ class C_ArthurkaikoiAdmin extends Controller
         return view('arthurkaikoiadmin.variety.variety_edit', compact('variety'));
     }
 
-    public function varietyupdate(request $request)
+    public function varietyupdate(Request $request)
     {
         $request->validate([
             'name' => ['required'],
-            'code' => ['required']
+            'code' => ['required', 'unique:variety,code,' . $request->id], // Ensure unique code
         ]);
-        Variety::where('id', $request->id)->update([
+
+        // Fetch the current variety before updating
+        $variety = Variety::findOrFail($request->id);
+
+        // Update the variety
+        $variety->update([
             'name' => $request->name,
             'code' => $request->code,
         ]);
 
-        return redirect('/CMS/variety');
+        // Update all Koi that have this variety
+        $kois = Koi::where('variety_id', $variety->id)->get();
+        foreach ($kois as $koi) {
+            // Convert the purchase_date string to a Carbon instance (if it's not null)
+            $purchaseDate = $koi->purchase_date ? Carbon::parse($koi->purchase_date)->format('my') : '';
+
+            // Fetch the breeder
+            $breeder = Breeder::find($koi->breeder_id);
+
+            // Regenerate the Koi code with the updated variety code and other details
+            $sequence = str_pad($koi->sequence, 5, '0', STR_PAD_LEFT); // Use existing sequence
+            $koiCode = $variety->code . $breeder->code . $purchaseDate . $sequence;
+
+            // Update the Koi record with the new code
+            $koi->update([
+                'code' => $koiCode,
+            ]);
+        }
+
+
+        return redirect('/CMS/variety')->with('success', 'Variety and related Koi codes updated successfully.');
     }
+
 
     public function varietydelete($id)
     {

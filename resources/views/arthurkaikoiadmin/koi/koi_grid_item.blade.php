@@ -1,5 +1,5 @@
 <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3 mb-4"
-style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
+style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
 <div class="content_box"><a href="{{ route("cmskoidetail", $k->id) }}">
         @if (!empty($k->photo))
             @php
