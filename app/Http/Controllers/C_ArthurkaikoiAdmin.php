@@ -65,20 +65,27 @@ class C_ArthurkaikoiAdmin extends Controller
 
         // If the layout is 'grid' and a search term is provided, apply the filter
         if ($layout === 'grid' && $search) {
+            $search = strtolower($search); // Convert the search term to lowercase
             $koiQuery->where(function ($query) use ($search) {
-                $query->where('code', 'LIKE', "%$search%")
-                    ->orWhere('nickname', 'LIKE', "%$search%")
+                $query->whereRaw('LOWER(code) LIKE ?', ["%$search%"])
+                    ->orWhereRaw('LOWER(nickname) LIKE ?', ["%$search%"])
+                    ->orWhereRaw('LOWER(seller) LIKE ?', ["%$search%"]) // Case-insensitive search for koi code
+                    ->orWhereRaw('LOWER(handler) LIKE ?', ["%$search%"]) // Case-insensitive search for koi code
                     ->orWhereHas('variety', function ($q) use ($search) {
-                        $q->where('name', 'LIKE', "%$search%");
+                        $q->whereRaw('LOWER(name) LIKE ?', ["%$search%"])
+                            ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]); // Case-insensitive search for variety code
                     })
                     ->orWhereHas('breeder', function ($q) use ($search) {
-                        $q->where('name', 'LIKE', "%$search%");
+                        $q->whereRaw('LOWER(name) LIKE ?', ["%$search%"])
+                            ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]); // Case-insensitive search for breeder code
                     })
                     ->orWhereHas('bloodline', function ($q) use ($search) {
-                        $q->where('name', 'LIKE', "%$search%");
+                        $q->whereRaw('LOWER(name) LIKE ?', ["%$search%"])
+                            ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]); // Case-insensitive search for bloodline code
                     });
             });
         }
+
 
         // Paginate the results based on the layout
         if ($layout === 'list') {
