@@ -260,7 +260,7 @@
                                                             {{ $k->seller == $k->seller ? "selected" : "" }}>
                                                             {{ $k->seller }}</option>
                                                         @foreach ($agent as $a)
-                                                            <option value="{{ $a->id }}">
+                                                            <option value="{{ $a->owner }}">
                                                                 {{ $a->owner }}
                                                             </option>
                                                         @endforeach
@@ -276,11 +276,11 @@
                                                 <div class="col-sm-10">
                                                     <select class="form-control select2" name="handler"
                                                         style="width: 100%;">
-                                                        <option value="{{ $k->handler_id }}"
+                                                        <option value="{{ $k->handler }}"
                                                             {{ $k->handler == $k->handler ? "selected" : "" }}>
                                                             {{ $k->handler }}</option>
                                                         @foreach ($agent as $a)
-                                                            <option value="{{ $a->id }}">
+                                                            <option value="{{ $a->owner }}">
                                                                 {{ $a->owner }}
                                                             </option>
                                                         @endforeach
