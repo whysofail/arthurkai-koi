@@ -696,14 +696,14 @@
                                                         <td><strong>Handling Agent</strong></td>
                                                         <td>:</td>
                                                         <td style="padding: 10px">
-                                                            {{ $koi->handler->name ?? "-" }}
+                                                            {{ $koi->handler ?? "-" }}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Seller Agent</strong></td>
                                                         <td>:</td>
                                                         <td style="padding: 10px">
-                                                            {{ $koi->seller->name ?? "-" }}
+                                                            {{ $koi->seller ?? "-" }}
                                                         </td>
                                                     </tr>
                                                     <tr>
