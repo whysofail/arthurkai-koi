@@ -1021,25 +1021,48 @@ class C_ArthurkaikoiAdmin extends Controller
         }
 
         return array_map(function ($file) use ($destinationPath) {
-            $filename = uniqid() . "_" . $file->getClientOriginalName();
-            $file->move($destinationPath, $filename);
-            return $filename;
+            // Ensure the file is valid
+            if (!$file->isValid()) {
+                return ''; // Skip invalid files
+            }
+
+            // Get the original filename and its extension
+            $originalName = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+
+            // Create a unique filename, preserving the original name
+            $uniqueFilename = uniqid() . "_" . pathinfo($originalName, PATHINFO_FILENAME) . '.' . $extension;
+
+            // Move the file to the specified path
+            $file->move($destinationPath, $uniqueFilename);
+
+            return $uniqueFilename; // Return just the filename
         }, $files);
     }
+
 
     /**
      * Handle single file upload.
      */
     private function handleSingleFileUpload($file, $destinationPath)
     {
-        if (!$file) {
+        if (!$file || !$file->isValid()) {
             return '';
         }
 
-        $filename = uniqid() . "_" . $file->getClientOriginalName();
-        $file->move($destinationPath, $filename);
-        return $filename;
+        // Get the original filename and its extension
+        $originalName = $file->getClientOriginalName();
+        $extension = $file->getClientOriginalExtension();
+
+        // Create a unique filename, preserving the original name
+        $uniqueFilename = uniqid() . "_" . pathinfo($originalName, PATHINFO_FILENAME) . '.' . $extension;
+
+        // Move the file to the specified path
+        $file->move($destinationPath, $uniqueFilename);
+
+        return $uniqueFilename; // Return just the filename, not the full path
     }
+
 
 
 
@@ -1239,95 +1262,62 @@ class C_ArthurkaikoiAdmin extends Controller
         $koi = Koi::where('id_koi', $id)->get();
         return view('arthurkaikoiadmin.koi.koi_retweet', compact('koi'));
     }
-
     public function koiupdate(Request $request)
     {
         // Fetch the existing Koi record
-        // dd($request->file());
-        $koi = Koi::find($request->id);
 
-        // Current photos from the Koi record
-        $currentPhotos = explode('|', $koi->photo);
-        Log::warning('Current photo : ', $currentPhotos);
-        // Initialize an array to hold updated photos
-        $updatedPhotos = array_map(function ($photo) {
-            return str_replace(' ', '_', $photo); // Replace spaces with underscores
-        }, $currentPhotos);
-        Log::warning('Mapped current photos', $updatedPhotos);
+        $koi = Koi::findOrFail($request->id);
+
+        // Retrieve and format current photos
+        $currentPhotos = explode('|', $koi->photo); // Assuming you're storing photos as a pipe-separated string
+
+        $updatedPhotos = $currentPhotos; // Start with existing photos
 
 
-        // Handle new uploads (new photos, videos, trophies, certificates)
+        // Handle new file uploads
         $newPhotos = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
         $newVideos = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
         $linkTrophies = $this->handleSingleFileUpload($request->file('link_trophy'), 'img/koi/trophy');
         $linkCertificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
 
-        // Handle edited photos
+        // Process edited photos
         foreach ($request->file() as $key => $file) {
-            if (str_starts_with($key, 'edit_photo_') && $file && $file->isValid()) {
-                // Extract the index from the key (the number after "edit_photo_")
-                preg_match('/edit_photo_(\d+)/', $key, $matches);
-                $index = isset($matches[1]) ? (int) $matches[1] : null; // Get the index
-
-                // Check if the index is valid
-                if ($index !== null && isset($updatedPhotos[$index])) {
-                    // Handle the file upload
+            if (preg_match('/edit_photo_(\d+)/', $key, $matches) && $file->isValid()) {
+                $index = (int) $matches[1];
+                if (isset($updatedPhotos[$index])) {
+                    // Handle the upload and replace the corresponding photo
                     $newPhotoPath = $this->handleSingleFileUpload($file, 'img/koi/photo');
                     if ($newPhotoPath) {
-                        $newFileName = basename($newPhotoPath); // Get the new uploaded file name
-                        Log::warning('Replacing photo at index ' . $index . ' with new file:', [$newFileName]);
-
-                        // Replace the existing entry with the new file name
-                        $updatedPhotos[$index] = $newFileName;
-                    } else {
-                        Log::warning('Failed to upload new file for index ' . $index);
+                        $updatedPhotos[$index] = basename($newPhotoPath); // New photo filename
                     }
-                } else {
-                    Log::warning('Invalid index or index not found for key: ', [$key]);
                 }
             }
         }
 
-        Log::warning('Updated photos after editing:', $updatedPhotos);
 
-        // Handle photo removals if any
+        // Handle photo removals
         if ($request->has('remove_photos')) {
-            Log::warning('Photo to be removed : ', $request->remove_photos);
-            foreach ($request->remove_photos as $photo) {
-                // $photoPath = public_path('img/koi/photo/' . $photo);
-                // if (file_exists($photoPath)) {
-                //     unlink($photoPath); // Remove the file
-                // }
-            }
-            // Remove these from the updated photos list
             $updatedPhotos = array_diff($updatedPhotos, $request->remove_photos);
-            Log::info('Updated photos after removal:', $updatedPhotos);
         }
 
-        // Merge new photos with the existing ones
+        // Finalize photo array by merging with new photos
         $finalPhotos = array_merge($updatedPhotos, $newPhotos);
 
-        Log::info('Final photos after operations', $finalPhotos);
 
-        // Handle Koi code updates (sequence, variety, breeder, purchase date)
+        // Update Koi code if base parameters change
         $variety = Variety::find($request->variety);
         $breeder = Breeder::find($request->breeder);
         $purchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : '';
-
-        // Normalize purchase date
-        $purchaseDateJson = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth()->format('Y-m-d') : null;
-
-        // Check if any base parameter has changed
+        $isPurchaseDateChanged = $koi->purchase_date != $request->purchase_date;
         $isVarietyChanged = $koi->variety_id != $request->variety;
         $isBreederChanged = $koi->breeder_id != $request->breeder;
 
-        // Generate new Koi code if any base parameter changes
-        if ($isVarietyChanged || $isBreederChanged) {
-            $sequence = $this->generateSequence($variety, $breeder, $purchaseDateJson);
+        if ($isVarietyChanged || $isBreederChanged || $isPurchaseDateChanged) {
+            $sequence = $this->generateSequence($variety, $breeder, $request->purchase_date);
             $koiCode = $variety->code . $breeder->code . $purchaseDate . $sequence;
         } else {
-            $koiCode = $koi->code; // Use existing Koi code if no change
-            $sequence = $koi->sequence; // Use existing sequence if no change
+            $koiCode = $koi->code;
+            $sequence = $koi->sequence;
         }
 
         // Update Koi record
@@ -1342,8 +1332,6 @@ class C_ArthurkaikoiAdmin extends Controller
             'birthdate' => $request->birth ? Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth() : $koi->birthdate,
             'gender' => $request->gender,
             'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : $koi->purchase_date,
-            // 'seller_id' => $request->seller ?? $koi->seller_id,
-            // 'handler_id' => $request->handler ?? $koi->seller_id,
             'seller' => $request->seller ?? '',
             'handler' => $request->handler ?? '',
             'price_buy_idr' => $request->pricebuy_idr ? (int) $request->pricebuy_idr : $koi->price_buy_idr,
@@ -1351,19 +1339,15 @@ class C_ArthurkaikoiAdmin extends Controller
             'price_sell_idr' => $request->pricesell_idr ? (int) $request->pricesell_idr : $koi->price_sell_idr,
             'price_sell_jpy' => $request->pricesell_jpy ? (int) $request->pricesell_jpy : $koi->price_sell_jpy,
             'location' => $request->location,
-            'photo' => implode('|', $finalPhotos), // Update photos in DB
+            'photo' => implode('|', $finalPhotos),
             'video' => implode('|', $newVideos) ?: $koi->video,
             'trophy' => $linkTrophies ?: $koi->trophy,
             'certificate' => $linkCertificates ?: $koi->certificate,
             'status' => $request->status,
         ]);
 
-        // Redirect after successful update
         return redirect('/CMS/koi/edit/' . $koi->id)->with('success', 'Koi record updated successfully.');
     }
-
-
-
 
     public function koigupdate(request $request)
     {

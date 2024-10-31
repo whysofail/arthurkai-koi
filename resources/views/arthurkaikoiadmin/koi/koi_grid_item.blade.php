@@ -8,7 +8,7 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
                 $firstPhoto = isset($photos[0]) ? $photos[0] : null;
             @endphp
             <div id="existing-photos">
-                @if ($firstPhoto)
+                @if (!empty($firstPhoto))
                     @php
                         $photoPath = public_path(
                             "img/koi/photo/" . $firstPhoto,
@@ -258,36 +258,22 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
                                 style="text-align: center">
 
                                 <div class="swiper mySwiper">
-
                                     <div class="swiper-wrapper">
-
-                                        @foreach ($k->history as $h)
-                                            @if ($loop->first)
-                                                @foreach (explode("|", $h->link_video) as $image)
-                                                    @if ($image != null)
-                                                        <div
-                                                            class="swiper-slide">
-
-                                                            <video
-                                                                controls="controls"
-                                                                style="width: 80%"
-                                                                name="{{ $image }}">
-
-                                                                <source
-                                                                    src="{{ asset("img/koi/video/" . $image) }}">
-
-                                                            </video><br>
-
-                                                        </div>
-                                                    @else
-                                                        -
-                                                    @endif
-                                                @endforeach
-                                            @else
-                                            @endif
+                                        @php
+                                            $videos = !empty($k->video) ? explode('|', $k->video) : [];
+                                        @endphp
+                                    
+                                        @foreach ($videos as $index => $video)
+                                            <div class="swiper-slide">
+                                                @if ($index == 0 && !empty($video))
+                                                    <video controls style="width: 80%" name="{{ $video }}">
+                                                        <source src="{{ asset('img/koi/video/' . $video) }}">
+                                                    </video>
+                                                @endif
+                                            </div>
                                         @endforeach
-
                                     </div>
+                                    
                                     <div class="swiper-pagination">
                                     </div>
                                 </div>
@@ -346,31 +332,19 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
 
                             <div class="modal-body"
                                 style="text-align: center">
-
                                 <div class="swiper mySwiper">
-
                                     <div class="swiper-wrapper">
-
-                                        @foreach ($k->history as $h)
-                                            @if ($loop->first)
-                                                @foreach (explode("|", $h->link_photo) as $image)
-                                                    @if ($image != null)
-                                                        <div
-                                                            class="swiper-slide">
-
-                                                            <img width="125"
-                                                                class="img-thumbnail"
-                                                                src="{{ asset("img/koi/photo/" . $image) }}">
-
-                                                        </div>
-                                                    @else
-                                                    @endif
-                                                @endforeach
-                                            @else
-                                            @endif
-                                        @endforeach
-
+                                        @if(!empty($k->photo))
+                                            @foreach (explode('|', $k->photo) as $index => $image)
+                                                @if (!empty($image))
+                                                    <div class="swiper-slide">
+                                                        <img width="125" class="img-thumbnail" src="{{ asset('img/koi/photo/' . $image) }}">
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        @endif
                                     </div>
+                                    
 
                                     <div class="swiper-pagination">
 
