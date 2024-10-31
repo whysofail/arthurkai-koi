@@ -4,7 +4,7 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
         @if (!empty($k->photo))
             @php
                 $photos = array_filter(explode("|", $k->photo));
-                echo($photos);
+                // echo($photos);
                 $firstPhoto = isset($photos[0]) ? $photos[0] : null;
             @endphp
             <div id="existing-photos">
