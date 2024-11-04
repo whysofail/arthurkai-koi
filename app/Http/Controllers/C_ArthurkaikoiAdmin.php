@@ -50,58 +50,57 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function koi(Request $request)
     {
-        // Get the layout and search query
-        $layout = $request->query('layout', 'list'); // Default to 'list' if not provided
-        $search = $request->query('search'); // Get the search query
+        // Get the layout, search query, and pagination count
+        $layout = $request->query('layout', 'list');
+        $search = $request->query('search');
+        $perPage = $request->query('per_page', 8); // Default to 8 items per page
 
         $validLayouts = ['list', 'grid'];
-
         if (!in_array($layout, $validLayouts)) {
-            $layout = 'list'; // Fallback layout
+            $layout = 'list';
         }
 
         $koitotal = Koi::count();
-        $koiQuery = Koi::query(); // Start with a base query
+        $koiQuery = Koi::query();
 
-        // If the layout is 'grid' and a search term is provided, apply the filter
+        // Apply search filters if 'grid' layout and search term are provided
         if ($layout === 'grid' && $search) {
-            $searchTerms = array_map('trim', explode(',', strtolower($search))); // Split and trim each search term
+            $searchTerms = array_map('trim', explode(',', strtolower($search)));
 
             $koiQuery->where(function ($query) use ($searchTerms) {
                 foreach ($searchTerms as $search) {
                     $query->where(function ($query) use ($search) {
                         $query->whereRaw('LOWER(code) LIKE ?', ["%$search%"])
                             ->orWhereRaw('LOWER(nickname) LIKE ?', ["%$search%"])
-                            ->orWhereRaw('LOWER(seller) LIKE ?', ["%$search%"]) // Case-insensitive search for koi code
-                            ->orWhereRaw('LOWER(handler) LIKE ?', ["%$search%"]) // Case-insensitive search for koi code
+                            ->orWhereRaw('LOWER(seller) LIKE ?', ["%$search%"])
+                            ->orWhereRaw('LOWER(handler) LIKE ?', ["%$search%"])
                             ->orWhereHas('variety', function ($q) use ($search) {
                                 $q->whereRaw('LOWER(name) LIKE ?', ["%$search%"])
-                                    ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]); // Case-insensitive search for variety code
+                                    ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]);
                             })
                             ->orWhereHas('breeder', function ($q) use ($search) {
                                 $q->whereRaw('LOWER(name) LIKE ?', ["%$search%"])
-                                    ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]); // Case-insensitive search for breeder code
+                                    ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]);
                             })
                             ->orWhereHas('bloodline', function ($q) use ($search) {
                                 $q->whereRaw('LOWER(name) LIKE ?', ["%$search%"])
-                                    ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]); // Case-insensitive search for bloodline code
+                                    ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]);
                             });
                     });
                 }
             });
         }
 
-
-
-        // Paginate the results based on the layout
+        // Paginate the results based on layout and per-page selection
         if ($layout === 'list') {
-            $koi = $koiQuery->get(); // Get all results for list layout
-            return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi', 'layout'));
+            $koi = $koiQuery->get();
+            return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi', 'layout', 'perPage'));
         } else {
-            $koi = $koiQuery->latest()->paginate(8)->appends(['layout' => $layout, 'search' => $search]); // Append layout and search parameters for pagination
-            return view('arthurkaikoiadmin.koi.koi_grid', compact('koitotal', 'koi', 'layout', 'search'));
+            $koi = $koiQuery->latest()->paginate($perPage)->appends(['layout' => $layout, 'search' => $search, 'per_page' => $perPage]);
+            return view('arthurkaikoiadmin.koi.koi_grid', compact('koitotal', 'koi', 'layout', 'search', 'perPage'));
         }
     }
+
 
 
     public function getDataKoi(Request $request)
@@ -1000,16 +999,20 @@ class C_ArthurkaikoiAdmin extends Controller
     private function generateSequence($variety, $breeder, $purchaseDate)
     {
         $koiCodeInput = $variety->code . $breeder->code . $purchaseDate;
+
+        // Find the highest sequence that matches the koi code pattern and is not null
         $existingKoi = Koi::where('code', 'like', $koiCodeInput . '%')
+            ->whereNotNull('sequence')
             ->orderBy('sequence', 'desc')
             ->first();
 
-        if ($existingKoi) {
-            return str_pad($existingKoi->sequence + 1, 5, '0', STR_PAD_LEFT);
-        }
+        // If a sequence is found, increment it; otherwise, start from '00001'
+        $newSequence = $existingKoi ? $existingKoi->sequence + 1 : 1;
 
-        return '00001';
+        // Format sequence with leading zeros to ensure a 5-digit string
+        return str_pad($newSequence, 5, '0', STR_PAD_LEFT);
     }
+
 
     /**
      * Handle multiple file uploads.
@@ -1265,15 +1268,10 @@ class C_ArthurkaikoiAdmin extends Controller
     public function koiupdate(Request $request)
     {
         // Fetch the existing Koi record
-
         $koi = Koi::findOrFail($request->id);
-
         // Retrieve and format current photos
         $currentPhotos = explode('|', $koi->photo); // Assuming you're storing photos as a pipe-separated string
-
         $updatedPhotos = $currentPhotos; // Start with existing photos
-
-
         // Handle new file uploads
         $newPhotos = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
         $newVideos = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
@@ -1307,14 +1305,17 @@ class C_ArthurkaikoiAdmin extends Controller
         // Update Koi code if base parameters change
         $variety = Variety::find($request->variety);
         $breeder = Breeder::find($request->breeder);
-        $purchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : '';
-        $isPurchaseDateChanged = $koi->purchase_date != $request->purchase_date;
+        $purchaseDate = !empty($koi->purchase_date)
+            ? Carbon::createFromFormat('Y-m', substr($koi->purchase_date, 0, 7))->format('my')
+            : '';
+        $requestPurchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : '';
+        $isPurchaseDateChanged = $requestPurchaseDate != $purchaseDate;
         $isVarietyChanged = $koi->variety_id != $request->variety;
         $isBreederChanged = $koi->breeder_id != $request->breeder;
 
         if ($isVarietyChanged || $isBreederChanged || $isPurchaseDateChanged) {
-            $sequence = $this->generateSequence($variety, $breeder, $request->purchase_date);
-            $koiCode = $variety->code . $breeder->code . $purchaseDate . $sequence;
+            $sequence = $this->generateSequence($variety, $breeder, $requestPurchaseDate);
+            $koiCode = $variety->code . $breeder->code . $requestPurchaseDate . $sequence;
         } else {
             $koiCode = $koi->code;
             $sequence = $koi->sequence;

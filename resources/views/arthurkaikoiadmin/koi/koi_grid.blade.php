@@ -261,15 +261,38 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="row" style="padding: 20px;">
-                                    <div class="col-sm-4">
-                                        <a href="{{ route("cmskoiAdd") }}">
-                                            <button type="button" class="btn btn-success"
-                                                style=" background: green; color: white; "><b>+ Add KOI</b></button>
+                                    <div class="col-sm-8 d-inline-flex align-items-center">
+                                        <a href="{{ route('cmskoiAdd') }}" class="mr-2">
+                                            <button type="button" class="btn btn-success" style="background: green; color: white;">
+                                                <b>+ Add KOI</b>
+                                            </button>
                                         </a>
+                                        
+                                        <form method="GET" action="{{ url()->current() }}" class="d-inline mr-2">
+                                            <input type="hidden" name="layout" value="{{ $layout }}">
+                                            <input type="hidden" name="search" value="{{ $search }}">
+                                    
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Items per page
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <button type="submit" name="per_page" value="8" class="dropdown-item">8</button>
+                                                    <button type="submit" name="per_page" value="16" class="dropdown-item">15</button>
+                                                    <button type="submit" name="per_page" value="24" class="dropdown-item">20</button>
+                                                    <button type="submit" name="per_page" value="32" class="dropdown-item">30</button>
+                                                    <button type="submit" name="per_page" value="50" class="dropdown-item">50</button>
+                                                    <button type="submit" name="per_page" value="75" class="dropdown-item">75</button>
+                                                    <button type="submit" name="per_page" value="100" class="dropdown-item">100</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    
                                         <button id="print-koi-grid" class="btn btn-primary">Print Koi Grid</button>
                                     </div>
-                                    <div class="col-sm-5">
-                                        {{-- <div class="btn-group">
+                                    
+                                    {{-- <div class="col-sm-4">                                         
+                                        <div class="btn-group">
                                             <a href="#" type="button" class="btn btn-default btn-flat disabled"><i
                                                     class="fas fa-filter"></i></a>
                                             <a href="{{ route("cmskoigfilteraz") }}" type="button"
@@ -287,8 +310,8 @@
                                                 class="btn btn-default btn-flat"><i class="fas fa-money-bill"></i></a>
                                             <a href="{{ route("cmskoigfilterpricebuylow") }}" type="button"
                                                 class="btn btn-default btn-flat"><i class="fas fa-money-bill-alt"></i></a>
-                                        </div> --}}
-                                    </div>
+                                        </div>
+                                    </div> --}}
                                     <div class="col-sm-3">
                                         <div class="card-tools">
                                             <form id="search-form" method="GET" action="{{ route('cmskoi') }}">
@@ -340,152 +363,92 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-    const printButton = document.getElementById('print-koi-grid');
+            const printButton = document.getElementById('print-koi-grid');
 
-    printButton.addEventListener('click', async function () {
-        try {
-            console.log('Print button clicked');
-            const originalText = printButton.innerText;
-            printButton.innerText = 'Generating PDF...';
-
-            // Hide simpleCart shelf items
-            let simpleCartItems = document.querySelectorAll('.simpleCart_shelfItem');
-            simpleCartItems.forEach(item => {
-                item.style.display = 'none';
-            });
-
-            // Adjust content box padding
-            let contentBoxItems = document.querySelectorAll('.content_box');
-            contentBoxItems.forEach(item => {
-                item.style.cssText = 'padding: 0 !important;';
-
-            });
-
-            // Adjust koi code padding
-            let koiCodeItems = document.querySelectorAll('#koi-code');
-            koiCodeItems.forEach(item => {
-                item.style.padding = '0';
-            });
-
-            let btnMin = document.querySelectorAll('#btn-min');
-            btnMin.forEach(item => {
-                item.style.cssText = 'padding: 0 !important; display: none !important;';
-            });
-
-            let btnDropdown = document.querySelectorAll('#btn-dropdown');
-            btnDropdown.forEach(item => {
-                item.style.cssText = 'padding: 0 !important; display:none !important;';
-            });
-
-            // Remove styling for btn-status
-            let btnStatusItems = document.querySelectorAll('#btn-status');
-            btnStatusItems.forEach(item => {
-                item.style.cssText = 'background: none !important; border: none; padding: 0 !important; color: inherit; font: inherit;';
-            });
-
-            console.log('Adjusted styles for elements');
-
-            // Initialize PDF document
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-
-            let koiGridItems = document.querySelectorAll('#koi-grid-item');
-            if (!koiGridItems.length) {
-                throw new Error("No koi grid items found!");
-            }
-            console.log(`Found ${koiGridItems.length} koi grid items`);
-
-            // PDF layout settings
-            const pageWidth = 210; // A4 page width in mm
-            const pageHeight = 297; // A4 page height in mm
-            const horizontalMargin = 4; // Horizontal margin
-            const verticalMargin = 4; // Reduced vertical margin
-            const verticalSpacing = 8; // Additional vertical spacing between items
-
-
-            const maxItemWidth = (pageWidth - (1 * horizontalMargin)) / 2;
-            const maxItemHeight = (pageHeight - (2 * verticalMargin) - verticalSpacing) / 2;
-            console.log({maxItemHeight, maxItemWidth})
-
-            const positions = [
-                { x: horizontalMargin, y: verticalMargin },
-                { x: pageWidth / 2 + horizontalMargin / 2, y: verticalMargin },
-                { x: horizontalMargin, y: verticalMargin + maxItemHeight + verticalSpacing },
-                { x: pageWidth / 2 + horizontalMargin / 2, y: verticalMargin + maxItemHeight + verticalSpacing }
-            ];
-
-            // Loop through each koi grid item
-            for (let i = 0; i < koiGridItems.length; i++) {
-                const item = koiGridItems[i];
-                const positionIndex = i % 4;
-
-                // Add a new page if necessary
-                if (positionIndex === 0 && i !== 0) {
-                    pdf.addPage();
-                    console.log(`Added new page for item ${i + 1}`);
-                }
-
-                const position = positions[positionIndex];
-
+            printButton.addEventListener('click', async function () {
                 try {
-                    // Generate canvas from the entire item
-                    const canvas = await html2canvas(item, { scale: 1, logging: false, useCORS: true });
-                    const imgData = canvas.toDataURL('image/png');
+                    console.log('Print button clicked');
+                    const originalText = printButton.innerText;
+                    printButton.innerText = 'Generating PDF...';
 
-                    // Calculate aspect ratio for proper sizing
-                    const aspectRatio = 2/4.5;
-                    let itemWidth, itemHeight;
+                    // Cache DOM elements to minimize re-querying
+                    const simpleCartItems = document.querySelectorAll('.simpleCart_shelfItem');
+                    const contentBoxItems = document.querySelectorAll('.content_box');
+                    const koiGridItems = document.querySelectorAll('#koi-grid-item');
+                    const btnMin = document.querySelectorAll('#btn-min');
+                    const btnDropdown = document.querySelectorAll('#btn-dropdown');
+                    const btnStatusItems = document.querySelectorAll('#btn-status');
 
-                    if (aspectRatio > maxItemWidth / maxItemHeight) {
-                        // Item is wider than the space
-                        itemWidth = maxItemWidth;
-                        itemHeight = itemWidth / aspectRatio;
-                    } else {
-                        // Item is taller than the space
-                        itemHeight = maxItemHeight * 1;
-                        itemWidth = itemHeight * aspectRatio;
+                    if (!koiGridItems.length) throw new Error("No koi grid items found!");
+                    console.log(`Found ${koiGridItems.length} koi grid items`);
+
+                    // Set up PDF settings
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pageWidth = 210, pageHeight = 297;
+                    const horizontalMargin = 4, verticalMargin = 4, verticalSpacing = 8;
+                    const maxItemWidth = (pageWidth - (1 * horizontalMargin)) / 2;
+                    const maxItemHeight = (pageHeight - (2 * verticalMargin) - verticalSpacing) / 2;
+                    const positions = [
+                        { x: horizontalMargin, y: verticalMargin },
+                        { x: pageWidth / 2 + horizontalMargin / 2, y: verticalMargin },
+                        { x: horizontalMargin, y: verticalMargin + maxItemHeight + verticalSpacing },
+                        { x: pageWidth / 2 + horizontalMargin / 2, y: verticalMargin + maxItemHeight + verticalSpacing }
+                    ];
+
+                    // Adjust styles in one pass
+                    [...simpleCartItems, ...btnMin, ...btnDropdown].forEach(item => item.style.cssText = 'display: none; padding: 0 !important;');
+                    btnStatusItems.forEach(item => item.style.cssText = 'background: none !important; border: none; padding: 0 !important; color: inherit; font: inherit;');
+                    contentBoxItems.forEach(item => {
+                        item.style.cssText = 'padding: 0 !important;';
+                    });
+                    console.log('Adjusted styles for elements');
+
+                    // Loop through koiGridItems in batches (by page)
+                    for (let i = 0; i < koiGridItems.length; i++) {
+                        const item = koiGridItems[i];
+                        const positionIndex = i % 4;
+
+                        // Add new page if starting a new set of four items
+                        if (positionIndex === 0 && i !== 0) pdf.addPage();
+
+                        const position = positions[positionIndex];
+                        try {
+                            const canvas = await html2canvas(item, { scale: 0.8, logging: false, useCORS: true });
+                            const imgData = canvas.toDataURL('image/png');
+
+                            // Aspect ratio calculations
+                            const aspectRatio = 2 / 4.5;
+                            let itemWidth = maxItemWidth, itemHeight = itemWidth / aspectRatio;
+                            if (aspectRatio < maxItemWidth / maxItemHeight) {
+                                itemHeight = maxItemHeight;
+                                itemWidth = itemHeight * aspectRatio;
+                            }
+
+                            // Center item in allocated space
+                            const xOffset = (maxItemWidth - itemWidth) / 2;
+                            const yOffset = (maxItemHeight - itemHeight) / 2;
+
+                            pdf.addImage(imgData, 'PNG', position.x + xOffset, position.y + yOffset, itemWidth, itemHeight);
+                            console.log(`Added item ${i + 1} to PDF at position (${position.x + xOffset}, ${position.y + yOffset})`);
+                        } catch (canvasError) {
+                            console.error(`Error generating canvas for item ${i + 1}:`, canvasError);
+                        }
                     }
 
-                    // Center the item in its allocated space
-                    const xOffset = (maxItemWidth - itemWidth) / 2;
-                    const yOffset = (maxItemHeight - itemHeight) / 2;
+                    console.log('All items processed. Saving PDF...');
+                    pdf.save('koi-grid.pdf');
 
-                    pdf.addImage(imgData, 'PNG', position.x + xOffset, position.y + yOffset, itemWidth, itemHeight);
-                    console.log(`Added item ${i + 1} to PDF at position (${position.x + xOffset}, ${position.y + yOffset}) with size ${itemWidth}x${itemHeight} on page ${Math.floor(i / 4) + 1}`);
-                } catch (canvasError) {
-                    console.error(`Error generating canvas for item ${i + 1}:`, canvasError);
+                    // Restore original styles in one pass
+                    [...simpleCartItems, ...contentBoxItems, ...btnMin, ...btnDropdown, ...btnStatusItems].forEach(item => item.style.cssText = '');
+
+                    printButton.innerText = originalText;
+                } catch (error) {
+                    console.error('Error during PDF generation:', error);
+                    printButton.innerText = originalText;
                 }
-            }
+            });
 
-            console.log('All items processed. Saving PDF...');
-            pdf.save('koi-grid.pdf');
-
-            // Restore original styles
-            simpleCartItems.forEach(item => {
-                item.style.display = '';
-            });
-            contentBoxItems.forEach(item => {
-                item.style.display = '';
-            });
-            btnStatusItems.forEach(item => {
-                item.style.cssText = '';
-            });
-            btnMin.forEach(item => {
-                item.style.cssText = '';
-            });
-            btnDropdown.forEach(item => {
-                item.style.cssText = '';
-            });
-            console.log('Restored original styles');
-
-            printButton.innerText = originalText;
-        } catch (error) {
-            console.error('Error during PDF generation:', error);
-            printButton.innerText = originalText;
-        }
-    });
-});
         </script>
         
         
