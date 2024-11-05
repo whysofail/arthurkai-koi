@@ -40,7 +40,7 @@
             padding: 15px;
             padding-bottom: 5em;
             text-align: center;
-            min-height: 36em;
+            min-height: 44em;
             max-height: 44em;
         }
 
@@ -356,94 +356,183 @@
         <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-        <script>
+        {{-- <script>
             const printButton = document.getElementById('print-koi-grid');
-
+        
             printButton.addEventListener('click', async function () {
                 try {
                     console.log('Print button clicked');
                     const originalText = printButton.innerText;
                     printButton.innerText = 'Generating PDF...';
-
+        
                     // Cache DOM elements to minimize re-querying
+                    const itemContainer = document.querySelector('.koi-grid');
                     const simpleCartItems = document.querySelectorAll('.simpleCart_shelfItem');
                     const contentBoxItems = document.querySelectorAll('.content_box');
                     const koiGridItems = document.querySelectorAll('#koi-grid-item');
                     const btnMin = document.querySelectorAll('#btn-min');
                     const btnDropdown = document.querySelectorAll('#btn-dropdown');
                     const btnStatusItems = document.querySelectorAll('#btn-status');
-
+        
                     if (!koiGridItems.length) throw new Error("No koi grid items found!");
                     console.log(`Found ${koiGridItems.length} koi grid items`);
-
+        
                     // Set up PDF settings
                     const { jsPDF } = window.jspdf;
                     const pdf = new jsPDF('p', 'mm', 'a4');
                     const pageWidth = 210, pageHeight = 297;
-                    const horizontalMargin = 0, verticalMargin = 2, verticalSpacing = 1;
-                    const maxItemWidth = (pageWidth - (1 * horizontalMargin)) / 2;
+                    const horizontalMargin = 0, verticalMargin = 0; // Set margins
+                    const verticalSpacing = 0;
+                    const maxItemWidth = (pageWidth - (2 * horizontalMargin)) / 2; // Two items per row
                     const maxItemHeight = (pageHeight - (2 * verticalMargin) - verticalSpacing) / 2;
-                    const positions = [
-                        { x: horizontalMargin, y: verticalMargin },
-                        { x: pageWidth / 2 + horizontalMargin / 2, y: verticalMargin },
-                        { x: horizontalMargin, y: verticalMargin + maxItemHeight + verticalSpacing },
-                        { x: pageWidth / 2 + horizontalMargin / 2, y: verticalMargin + maxItemHeight + verticalSpacing }
-                    ];
-
+        
                     // Adjust styles in one pass
+                    if (itemContainer) {
+                        itemContainer.style.cssText = 'width: 50%;'; // Reset to full width for printing
+                    }
                     [...simpleCartItems, ...btnMin, ...btnDropdown].forEach(item => item.style.cssText = 'display: none; padding: 0 !important;');
                     btnStatusItems.forEach(item => item.style.cssText = 'background: none !important; border: none; padding: 0 !important; color: inherit; font: inherit;');
                     contentBoxItems.forEach(item => {
-                        item.style.cssText = 'padding: 0 !important;';
+                        item.style.cssText = 'padding: 0 !important; min-height: 0;';
+                    });
+                    koiGridItems.forEach(item => {
+                        item.style.cssText = 'max-width: 50%; flex: 0 0 50%;'; // Maintain two items per row
                     });
                     console.log('Adjusted styles for elements');
-
+        
                     // Loop through koiGridItems in batches (by page)
                     for (let i = 0; i < koiGridItems.length; i++) {
                         const item = koiGridItems[i];
-                        const positionIndex = i % 4;
-
-                        // Add new page if starting a new set of four items
+                        const positionIndex = i % 2; // Two items per row
+        
+                        // Add new page if starting a new set of two items
                         if (positionIndex === 0 && i !== 0) pdf.addPage();
-
-                        const position = positions[positionIndex];
+        
+                        // Calculate the position based on current index
+                        const x = positionIndex * (maxItemWidth + horizontalMargin);
+                        const y = Math.floor(i / 2) * (maxItemHeight + verticalSpacing) + verticalMargin;
+        
                         try {
-                            const canvas = await html2canvas(item, { scale: 1.5, logging: false, useCORS: true });
+                            const canvas = await html2canvas(item, { scale: 1, logging: false, useCORS: true });
                             const imgData = canvas.toDataURL('image/png');
-
+        
                             // Aspect ratio calculations
-                            const aspectRatio = 2 / 4;
+                            const aspectRatio = 1 / 2; // Adjust based on your content
                             let itemWidth = maxItemWidth, itemHeight = itemWidth / aspectRatio;
+        
                             if (aspectRatio < maxItemWidth / maxItemHeight) {
                                 itemHeight = maxItemHeight;
                                 itemWidth = itemHeight * aspectRatio;
                             }
-
+        
                             // Center item in allocated space
                             const xOffset = (maxItemWidth - itemWidth) / 2;
                             const yOffset = (maxItemHeight - itemHeight) / 2;
-
-                            pdf.addImage(imgData, 'PNG', position.x + xOffset, position.y + yOffset, itemWidth, itemHeight);
-                            console.log(`Added item ${i + 1} to PDF at position (${position.x + xOffset}, ${position.y + yOffset})`);
+        
+                            pdf.addImage(imgData, 'PNG', x + xOffset, y + yOffset, itemWidth, itemHeight);
+                            console.log(`Added item ${i + 1} to PDF at position (${x + xOffset}, ${y + yOffset})`);
                         } catch (canvasError) {
                             console.error(`Error generating canvas for item ${i + 1}:`, canvasError);
                         }
                     }
-
+        
                     console.log('All items processed. Saving PDF...');
                     pdf.save('koi-grid.pdf');
-
+        
                     // Restore original styles in one pass
-                    [...simpleCartItems, ...contentBoxItems, ...btnMin, ...btnDropdown, ...btnStatusItems].forEach(item => item.style.cssText = '');
-
+                    [...simpleCartItems, ...contentBoxItems, ...btnMin, ...btnDropdown, ...btnStatusItems, ...koiGridItems, itemContainer].forEach(item => item.style.cssText = '');
+        
                     printButton.innerText = originalText;
                 } catch (error) {
                     console.error('Error during PDF generation:', error);
                     printButton.innerText = originalText;
                 }
             });
-
+        </script> --}}
+        <script>
+            const printButton = document.getElementById('print-koi-grid');
+        
+            printButton.addEventListener('click', async function () {
+                try {
+                    console.log('Print button clicked');
+                    const originalText = printButton.innerText;
+                    printButton.innerText = 'Generating PDF...';
+        
+                    // Cache DOM elements to minimize re-querying
+                    const itemContainer = document.querySelector('.koi-grid');
+                    const simpleCartItems = document.querySelectorAll('.simpleCart_shelfItem');
+                    const contentBoxItems = document.querySelectorAll('.content_box');
+                    const koiGridItems = document.querySelectorAll('#koi-grid-item');
+                    const btnMin = document.querySelectorAll('#btn-min');
+                    const btnDropdown = document.querySelectorAll('#btn-dropdown');
+                    const btnStatusItems = document.querySelectorAll('#btn-status');
+                    const gridItemTd = document.querySelectorAll('.grid-table td');
+        
+                    if (!koiGridItems.length) throw new Error("No koi grid items found!");
+                    console.log(`Found ${koiGridItems.length} koi grid items`);
+        
+                    // Set up PDF settings
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pageWidth = 210, pageHeight = 297;
+                    const horizontalMargin = 8, verticalMargin = 8; // Small margins for clarity
+                    const itemWidth = (pageWidth - (2 * horizontalMargin)) / 2; // Two items per row
+                    const itemHeight = (pageHeight - (2 * verticalMargin)) / 2; // Max 4 items per page
+                    
+                    if (itemContainer) {
+                        itemContainer.style.cssText = 'width: 50%;'; // Set to full width for printing
+                    }
+                    [...simpleCartItems, ...btnMin, ...btnDropdown].forEach(item => item.style.cssText = 'display: none; padding: 0 !important;');
+                    [,...btnStatusItems].forEach(item => item.style.cssText = 'background: none !important; border: none; padding: 0 !important; color: inherit; font: inherit;');
+                    contentBoxItems.forEach(item => {
+                        item.style.cssText = 'padding: 0 !important; min-height: 0;';
+                    });
+                    koiGridItems.forEach(item => {
+                        item.style.cssText = 'max-width: 50%; flex: 0 0 50%;';
+                    });
+                    gridItemTd.forEach(item => {
+                        item.style.cssText ='padding: 0 5px; border-bottom: 0;'
+                    })
+                    console.log('Adjusted styles for elements');
+        
+                    // Loop through koiGridItems in batches of 4
+                    for (let i = 0; i < koiGridItems.length; i += 4) {
+                        if (i > 0) pdf.addPage(); // Add a new page for every set of 4 items
+        
+                        for (let j = 0; j < 4; j++) {
+                            if (i + j >= koiGridItems.length) break; // Prevent accessing out of bounds
+        
+                            const item = koiGridItems[i + j];
+                            try {
+                                const canvas = await html2canvas(item, { scale: 2, logging: false, useCORS: true });
+                                const imgData = canvas.toDataURL('image/png');
+        
+                                const xOffset = (j % 2 === 0 ? horizontalMargin : itemWidth + horizontalMargin);
+                                const yOffset = Math.floor(j / 2) * (itemHeight + verticalMargin) + verticalMargin;
+        
+                                // Add image to PDF with adjusted width and height
+                                pdf.addImage(imgData, 'PNG', xOffset, yOffset, itemWidth - horizontalMargin, itemHeight - verticalMargin);
+                                console.log(`Added item ${i + j + 1} to PDF at position (${xOffset}, ${yOffset})`);
+                            } catch (canvasError) {
+                                console.error(`Error generating canvas for item ${i + j + 1}:`, canvasError);
+                            }
+                        }
+                    }
+        
+                    console.log('All items processed. Saving PDF...');
+                    pdf.save('koi-grid.pdf');
+        
+                    // Restore original styles if needed (optional)
+                    [...simpleCartItems, ...contentBoxItems, ...btnMin, ...btnDropdown, ...btnStatusItems, ...koiGridItems, itemContainer,...gridItemTd].forEach(item => item.style.cssText = '');
+                    printButton.innerText = originalText;
+                } catch (error) {
+                    console.error('Error during PDF generation:', error);
+                    printButton.innerText = originalText;
+                }
+            });
         </script>
+        
+
         <script>
             
             var swiper = new Swiper(".mySwiper", {

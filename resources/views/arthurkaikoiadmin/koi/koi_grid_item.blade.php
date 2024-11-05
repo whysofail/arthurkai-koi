@@ -2,50 +2,55 @@
     .grid-table td{
         overflow: visible;
     }
+    .photo-item {
+    width: 100%; /* Set the width as needed */
+    height: 300px; /* Set a fixed height, adjust as necessary */
+    background-size: contain; /* or cover depending on your layout preference */
+    background-repeat: no-repeat; /* Prevents the background from repeating */
+    background-position: center; /* Center the background image */
+}
+
+.photo-background {
+    /* Optional: You can add styles for this div if needed */
+    width: 100%;
+    height: 100%;
+}
+
+}
 </style>
 <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3 mb-4"
 style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
 <div class="content_box"><a href="{{ route("cmskoidetail", $k->id) }}">
-        @if (!empty($k->photo))
+    @if (!empty($k->photo))
+    @php
+        $photos = array_filter(explode("|", $k->photo));
+        $firstPhoto = isset($photos[0]) ? $photos[0] : null;
+    @endphp
+    <div id="existing-photos">
+        @if (!empty($firstPhoto))
             @php
-                $photos = array_filter(explode("|", $k->photo));
-                $firstPhoto = isset($photos[0]) ? $photos[0] : null;
+                $photoPath = public_path("img/koi/photo/" . $firstPhoto);
             @endphp
-            <div id="existing-photos">
-                @if (!empty($firstPhoto))
-                    @php
-                        $photoPath = public_path(
-                            "img/koi/photo/" . $firstPhoto,
-                        );
-                    @endphp
-                    @if (file_exists($photoPath))
-                        <div class="photo-item">
-                            <img class="card-img-top"
-                                src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
-                                alt="Photo"
-                                id="photo-item"
-                                style="object-fit: contain; width:100%; height: auto;">
-                        </div>
-                    @else
-                        <div class="photo-item">
-                            <img src="{{ asset("img/assets/broken.png") }}"
-                                class="card-img-top"
-                                id="photo-item"
-                                style="object-fit: cover; width: 100%; height: auto;"
-                                alt="Placeholder">
-                        </div>
-                    @endif
-                @endif
-            </div>
+            @if (file_exists($photoPath))
+                <div class="photo-item" style="background-image: url('{{ asset('img/koi/photo/' . $firstPhoto) }}');">
+                    <div class="photo-background"></div>
+                </div>
+            @else
+                <div class="photo-item" style="background-image: url('{{ asset('img/assets/broken.png') }}');">
+                    <div class="photo-background"></div>
+                </div>
+            @endif
         @else
-            <div class="photo-item">
-                <img src="{{ asset("img/assets/broken.png") }}"
-                    class="card-img-top"
-                    style="object-fit: cover; width: 100%; height: auto;"
-                    id="photo-item"
-                    alt="Placeholder">
+            <div class="photo-item" style="background-image: url('{{ asset('img/assets/broken.png') }}');">
+                <div class="photo-background"></div>
             </div>
         @endif
+    </div>
+@else
+    <div class="photo-item" style="background-image: url('{{ asset('img/assets/broken.png') }}');">
+        <div class="photo-background"></div>
+    </div>
+@endif
     </a>
     <h6>
         <a style="text-decoration: underline; color:black; font-size: 1.25em;"
