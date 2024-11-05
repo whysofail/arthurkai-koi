@@ -220,7 +220,7 @@
                                                 <label for="birth" class="col-sm-2 col-form-label">Birthdate</label>
                                                 <div class="col-sm-10">
                                                     <input type="month" class="form-control" name="birth"
-                                                        value="{{ old("birth") ? old("birth") : \Carbon\Carbon::parse($k->birthdate)->format("Y-m") }}"
+                                                        value="{{  $k->birthdate ? \Carbon\Carbon::parse($k->birthdate)->format("Y-m") : "" }}"
                                                         id="birth">
                                                 </div>
                                             </div>
@@ -240,10 +240,11 @@
                                         <div class="col-sm-12" style="margin-top: 10px">
                                             <div class="form-group row">
                                                 <label for="purchase_date" class="col-sm-2 col-form-label">Purchase
-                                                    Date</label>
+                                                    Date
+                                                </label>
                                                 <div class="col-sm-10">
                                                     <input type="month" class="form-control" name="purchase_date"
-                                                        value="{{ old("purchase_date") ? old("purchase_date") : \Carbon\Carbon::parse($k->purchase_date)->format("Y-m") }}"
+                                                        value="{{  $k->purchase_date ? \Carbon\Carbon::parse($k->purchase_date)->format("Y-m") : "" }}"
                                                         id="purchase_date">
                                                 </div>
                                             </div>

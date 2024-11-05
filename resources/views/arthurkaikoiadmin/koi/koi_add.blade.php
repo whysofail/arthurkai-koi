@@ -225,7 +225,7 @@
                                                 Date</label>
                                             <div class="col-sm-10">
                                                 <input type="month" class="form-control" name="purchase_date"
-                                                    value="{{ old("purchase_date") }}" id="purchase_date" required>
+                                                    value="{{ old("purchase_date") }}" id="purchase_date">
                                             </div>
                                         </div>
                                     </div>

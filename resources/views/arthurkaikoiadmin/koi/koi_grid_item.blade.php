@@ -1,3 +1,8 @@
+<style>
+    .grid-table td{
+        overflow: visible;
+    }
+</style>
 <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3 mb-4"
 style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
 <div class="content_box"><a href="{{ route("cmskoidetail", $k->id) }}">
@@ -104,7 +109,6 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
         </tr>
 
         <tr>
-
             <td style=""><strong>Status</strong></td>
 
             <td style="">:</td>
@@ -155,7 +159,7 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
                             <input type="hidden" name="id"
                                 value="{{ $k->id }}">
 
-                            <input type="hidden" name="n_status"
+                            <input type="hidden" name="status"
                                 value="Available">
 
                             <button
@@ -170,7 +174,7 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
 
                             <input type="hidden" name="id"
                                 value="{{ $k->id }}">
-                            <input type="hidden" name="n_status"
+                            <input type="hidden" name="status"
                                 value="Sold">
                             <button
                                 class="dropdown-item btn-sm">Sold</button>
@@ -181,7 +185,7 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
                             @csrf
                             <input type="hidden" name="id"
                                 value="{{ $k->id }}">
-                            <input type="hidden" name="n_status"
+                            <input type="hidden" name="status"
                                 value="Death">
 
                             <button

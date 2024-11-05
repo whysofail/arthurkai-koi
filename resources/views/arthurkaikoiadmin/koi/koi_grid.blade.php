@@ -256,9 +256,6 @@
         <section class="content">
             <div class="women_main">
                 <!-- start content -->
-                <div class="w_content">
-                    <div class="row">
-                        <div class="col-12">
                             <div class="card">
                                 <div class="row" style="padding: 20px;">
                                     <div class="col-sm-8 d-inline-flex align-items-center">
@@ -287,7 +284,6 @@
                                                 </div>
                                             </div>
                                         </form>
-                                    
                                         <button id="print-koi-grid" class="btn btn-primary">Print Koi Grid</button>
                                     </div>
                                     
@@ -343,9 +339,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        
             </div>
          
         </section>
@@ -386,7 +380,7 @@
                     const { jsPDF } = window.jspdf;
                     const pdf = new jsPDF('p', 'mm', 'a4');
                     const pageWidth = 210, pageHeight = 297;
-                    const horizontalMargin = 4, verticalMargin = 4, verticalSpacing = 8;
+                    const horizontalMargin = 0, verticalMargin = 2, verticalSpacing = 1;
                     const maxItemWidth = (pageWidth - (1 * horizontalMargin)) / 2;
                     const maxItemHeight = (pageHeight - (2 * verticalMargin) - verticalSpacing) / 2;
                     const positions = [
@@ -414,11 +408,11 @@
 
                         const position = positions[positionIndex];
                         try {
-                            const canvas = await html2canvas(item, { scale: 1, logging: false, useCORS: true });
+                            const canvas = await html2canvas(item, { scale: 1.5, logging: false, useCORS: true });
                             const imgData = canvas.toDataURL('image/png');
 
                             // Aspect ratio calculations
-                            const aspectRatio = 2 / 4.5;
+                            const aspectRatio = 2 / 4;
                             let itemWidth = maxItemWidth, itemHeight = itemWidth / aspectRatio;
                             if (aspectRatio < maxItemWidth / maxItemHeight) {
                                 itemHeight = maxItemHeight;
@@ -450,9 +444,6 @@
             });
 
         </script>
-        
-        
-        
         <script>
             
             var swiper = new Swiper(".mySwiper", {

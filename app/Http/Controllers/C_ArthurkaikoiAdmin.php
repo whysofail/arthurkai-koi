@@ -950,7 +950,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'breeder' => ['required'],
         ]);
 
-        $purchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : '';
+        $purchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : null;
 
         // Retrieve related models
         $variety = Variety::find($request->variety);
@@ -958,8 +958,8 @@ class C_ArthurkaikoiAdmin extends Controller
 
         // Generate koi code
         $sequence = $this->generateSequence($variety, $breeder, $purchaseDate);
-        $koiCode = $variety->code . $breeder->code . $purchaseDate . $sequence;
-
+        $koiCode = $variety->code . $breeder->code . ($purchaseDate != '' ? $purchaseDate : '0000') . $sequence;
+        // return dd($koiCode);
         // Handle file uploads
         $image = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
         $imagev = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
@@ -999,7 +999,6 @@ class C_ArthurkaikoiAdmin extends Controller
     private function generateSequence($variety, $breeder, $purchaseDate)
     {
         $koiCodeInput = $variety->code . $breeder->code . $purchaseDate;
-
         // Find the highest sequence that matches the koi code pattern and is not null
         $existingKoi = Koi::where('code', 'like', $koiCodeInput . '%')
             ->whereNotNull('sequence')
@@ -1291,7 +1290,6 @@ class C_ArthurkaikoiAdmin extends Controller
             }
         }
 
-
         // Handle photo removals
         if ($request->has('remove_photos')) {
             $updatedPhotos = array_diff($updatedPhotos, $request->remove_photos);
@@ -1313,12 +1311,11 @@ class C_ArthurkaikoiAdmin extends Controller
 
         if ($isVarietyChanged || $isBreederChanged || $isPurchaseDateChanged) {
             $sequence = $this->generateSequence($variety, $breeder, $requestPurchaseDate);
-            $koiCode = $variety->code . $breeder->code . $requestPurchaseDate . $sequence;
+            $koiCode = $variety->code . $breeder->code . ($requestPurchaseDate != '' ? $requestPurchaseDate : '0000') . $sequence;
         } else {
             $koiCode = $koi->code;
             $sequence = $koi->sequence;
         }
-
         // Update Koi record
         $koi->update([
             'code' => $koiCode,
@@ -1330,7 +1327,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'size' => $request->size,
             'birthdate' => $request->birth ? Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth() : $koi->birthdate,
             'gender' => $request->gender,
-            'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : $koi->purchase_date,
+            'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : null,
             'seller' => $request->seller ?? '',
             'handler' => $request->handler ?? '',
             'price_buy_idr' => $request->pricebuy_idr ? (int) $request->pricebuy_idr : $koi->price_buy_idr,
