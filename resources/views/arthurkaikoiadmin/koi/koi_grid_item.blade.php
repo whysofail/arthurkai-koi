@@ -19,7 +19,7 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
                                 src="{{ asset("img/koi/photo/" . $firstPhoto) }}"
                                 alt="Photo"
                                 id="photo-item"
-                                style="object-fit: cover; width:100%; height: auto;">
+                                style="object-fit: contain; width:100%; height: auto;">
                         </div>
                     @else
                         <div class="photo-item">
