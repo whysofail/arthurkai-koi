@@ -414,7 +414,7 @@
 
                         const position = positions[positionIndex];
                         try {
-                            const canvas = await html2canvas(item, { scale: 0.8, logging: false, useCORS: true });
+                            const canvas = await html2canvas(item, { scale: 1, logging: false, useCORS: true });
                             const imgData = canvas.toDataURL('image/png');
 
                             // Aspect ratio calculations
