@@ -269,7 +269,7 @@
                                         </a>
                                         
                                         <form method="GET" action="{{ url()->current() }}" class="d-inline mr-2">
-                                            <input type="hidden" name="layout" value="{{ $layout }}">
+                                            <input type="hidden" name="layout" value="{{ $layout ?? '' }}">
                                             <input type="hidden" name="search" value="{{ $search }}">
                                     
                                             <div class="dropdown">

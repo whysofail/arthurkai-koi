@@ -1270,14 +1270,13 @@ class C_ArthurkaikoiAdmin extends Controller
         // Fetch the existing Koi record
         $koi = Koi::findOrFail($request->id);
         // Retrieve and format current photos
-        $currentPhotos = explode('|', $koi->photo); // Assuming you're storing photos as a pipe-separated string
+        $currentPhotos = array_filter(explode('|', trim($koi->photo))); // Trim whitespace and remove empty elements
         $updatedPhotos = $currentPhotos; // Start with existing photos
         // Handle new file uploads
         $newPhotos = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
         $newVideos = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
         $linkTrophies = $this->handleSingleFileUpload($request->file('link_trophy'), 'img/koi/trophy');
         $linkCertificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
-
         // Process edited photos
         foreach ($request->file() as $key => $file) {
             if (preg_match('/edit_photo_(\d+)/', $key, $matches) && $file->isValid()) {
@@ -1300,7 +1299,6 @@ class C_ArthurkaikoiAdmin extends Controller
 
         // Finalize photo array by merging with new photos
         $finalPhotos = array_merge($updatedPhotos, $newPhotos);
-
 
         // Update Koi code if base parameters change
         $variety = Variety::find($request->variety);
