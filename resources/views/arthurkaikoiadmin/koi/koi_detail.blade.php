@@ -269,7 +269,7 @@
         <section class="content pt-1">
 
             <div class="">
- 
+
                 <div class="card-body">
 
                     {{-- <div class="row">
@@ -280,15 +280,10 @@
                         <h1>Ochiba Shigure</h1>
                     </div>
                 </div> --}}
-                    @php
-                        $previousUrl = url()->previous();
-                        $currentUrl = url()->current();
-                        $fallbackUrl = route("cmskoi"); // Replace with your fallback route
-                    @endphp
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <a href={{ route("cmskoi") }} class="btn btn-sm"
+                            <a href={{ $entryUrl ?? route("cmskoi") }} class="btn btn-sm"
                                 style="margin-bottom: 5px; border-radius: 20px 1px 10px; border: black solid 1px; ">
                                 <i class="fas fa-arrow-circle-left" style="position: relative; right: 3%; top: 1px;"></i>
                                 Back

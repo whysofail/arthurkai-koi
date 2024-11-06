@@ -896,7 +896,10 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $koi = Koi::with('history')->where('id', $id)->first();
         // return response()->json($koi);
-        return view('arthurkaikoiadmin.koi.koi_detail', compact('koi'));
+        $entryUrl = $request->entryUrl ?? url()->previous();
+
+
+        return view('arthurkaikoiadmin.koi.koi_detail', compact('koi', 'entryUrl'));
     }
 
     public function koidetailgrid($id)
@@ -1246,7 +1249,9 @@ class C_ArthurkaikoiAdmin extends Controller
         $agent = Agent::all();
         $sequence = Koi::where('id', $id)->get();
         $olds = $request->old();
-        return view('arthurkaikoiadmin.koi.koi_edit', compact('koi', 'variety', 'bloodline', 'breeder', 'agent', 'sequence', 'olds'));
+        $entryUrl = $request->entryUrl ?? url()->previous();
+
+        return view('arthurkaikoiadmin.koi.koi_edit', compact('koi', 'variety', 'bloodline', 'breeder', 'agent', 'sequence', 'olds', 'entryUrl'));
     }
 
     public function koigedit($id)
@@ -1342,7 +1347,12 @@ class C_ArthurkaikoiAdmin extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect('/CMS/koi/edit/' . $koi->id)->with('success', 'Koi record updated successfully.');
+
+        $entryUrl = $request->input('entryUrl', route('cmskoi') . '?layout=grid'); // Fallback if no entryUrl is provided
+
+        // Ensure we're using the correct entryUrl when redirecting back to the edit page
+        return redirect('/CMS/koi/edit/' . $koi->id . '?entryUrl=' . urlencode($entryUrl))
+            ->with('success', 'Koi record updated successfully.');
     }
 
     public function koigupdate(request $request)
@@ -1496,9 +1506,22 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function koigriddelete($id)
     {
+        // Delete the Koi record with the specified ID
         Koi::where('id', $id)->delete();
-        return redirect('/CMS/koi/grid');
+        // Retrieve query parameters for pagination
+        $perPage = request()->input('per_page', 8);
+        $page = request()->input('page', 1);
+
+        // Redirect back to the koi grid with the pagination parameters
+        return redirect()->route('cmskoi', [
+            'layout' => 'grid',
+            'per_page' => $perPage,
+            'page' => $page,
+        ]);
     }
+
+
+
 
     ### KOI filter TABLE ###
 
