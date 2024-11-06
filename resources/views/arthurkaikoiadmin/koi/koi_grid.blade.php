@@ -267,7 +267,7 @@
                                         
                                         <form method="GET" action="{{ url()->current() }}" class="d-inline mr-2">
                                             <input type="hidden" name="layout" value="{{ $layout ?? '' }}">
-                                            <input type="hidden" name="search" value="{{ $search }}">
+                                            <input type="hidden" name="search" value="{{ $search ?? '' }}">
                                     
                                             <div class="dropdown">
                                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -475,7 +475,7 @@
                     const { jsPDF } = window.jspdf;
                     const pdf = new jsPDF('p', 'mm', 'a4');
                     const pageWidth = 210, pageHeight = 297;
-                    const horizontalMargin = 8, verticalMargin = 8; // Small margins for clarity
+                    const horizontalMargin = 4, verticalMargin = 8; // Small margins for clarity
                     const itemWidth = (pageWidth - (2 * horizontalMargin)) / 2; // Two items per row
                     const itemHeight = (pageHeight - (2 * verticalMargin)) / 2; // Max 4 items per page
                     
