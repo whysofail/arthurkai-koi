@@ -84,30 +84,30 @@
         }
 
         /* .page-item.active .page-link {
-                        z-index: 3;
-                        color: #fff;
-                        background-color: #000000 !important;
-                        border-color: black !important;
-                    }
+                                                z-index: 3;
+                                                color: #fff;
+                                                background-color: #000000 !important;
+                                                border-color: black !important;
+                                            }
 
-                    .page-link {
-                        position: relative;
-                        display: block;
-                        padding: .5rem .75rem;
-                        margin-left: -1px;
-                        line-height: 1.25;
-                        color: #000000;
-                        background-color: #fff;
-                        border: 1px solid #000000 !important;
-                    }
+                                            .page-link {
+                                                position: relative;
+                                                display: block;
+                                                padding: .5rem .75rem;
+                                                margin-left: -1px;
+                                                line-height: 1.25;
+                                                color: #000000;
+                                                background-color: #fff;
+                                                border: 1px solid #000000 !important;
+                                            }
 
-                    .page-item.disabled .page-link {
-                        color: #6c757d;
-                        pointer-events: none;
-                        cursor: auto;
-                        background-color: #fff;
-                        border-color: #000000 !important;
-                    } */
+                                            .page-item.disabled .page-link {
+                                                color: #6c757d;
+                                                pointer-events: none;
+                                                cursor: auto;
+                                                background-color: #fff;
+                                                border-color: #000000 !important;
+                                            } */
         .grid-table {
             width: 100%;
             text-align: left;
@@ -260,7 +260,7 @@
                 <!-- start content -->
                 <div class="card">
                     <div class="row" style="padding: 20px;">
-                        <div class="col-sm-8 d-inline-flex align-items-center">
+                        <div class="col-sm-6 d-inline-flex align-items-center">
                             <a href="{{ route("cmskoiAdd") }}" class="mr-2">
                                 <button type="button" class="btn btn-success" style="background: green; color: white;">
                                     <b>+ Add KOI</b>
@@ -296,28 +296,55 @@
                             </form>
                             <button id="print-koi-grid" class="btn btn-primary">Print Koi Grid</button>
                         </div>
+                        <div class="col-sm-3">
+                            <form id="filter-form" method="GET" action="{{ route("cmskoi") }}">
+                                @csrf
+                                <input type="hidden" name="layout" value="{{ request("layout", "grid") }}">
+                                <!-- Always pass layout value -->
 
-                        {{-- <div class="col-sm-4">                                         
-                                        <div class="btn-group">
-                                            <a href="#" type="button" class="btn btn-default btn-flat disabled"><i
-                                                    class="fas fa-filter"></i></a>
-                                            <a href="{{ route("cmskoigfilteraz") }}" type="button"
-                                                class="btn btn-default btn-flat"><i class="fas fa-sort-alpha-down"></i></a>
-                                            <a href="{{ route("cmskoigfilterza") }}" type="button"
-                                                class="btn btn-default btn-flat"><i
-                                                    class="fas fa-sort-alpha-up-alt"></i></a>
-                                            <a href="{{ route("cmskoigfilter19") }}" type="button"
-                                                class="btn btn-default btn-flat"><i
-                                                    class="fas fa-sort-numeric-down"></i></a>
-                                            <a href="{{ route("cmskoigfilter91") }}" type="button"
-                                                class="btn btn-default btn-flat"><i
-                                                    class="fas fa-sort-numeric-up-alt"></i></a>
-                                            <a href="{{ route("cmskoigfilterpricebuyhigh") }}" type="button"
-                                                class="btn btn-default btn-flat"><i class="fas fa-money-bill"></i></a>
-                                            <a href="{{ route("cmskoigfilterpricebuylow") }}" type="button"
-                                                class="btn btn-default btn-flat"><i class="fas fa-money-bill-alt"></i></a>
+                                @if (request("layout") == "grid")
+                                    <!-- Only show this form for the grid layout -->
+                                    <div class="input-group">
+                                        <!-- Filter Key Dropdown -->
+                                        <select name="key" class="form-control" id="key-select">
+                                            <option value="">Select Filter</option>
+                                            <option value="code" {{ request("key") == "code" ? "selected" : "" }}>Code
+                                            </option>
+                                            <option value="nickname" {{ request("key") == "nickname" ? "selected" : "" }}>
+                                                Nickname</option>
+                                            <option value="seller" {{ request("key") == "seller" ? "selected" : "" }}>
+                                                Seller</option>
+                                            <option value="handler" {{ request("key") == "handler" ? "selected" : "" }}>
+                                                Handler</option>
+                                            <option value="variety" {{ request("key") == "variety" ? "selected" : "" }}>
+                                                Variety</option>
+                                            <option value="breeder" {{ request("key") == "breeder" ? "selected" : "" }}>
+                                                Breeder</option>
+                                            <option value="bloodline"
+                                                {{ request("key") == "bloodline" ? "selected" : "" }}>Bloodline</option>
+                                        </select>
+
+                                        <!-- Filter Value Input -->
+                                        <input type="text" name="value" class="form-control"
+                                            placeholder="Filter value" value="{{ request("value") }}">
+
+                                        <!-- Order Dropdown -->
+                                        <select name="order" class="form-control" id="order-select">
+                                            <option value="asc" {{ request("order") == "asc" ? "selected" : "" }}>
+                                                Ascending</option>
+                                            <option value="desc" {{ request("order") == "desc" ? "selected" : "" }}>
+                                                Descending</option>
+                                        </select>
+
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-primary">Apply Filter</button>
                                         </div>
-                                    </div> --}}
+                                    </div>
+                                @endif
+                            </form>
+
+                        </div>
+
                         <div class="col-sm-3">
                             <div class="card-tools">
                                 <form id="search-form" method="GET" action="{{ route("cmskoi") }}">
@@ -333,7 +360,6 @@
                                         </div>
                                     </div>
                                 </form>
-
                             </div>
                         </div>
                     </div>
