@@ -3,8 +3,8 @@
         overflow: visible;
     }
     .photo-item {
-    width: 350px; /* Set the width as needed */
-    height: 350px; /* Set a fixed height, adjust as necessary */
+    width: 100%; /* Set the width as needed */
+    height: 300px; /* Set a fixed height, adjust as necessary */
     background-size: contain; /* or cover depending on your layout preference */
     background-repeat: no-repeat; /* Prevents the background from repeating */
     background-position: center; /* Center the background image */
@@ -16,6 +16,7 @@
     height: 100%;
 }
 
+}
 </style>
 <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3 mb-4"
 style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
@@ -81,7 +82,9 @@ style="padding-left: 10px; padding-right: 10px;" id="koi-grid-item">
             <td style="">:</td>
             <td style="">{{ $k->gender ?? "-" }}</td>
         </tr>
+
         <tr>
+
             <td style=""><strong>Age</strong></td>
             <td style="">:</td>
             <td style="">
