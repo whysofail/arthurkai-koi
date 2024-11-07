@@ -77,8 +77,15 @@ class C_ArthurkaikoiAdmin extends Controller
             if (!empty($value)) {
                 $this->applyKeyValueFilters($koiQuery, $key, $value, null, $order);  // Only passing order, not sortby
             } else {
-                // If value is empty, check for null values in the corresponding column
-                $koiQuery->whereNull($key); // This checks for null values in the column specified by the 
+                if (in_array($key, ['breeder', 'variety', 'bloodline'])) {
+                    // For breeder, variety, or bloodline, check for null in the 'name' column
+                    $koiQuery->whereHas($key, function ($query) {
+                        $query->whereNull('name');
+                    });
+                } else {
+                    // Default behavior: check for null values in the specified column
+                    $koiQuery->whereNull($key);
+                }
                 if (!$sortby) {
                     $koiQuery->orderBy('koi.updated_at', $order);
                 }
