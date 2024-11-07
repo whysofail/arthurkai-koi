@@ -236,7 +236,7 @@
                                                 <select class="form-control select2" name="seller" style="width: 100%;">
                                                     <option selected="selected">Selected Seller Agent</option>
                                                     @foreach ($agent as $a)
-                                                        <option value="{{ $a->id }}">
+                                                        <option value="{{ $a->owner }}">
                                                             {{ $a->owner }}
                                                         </option>
                                                     @endforeach
@@ -249,10 +249,10 @@
                                         <div class="form-group row">
                                             <label for="handler" class="col-sm-2 col-form-label">Handling Agent</label>
                                             <div class="col-sm-10">
-                                                <select class="form-control select2" name="seller" style="width: 100%;">
+                                                <select class="form-control select2" name="handler" style="width: 100%;">
                                                     <option selected="selected">Selected Handling Agent</option>
                                                     @foreach ($agent as $a)
-                                                        <option value="{{ $a->id }}">
+                                                        <option value="{{ $a->owner }}">
                                                             {{ $a->owner }}
                                                         </option>
                                                     @endforeach

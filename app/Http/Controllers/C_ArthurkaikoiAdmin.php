@@ -86,9 +86,9 @@ class C_ArthurkaikoiAdmin extends Controller
             return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi', 'layout', 'perPage'));
         } else {
             // Conditionally apply 'latest()' based on filter presence
-            if (!$search && !$key && !$value && !$order) {
+            if (!$search && !$key && !$value) {
                 // Only apply 'latest()' when no filters are applied
-                $koi = $koiQuery->latest();
+                $koi = $koiQuery->orderBy('koi.updated_at', 'desc');
             } else {
                 // Otherwise, apply your custom sorting if necessary
                 $koi = $koiQuery;
@@ -1079,7 +1079,8 @@ class C_ArthurkaikoiAdmin extends Controller
             'birthdate' => $request->birth ? Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth() : null,
             'gender' => $request->gender,
             'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : null,
-            'seller_id' => $request->salleragent,
+            'seller' => $request->seller ?? '',
+            'handler' => $request->handler ?? '',
             'price_buy_idr' => $request->pricebuy_idr ? (int) $request->pricebuy_idr : 0,
             'price_buy_jpy' => $request->pricebuy_jpy ? (int) $request->pricebuy_jpy : 0,
             'price_sell_idr' => $request->pricesell_idr ? (int) $request->pricesell_idr : 0,
