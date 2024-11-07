@@ -12,10 +12,10 @@ class Variety extends Model
     protected $table = "variety";
     public $timestamps = true;
     protected $guarded = ['id'];
-    protected $fillable = ['name', 'code'];
+    protected $fillable = ['name','code'];
 
     public function koi()
     {
-        return $this->hasMany(Koi::class)->orderBy('koi.created_at');
+        return $this->hasMany(Koi::class);
     }
 }
