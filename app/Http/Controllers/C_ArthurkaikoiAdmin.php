@@ -170,7 +170,7 @@ class C_ArthurkaikoiAdmin extends Controller
         if ($sortBy) {
             $query->orderBy($sortBy, $order);
         } else {
-            $query->orderBy('koi.updated_at', $order);
+            // $query->orderBy('koi.updated_at', $order);
         }
     }
 
