@@ -104,9 +104,10 @@ class C_ArthurkaikoiAdmin extends Controller
                 'per_page' => $perPage,
                 'key' => $key,
                 'value' => $value,
-                'sortby' => $sortby,
+                'sort_by' => $sortby,
                 'order' => $order
             ]);
+
 
             return view('arthurkaikoiadmin.koi.koi_grid', compact('koitotal', 'koi', 'layout', 'search', 'perPage'));
         }
@@ -196,15 +197,14 @@ class C_ArthurkaikoiAdmin extends Controller
                 // Explicitly select the columns from both koi and the related table
                 ->select('koi.*', "{$key}.name as {$key}_name", "{$key}.code as {$key}_code")
                 // Apply ordering based on the related column
-                ->orderBy("{$key}.name", $order)
-                ->orderBy("{$key}.code", $order);
+                ->orderBy("{$key}.name", $order);
         } else {
             // For columns in the 'koi' table, apply direct ordering
             $query->orderBy(DB::raw("koi.{$key}"), $order);
         }
 
         // Explicitly order by 'updated_at' from the koi table to avoid ambiguity
-        $query->orderBy("koi.updated_at", $order);
+        // $query->orderBy("koi.updated_at", $order);
     }
 
 
