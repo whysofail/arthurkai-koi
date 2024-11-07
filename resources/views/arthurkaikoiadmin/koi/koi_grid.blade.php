@@ -270,7 +270,10 @@
                             <form method="GET" action="{{ url()->current() }}" class="d-inline mr-2">
                                 <input type="hidden" name="layout" value="{{ $layout ?? "" }}">
                                 <input type="hidden" name="search" value="{{ $search ?? "" }}">
-
+                                <input type="hidden" name="key" value="{{ request()->query('key', '') }}">
+                                <input type="hidden" name="value" value="{{ request()->query('value', '') }}">
+                                <input type="hidden" name="sort_by" value="{{ request()->query('sort_by', '') }}">
+                                <input type="hidden" name="order" value="{{ request()->query('order', '') }}">
                                 <div class="dropdown">
                                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
