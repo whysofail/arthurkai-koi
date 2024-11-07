@@ -79,7 +79,9 @@ class C_ArthurkaikoiAdmin extends Controller
             } else {
                 // If value is empty, check for null values in the corresponding column
                 $koiQuery->whereNull($key); // This checks for null values in the column specified by the 
-                $koiQuery->orderBy('koi.updated_at', $order);
+                if (!$sortby) {
+                    $koiQuery->orderBy('koi.updated_at', $order);
+                }
 
             }
         }
