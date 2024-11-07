@@ -260,7 +260,7 @@
                 <!-- start content -->
                 <div class="card">
                     <div class="row" style="padding: 20px;">
-                        <div class="col-sm-6 d-inline-flex align-items-center">
+                        <div class="col-sm-4 d-inline-flex align-items-center">
                             <a href="{{ route("cmskoiAdd") }}" class="mr-2">
                                 <button type="button" class="btn btn-success" style="background: green; color: white;">
                                     <b>+ Add KOI</b>
@@ -296,56 +296,58 @@
                             </form>
                             <button id="print-koi-grid" class="btn btn-primary">Print Koi Grid</button>
                         </div>
-                        <div class="col-sm-3">
-                            <form id="filter-form" method="GET" action="{{ route("cmskoi") }}">
+                        <div class="col-sm-4">
+                            <form id="filter-form" method="GET" action="{{ route('cmskoi') }}">
                                 @csrf
-                                <input type="hidden" name="layout" value="{{ request("layout", "grid") }}">
+                                <input type="hidden" name="layout" value="{{ request('layout', 'grid') }}">
                                 <!-- Always pass layout value -->
-
-                                @if (request("layout") == "grid")
+                            
+                                @if (request('layout') == 'grid')
                                     <!-- Only show this form for the grid layout -->
                                     <div class="input-group">
                                         <!-- Filter Key Dropdown -->
                                         <select name="key" class="form-control" id="key-select">
                                             <option value="">Select Filter</option>
-                                            <option value="code" {{ request("key") == "code" ? "selected" : "" }}>Code
-                                            </option>
-                                            <option value="nickname" {{ request("key") == "nickname" ? "selected" : "" }}>
-                                                Nickname</option>
-                                            <option value="seller" {{ request("key") == "seller" ? "selected" : "" }}>
-                                                Seller</option>
-                                            <option value="handler" {{ request("key") == "handler" ? "selected" : "" }}>
-                                                Handler</option>
-                                            <option value="variety" {{ request("key") == "variety" ? "selected" : "" }}>
-                                                Variety</option>
-                                            <option value="breeder" {{ request("key") == "breeder" ? "selected" : "" }}>
-                                                Breeder</option>
-                                            <option value="bloodline"
-                                                {{ request("key") == "bloodline" ? "selected" : "" }}>Bloodline</option>
+                                            <option value="code" {{ request('key') == 'code' ? 'selected' : '' }}>Code</option>
+                                            <option value="nickname" {{ request('key') == 'nickname' ? 'selected' : '' }}>Nickname</option>
+                                            <option value="seller" {{ request('key') == 'seller' ? 'selected' : '' }}>Seller</option>
+                                            <option value="handler" {{ request('key') == 'handler' ? 'selected' : '' }}>Handler</option>
+                                            <option value="variety" {{ request('key') == 'variety' ? 'selected' : '' }}>Variety</option>
+                                            <option value="breeder" {{ request('key') == 'breeder' ? 'selected' : '' }}>Breeder</option>
+                                            <option value="bloodline" {{ request('key') == 'bloodline' ? 'selected' : '' }}>Bloodline</option>
                                         </select>
-
                                         <!-- Filter Value Input -->
                                         <input type="text" name="value" class="form-control"
-                                            placeholder="Filter value" value="{{ request("value") }}">
-
+                                               placeholder="Filter value" value="{{ request('value') }}">
+                            
+                                        <!-- Sort By Dropdown -->
+                                        <select name="sort_by" class="form-control" id="sort-by-select">
+                                            <option value="">Sort by</option>
+                                            <option value="code" {{ request('sort_by') == 'code' ? 'selected' : '' }}>Code</option>
+                                            <option value="nickname" {{ request('sort_by') == 'nickname' ? 'selected' : '' }}>Nickname</option>
+                                            <option value="seller" {{ request('sort_by') == 'seller' ? 'selected' : '' }}>Seller</option>
+                                            <option value="handler" {{ request('sort_by') == 'handler' ? 'selected' : '' }}>Handler</option>
+                                            <option value="variety" {{ request('sort_by') == 'variety' ? 'selected' : '' }}>Variety</option>
+                                            <option value="breeder" {{ request('sort_by') == 'breeder' ? 'selected' : '' }}>Breeder</option>
+                                            <option value="bloodline" {{ request('sort_by') == 'bloodline' ? 'selected' : '' }}>Bloodline</option>
+                                        </select>
+                            
                                         <!-- Order Dropdown -->
                                         <select name="order" class="form-control" id="order-select">
-                                            <option value="asc" {{ request("order") == "asc" ? "selected" : "" }}>
-                                                Ascending</option>
-                                            <option value="desc" {{ request("order") == "desc" ? "selected" : "" }}>
-                                                Descending</option>
+                                            <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
+                                            <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descending</option>
                                         </select>
-
+                            
                                         <div class="input-group-append">
                                             <button type="submit" class="btn btn-primary">Apply Filter</button>
                                         </div>
                                     </div>
                                 @endif
                             </form>
-
+                            
                         </div>
 
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="card-tools">
                                 <form id="search-form" method="GET" action="{{ route("cmskoi") }}">
                                     @csrf

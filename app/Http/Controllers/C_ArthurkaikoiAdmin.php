@@ -50,12 +50,13 @@ class C_ArthurkaikoiAdmin extends Controller
     ### KOI ###
     public function koi(Request $request)
     {
-        // Get the layout, search query, and pagination count
+        // Get the layout, search query, pagination count, key-value filters, and sorting options
         $layout = $request->query('layout', 'list');
         $search = $request->query('search');
         $perPage = $request->query('per_page', 8); // Default to 8 items per page
         $key = $request->query('key'); // Filter key
         $value = $request->query('value'); // Filter value
+        $sortby = $request->query('sort_by'); // Sorting key
         $order = $request->query('order', 'asc'); // Default to ascending order
 
         // Validate layout
@@ -64,48 +65,53 @@ class C_ArthurkaikoiAdmin extends Controller
 
         $koitotal = Koi::count();
         $koiQuery = Koi::query();
-        // Apply search and filter conditions based on layout
-        if ($layout === 'grid') {
-            if ($search) {
-                $this->applySearchFilters($koiQuery, $search);
-            }
 
-            if ($key && $value) {
+        // Apply search filters if search term is provided
+        if ($search) {
+            $this->applySearchFilters($koiQuery, $search);
+        }
+
+        // Apply key-value filters if both key and value are provided
+        if ($key) {
+            // If value is not empty, apply the filter with the provided key and value
+            if (!empty($value)) {
                 $this->applyKeyValueFilters($koiQuery, $key, $value);
+            } else {
+                // If value is empty, check for null values in the corresponding column
+                $koiQuery->whereNull($key); // This checks for null values in the column specified by the 
+                $koiQuery->orderBy('koi.updated_at', 'desc');
+
             }
         }
-
-        // Apply ordering based on key and order
-        if ($key && $order) {
-            $this->applyOrdering($koiQuery, $key, $order);
+        // Apply ordering if sortby and order are provided
+        if ($sortby && $order) {
+            $this->applyOrdering($koiQuery, $sortby, $order);
         }
-
         // Paginate the results based on layout and per-page selection
         if ($layout === 'list') {
             $koi = $koiQuery->get();
             return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi', 'layout', 'perPage'));
         } else {
-            // Conditionally apply 'latest()' based on filter presence
-            if (!$search && !$key && !$value) {
-                // Only apply 'latest()' when no filters are applied
-                $koi = $koiQuery->orderBy('koi.updated_at', 'desc');
-            } else {
-                // Otherwise, apply your custom sorting if necessary
-                $koi = $koiQuery;
+            // Conditionally apply 'latest()' if no search, key-value filters, or sorting are applied
+            if (!$search && !$key && !$value && !$sortby) {
+                $koiQuery->orderBy('koi.updated_at', 'desc');
             }
-
+            // return dd($koiQuery->toSql());
             // Apply pagination with appends for query parameters
-            $koi = $koi->paginate($perPage)->appends([
+            $koi = $koiQuery->paginate($perPage)->appends([
                 'layout' => $layout,
                 'search' => $search,
                 'per_page' => $perPage,
                 'key' => $key,
                 'value' => $value,
+                'sortby' => $sortby,
                 'order' => $order
             ]);
+
             return view('arthurkaikoiadmin.koi.koi_grid', compact('koitotal', 'koi', 'layout', 'search', 'perPage'));
         }
     }
+
 
     private function applySearchFilters($query, $search)
     {
@@ -145,9 +151,10 @@ class C_ArthurkaikoiAdmin extends Controller
             ->orWhereRaw('LOWER(code) LIKE ?', ["%$term%"]);
     }
 
-    private function applyKeyValueFilters($query, $key, $value)
+    public function applyKeyValueFilters($query, $key, $value, $sortBy = null, $order = 'desc')
     {
         $relatedColumns = ['variety', 'breeder', 'bloodline'];
+
         $query->where(function ($subQuery) use ($key, $value, $relatedColumns) {
             if (in_array($key, $relatedColumns)) {
                 $subQuery->whereHas($key, function ($q) use ($value) {
@@ -157,7 +164,16 @@ class C_ArthurkaikoiAdmin extends Controller
                 $subQuery->whereRaw("LOWER($key) LIKE ?", ["%$value%"]);
             }
         });
+
+        // Default ordering logic: If $sortBy is empty, order by `koi.updated_at`
+        if ($sortBy) {
+            $query->orderBy($sortBy, $order);
+        } else {
+            $query->orderBy('koi.updated_at', $order);
+        }
     }
+
+
 
     private function addRelatedKeyValueConditions($query, $value)
     {
@@ -177,26 +193,19 @@ class C_ArthurkaikoiAdmin extends Controller
         if (in_array($key, $relatedColumns)) {
             // Apply left join to the related table using the given key (e.g. 'variety', 'breeder', etc.)
             $query->join($key, "{$key}.id", '=', "koi.{$key}_id")
-                // Select all columns from the koi table and the related columns from the related table
+                // Explicitly select the columns from both koi and the related table
                 ->select('koi.*', "{$key}.name as {$key}_name", "{$key}.code as {$key}_code")
-                // Apply ordering based on related columns
+                // Apply ordering based on the related column
                 ->orderBy("{$key}.name", $order)
                 ->orderBy("{$key}.code", $order);
         } else {
             // For columns in the 'koi' table, apply direct ordering
             $query->orderBy(DB::raw("koi.{$key}"), $order);
         }
-        // Explicitly order by 'created_at' from the koi table to avoid ambiguity
-        $query->orderBy("koi.created_at", $order);  // Use 'koi.created_at'
 
+        // Explicitly order by 'updated_at' from the koi table to avoid ambiguity
+        $query->orderBy("koi.updated_at", $order);
     }
-
-
-
-
-
-
-
 
 
 
