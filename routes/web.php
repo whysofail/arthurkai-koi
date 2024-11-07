@@ -67,7 +67,7 @@ Route::get('CMS/koi/grid/edit/{id}', [C_ArthurkaikoiAdmin::class, 'koigedit'])->
 Route::post('CMS/koi/grid/update', [C_ArthurkaikoiAdmin::class, 'koigupdate'])->name('cmskoigUpdate')->middleware('auth');
 Route::post('CMS/koi/grid/search', [C_ArthurkaikoiAdmin::class, 'koigridsearch'])->name('cmskoigridsearch')->middleware('auth');
 Route::get('CMS/koi/detail/grid/{id}', [C_ArthurkaikoiAdmin::class, 'koidetailgrid'])->name('cmskoidetailgrid')->middleware('auth');
-Route::get('CMS/koi/delete/grid/{id}', [C_ArthurkaikoiAdmin::class, 'koigriddelete'])->name('cmskoigridDelete')->middleware('auth');
+Route::delete('CMS/koi/delete/grid/{id}', [C_ArthurkaikoiAdmin::class, 'koigriddelete'])->name('cmskoigridDelete')->middleware('auth');
 
 // # KOI FILTER TABLE
 Route::get('CMS/koi/az', [C_ArthurkaikoiAdmin::class, 'koifilter_az'])->name('cmskoifilteraz')->middleware('auth');

@@ -23,6 +23,7 @@ use App\Models\ContactUs;
 use App\Models\News;
 use App\Models\OurCollection;
 use App\Enums\PostType;
+use Illuminate\Support\Facades\DB;
 
 
 use Illuminate\Support\Facades\Log;
@@ -47,48 +48,36 @@ class C_ArthurkaikoiAdmin extends Controller
     }
 
     ### KOI ###
-
     public function koi(Request $request)
     {
         // Get the layout, search query, and pagination count
         $layout = $request->query('layout', 'list');
         $search = $request->query('search');
         $perPage = $request->query('per_page', 8); // Default to 8 items per page
+        $key = $request->query('key'); // Filter key
+        $value = $request->query('value'); // Filter value
+        $order = $request->query('order', 'asc'); // Default to ascending order
 
+        // Validate layout
         $validLayouts = ['list', 'grid'];
-        if (!in_array($layout, $validLayouts)) {
-            $layout = 'list';
-        }
+        $layout = in_array($layout, $validLayouts) ? $layout : 'list';
 
         $koitotal = Koi::count();
         $koiQuery = Koi::query();
+        // Apply search and filter conditions based on layout
+        if ($layout === 'grid') {
+            if ($search) {
+                $this->applySearchFilters($koiQuery, $search);
+            }
 
-        // Apply search filters if 'grid' layout and search term are provided
-        if ($layout === 'grid' && $search) {
-            $searchTerms = array_map('trim', explode(',', strtolower($search)));
+            if ($key && $value) {
+                $this->applyKeyValueFilters($koiQuery, $key, $value);
+            }
+        }
 
-            $koiQuery->where(function ($query) use ($searchTerms) {
-                foreach ($searchTerms as $search) {
-                    $query->where(function ($query) use ($search) {
-                        $query->whereRaw('LOWER(code) LIKE ?', ["%$search%"])
-                            ->orWhereRaw('LOWER(nickname) LIKE ?', ["%$search%"])
-                            ->orWhereRaw('LOWER(seller) LIKE ?', ["%$search%"])
-                            ->orWhereRaw('LOWER(handler) LIKE ?', ["%$search%"])
-                            ->orWhereHas('variety', function ($q) use ($search) {
-                                $q->whereRaw('LOWER(name) LIKE ?', ["%$search%"])
-                                    ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]);
-                            })
-                            ->orWhereHas('breeder', function ($q) use ($search) {
-                                $q->whereRaw('LOWER(name) LIKE ?', ["%$search%"])
-                                    ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]);
-                            })
-                            ->orWhereHas('bloodline', function ($q) use ($search) {
-                                $q->whereRaw('LOWER(name) LIKE ?', ["%$search%"])
-                                    ->orWhereRaw('LOWER(code) LIKE ?', ["%$search%"]);
-                            });
-                    });
-                }
-            });
+        // Apply ordering based on key and order
+        if ($key && $order) {
+            $this->applyOrdering($koiQuery, $key, $order);
         }
 
         // Paginate the results based on layout and per-page selection
@@ -96,10 +85,119 @@ class C_ArthurkaikoiAdmin extends Controller
             $koi = $koiQuery->get();
             return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi', 'layout', 'perPage'));
         } else {
-            $koi = $koiQuery->latest()->paginate($perPage)->appends(['layout' => $layout, 'search' => $search, 'per_page' => $perPage]);
+            // Conditionally apply 'latest()' based on filter presence
+            if (!$search && !$key && !$value && !$order) {
+                // Only apply 'latest()' when no filters are applied
+                $koi = $koiQuery->latest();
+            } else {
+                // Otherwise, apply your custom sorting if necessary
+                $koi = $koiQuery;
+            }
+
+            // Apply pagination with appends for query parameters
+            $koi = $koi->paginate($perPage)->appends([
+                'layout' => $layout,
+                'search' => $search,
+                'per_page' => $perPage,
+                'key' => $key,
+                'value' => $value,
+                'order' => $order
+            ]);
             return view('arthurkaikoiadmin.koi.koi_grid', compact('koitotal', 'koi', 'layout', 'search', 'perPage'));
         }
     }
+
+    private function applySearchFilters($query, $search)
+    {
+        $searchTerms = array_map('trim', explode(',', strtolower($search)));
+
+        $query->where(function ($subQuery) use ($searchTerms) {
+            foreach ($searchTerms as $term) {
+                $subQuery->orWhere(function ($q) use ($term) {
+                    $this->addSearchConditions($q, $term);
+                });
+            }
+        });
+    }
+
+    private function addSearchConditions($query, $term)
+    {
+        // Ensure the placeholder is correctly used with one parameter passed
+        $query->whereRaw('LOWER(code) LIKE ?', ["%$term%"])
+            ->orWhereRaw('LOWER(nickname) LIKE ?', ["%$term%"])
+            ->orWhereRaw('LOWER(seller) LIKE ?', ["%$term%"])
+            ->orWhereRaw('LOWER(handler) LIKE ?', ["%$term%"])
+            ->orWhereHas('variety', function ($q) use ($term) {
+                $this->addRelatedSearchConditions($q, $term);
+            })
+            ->orWhereHas('breeder', function ($q) use ($term) {
+                $this->addRelatedSearchConditions($q, $term);
+            })
+            ->orWhereHas('bloodline', function ($q) use ($term) {
+                $this->addRelatedSearchConditions($q, $term);
+            });
+    }
+
+
+    private function addRelatedSearchConditions($query, $term)
+    {
+        $query->whereRaw('LOWER(name) LIKE ?', ["%$term%"])
+            ->orWhereRaw('LOWER(code) LIKE ?', ["%$term%"]);
+    }
+
+    private function applyKeyValueFilters($query, $key, $value)
+    {
+        $relatedColumns = ['variety', 'breeder', 'bloodline'];
+        $query->where(function ($subQuery) use ($key, $value, $relatedColumns) {
+            if (in_array($key, $relatedColumns)) {
+                $subQuery->whereHas($key, function ($q) use ($value) {
+                    $this->addRelatedKeyValueConditions($q, $value);
+                });
+            } else {
+                $subQuery->whereRaw("LOWER($key) LIKE ?", ["%$value%"]);
+            }
+        });
+    }
+
+    private function addRelatedKeyValueConditions($query, $value)
+    {
+        $query->whereRaw("LOWER(name) LIKE ?", ["%$value%"])
+            ->orWhereRaw("LOWER(code) LIKE ?", ["%$value%"]);
+    }
+
+    private function applyOrdering($query, $key, $order)
+    {
+        // Define the valid related columns (models) for joining
+        $relatedColumns = ['variety', 'breeder', 'bloodline'];
+
+        // Ensure order is either 'asc' or 'desc'
+        $order = strtolower($order) === 'desc' ? 'desc' : 'asc';
+
+        // Check if the ordering is based on a related model
+        if (in_array($key, $relatedColumns)) {
+            // Apply left join to the related table using the given key (e.g. 'variety', 'breeder', etc.)
+            $query->join($key, "{$key}.id", '=', "koi.{$key}_id")
+                // Select all columns from the koi table and the related columns from the related table
+                ->select('koi.*', "{$key}.name as {$key}_name", "{$key}.code as {$key}_code")
+                // Apply ordering based on related columns
+                ->orderBy("{$key}.name", $order)
+                ->orderBy("{$key}.code", $order);
+        } else {
+            // For columns in the 'koi' table, apply direct ordering
+            $query->orderBy(DB::raw("koi.{$key}"), $order);
+        }
+        // Explicitly order by 'created_at' from the koi table to avoid ambiguity
+        $query->orderBy("koi.created_at", $order);  // Use 'koi.created_at'
+
+    }
+
+
+
+
+
+
+
+
 
 
 
@@ -896,7 +994,10 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $koi = Koi::with('history')->where('id', $id)->first();
         // return response()->json($koi);
-        return view('arthurkaikoiadmin.koi.koi_detail', compact('koi'));
+        $entryUrl = $request->entryUrl ?? url()->previous();
+
+
+        return view('arthurkaikoiadmin.koi.koi_detail', compact('koi', 'entryUrl'));
     }
 
     public function koidetailgrid($id)
@@ -1246,7 +1347,9 @@ class C_ArthurkaikoiAdmin extends Controller
         $agent = Agent::all();
         $sequence = Koi::where('id', $id)->get();
         $olds = $request->old();
-        return view('arthurkaikoiadmin.koi.koi_edit', compact('koi', 'variety', 'bloodline', 'breeder', 'agent', 'sequence', 'olds'));
+        $entryUrl = $request->entryUrl ?? url()->previous();
+
+        return view('arthurkaikoiadmin.koi.koi_edit', compact('koi', 'variety', 'bloodline', 'breeder', 'agent', 'sequence', 'olds', 'entryUrl'));
     }
 
     public function koigedit($id)
@@ -1342,7 +1445,12 @@ class C_ArthurkaikoiAdmin extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect('/CMS/koi/edit/' . $koi->id)->with('success', 'Koi record updated successfully.');
+
+        $entryUrl = $request->input('entryUrl', route('cmskoi') . '?layout=grid'); // Fallback if no entryUrl is provided
+
+        // Ensure we're using the correct entryUrl when redirecting back to the edit page
+        return redirect('/CMS/koi/edit/' . $koi->id . '?entryUrl=' . urlencode($entryUrl))
+            ->with('success', 'Koi record updated successfully.');
     }
 
     public function koigupdate(request $request)
@@ -1496,9 +1604,22 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function koigriddelete($id)
     {
+        // Delete the Koi record with the specified ID
         Koi::where('id', $id)->delete();
-        return redirect('/CMS/koi/grid');
+        // Retrieve query parameters for pagination
+        $perPage = request()->input('per_page', 8);
+        $page = request()->input('page', 1);
+
+        // Redirect back to the koi grid with the pagination parameters
+        return redirect()->route('cmskoi', [
+            'layout' => 'grid',
+            'per_page' => $perPage,
+            'page' => $page,
+        ]);
     }
+
+
+
 
     ### KOI filter TABLE ###
 

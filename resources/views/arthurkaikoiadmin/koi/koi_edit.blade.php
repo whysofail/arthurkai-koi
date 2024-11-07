@@ -104,14 +104,14 @@
         <!-- Main content -->
 
         <section class="content">
-
             @foreach ($koi as $k)
                 <form action="{{ route("cmskoiUpdate") }}" method="POST" enctype="multipart/form-data" id='koiForm'>
                     @csrf
                     <input type="hidden" name="id" id="id" value="{{ $k->id }}">
                     <input type="hidden" name="status" value="{{ $k->status }}">
+                    <input type="hidden" name="entryUrl" value="{{ $entryUrl }}">
                     <div class="col-sm-12">
-                        <a href="{{ route("cmskoi") }}" class="btn btn-sm"
+                        <a href="{{ $entryUrl ?? route("cmskoi") }}" class="btn btn-sm"
                             style="margin-bottom: 5px; border-radius: 20px 1px 10px; border: black solid 1px; ">
                             <i class="fas fa-arrow-circle-left" style="position: relative; right: 3%; top: 1px;"></i>
                             Back
@@ -148,15 +148,17 @@
                                             <div class="form-group row">
                                                 <label for="variety" class="col-sm-2 col-form-label">Variety</label>
                                                 <div class="col-sm-10">
-                                                    <select class="form-control select2" name="variety" style="width: 100%;">
+                                                    <select class="form-control select2" name="variety"
+                                                        style="width: 100%;">
                                                         <option value="{{ $k->variety->id ?? 1 }}"
                                                             {{ isset($k->variety) && $k->variety->id == ($k->variety->id ?? 1) ? "selected" : "" }}>
-                                                            {{ $k->variety->name ?? 'Unknown' }}</option>
+                                                            {{ $k->variety->name ?? "Unknown" }}</option>
                                                         @foreach ($variety as $v)
-                                                            <option value="{{ $v->id }}" {{ isset($k->variety) && $k->variety->id == $v->id ? 'selected' : '' }}>
+                                                            <option value="{{ $v->id }}"
+                                                                {{ isset($k->variety) && $k->variety->id == $v->id ? "selected" : "" }}>
                                                                 {{ $v->name }}</option>
                                                         @endforeach
-                                                    </select>                                                                                                    
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
@@ -220,7 +222,7 @@
                                                 <label for="birth" class="col-sm-2 col-form-label">Birthdate</label>
                                                 <div class="col-sm-10">
                                                     <input type="month" class="form-control" name="birth"
-                                                        value="{{  $k->birthdate ? \Carbon\Carbon::parse($k->birthdate)->format("Y-m") : "" }}"
+                                                        value="{{ $k->birthdate ? \Carbon\Carbon::parse($k->birthdate)->format("Y-m") : "" }}"
                                                         id="birth">
                                                 </div>
                                             </div>
@@ -244,7 +246,7 @@
                                                 </label>
                                                 <div class="col-sm-10">
                                                     <input type="month" class="form-control" name="purchase_date"
-                                                        value="{{  $k->purchase_date ? \Carbon\Carbon::parse($k->purchase_date)->format("Y-m") : "" }}"
+                                                        value="{{ $k->purchase_date ? \Carbon\Carbon::parse($k->purchase_date)->format("Y-m") : "" }}"
                                                         id="purchase_date">
                                                 </div>
                                             </div>
@@ -367,7 +369,6 @@
                                                             <div id="existing-photos">
                                                                 @foreach ($photos as $photo)
                                                                     @if (!empty($photo))
-                                                                   
                                                                         <div class="photo-item"
                                                                             style="margin-bottom: 10px;">
                                                                             <div
@@ -378,11 +379,11 @@
                                                                                 <div>
                                                                                     <input type="file"
                                                                                         class="form-control-file edit-photo"
-                                                                                        name="edit_photo_{{$loop->index}}"
+                                                                                        name="edit_photo_{{ $loop->index }}"
                                                                                         style="display: none;">
                                                                                     <button type="button"
                                                                                         class="btn btn-primary btn-sm edit-photo-button"
-                                                                                        data-target="input[name='edit_photo_{{$loop->index}}']">Edit</button>
+                                                                                        data-target="input[name='edit_photo_{{ $loop->index }}']">Edit</button>
                                                                                     <button type="button"
                                                                                         class="btn btn-danger btn-sm remove-photo"
                                                                                         data-photo="{{ $photo }}">Remove</button>
@@ -390,7 +391,8 @@
                                                                             </div>
                                                                             <span
                                                                                 class="photo-filename">{{ $photo }}</span>
-                                                                                <input type="hidden" name="existing_photos[]" value="{{ $photo }}">
+                                                                            <input type="hidden" name="existing_photos[]"
+                                                                                value="{{ $photo }}">
                                                                         </div>
                                                                     @endif
                                                                 @endforeach
@@ -399,7 +401,6 @@
                                                             <p>No photos available</p>
                                                         @endif
                                                     </div>
-
 
                                                     <!-- Input for uploading new photos -->
 
@@ -432,22 +433,24 @@
                                                         <input type="hidden" name="photo_highlights" value="">
                                                     @else
                                                     @endif
-                                         
+
                                                 </div>
                                                 <div class="input-group realprocodeLP control-group lst incrementLP">
                                                     <!-- Existing inputs will be appended here -->
                                                 </div>
-                                                
+
                                                 <div class="input-group-btn">
                                                     <button class="btn btn-success btn-clickLP" type="button">
                                                         <i class="fldemo glyphicon glyphicon-plus"></i> Add
                                                     </button>
                                                 </div>
-                                                
+
                                                 <!-- Template for cloning -->
                                                 <div class="cloneLP" style="display: none;">
-                                                    <div class="realprocodeLP control-group lst input-group" style="margin: 1em 0 1em;">
-                                                        <input type="file" name="link_photo[]" class="myfrm form-control" onchange="Imagelinkphoto(event)">
+                                                    <div class="realprocodeLP control-group lst input-group"
+                                                        style="margin: 1em 0 1em;">
+                                                        <input type="file" name="link_photo[]"
+                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)">
                                                         <div class="input-group-btn">
                                                             <button class="btn btn-danger" type="button">
                                                                 <i class="fldemo glyphicon glyphicon-remove"></i> Remove
@@ -837,17 +840,17 @@
         });
 
         $(document).ready(function() {
-    $(".btn-clickLP").click(function() {
-        // Clone the template
-        var newInput = $(".cloneLP").children().first().clone(); // Clone the first child
-        newInput.find('input[type="file"]').val(''); // Clear the value of the input
-        $(".incrementLP").append(newInput); // Append the cloned input below the existing ones
-    });
+            $(".btn-clickLP").click(function() {
+                // Clone the template
+                var newInput = $(".cloneLP").children().first().clone(); // Clone the first child
+                newInput.find('input[type="file"]').val(''); // Clear the value of the input
+                $(".incrementLP").append(newInput); // Append the cloned input below the existing ones
+            });
 
-    $("body").on("click", ".btn-danger", function() {
-        $(this).closest(".realprocodeLP").remove(); // Remove the specific input group
-    });
-});
+            $("body").on("click", ".btn-danger", function() {
+                $(this).closest(".realprocodeLP").remove(); // Remove the specific input group
+            });
+        });
 
 
         $(document).ready(function() {

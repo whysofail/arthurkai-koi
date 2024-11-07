@@ -8,21 +8,23 @@
 
     <style>
         .pagination nav {
-        /* display: none !important; */
-        justify-content: center !important;
+            /* display: none !important; */
+            justify-content: center !important;
         }
 
         .pagination nav {
-        justify-content: center !important;
+            justify-content: center !important;
         }
-        .pagination nav > div:first-of-type {
-        display: flex !important;
-        justify-content: center !important;
+
+        .pagination nav>div:first-of-type {
+            display: flex !important;
+            justify-content: center !important;
         }
 
         .pagination li {
-        display: block;
+            display: block;
         }
+
         [aria-disabled="true"] {
             display: none;
         }
@@ -35,6 +37,7 @@
         span[aria-current="page"]>span {
             background-color: #99D8FA !important;
         }
+
         .content_box {
             border: 1px black solid;
             padding: 15px;
@@ -81,31 +84,30 @@
         }
 
         /* .page-item.active .page-link {
-            z-index: 3;
-            color: #fff;
-            background-color: #000000 !important;
-            border-color: black !important;
-        }
+                                                z-index: 3;
+                                                color: #fff;
+                                                background-color: #000000 !important;
+                                                border-color: black !important;
+                                            }
 
-        .page-link {
-            position: relative;
-            display: block;
-            padding: .5rem .75rem;
-            margin-left: -1px;
-            line-height: 1.25;
-            color: #000000;
-            background-color: #fff;
-            border: 1px solid #000000 !important;
-        }
+                                            .page-link {
+                                                position: relative;
+                                                display: block;
+                                                padding: .5rem .75rem;
+                                                margin-left: -1px;
+                                                line-height: 1.25;
+                                                color: #000000;
+                                                background-color: #fff;
+                                                border: 1px solid #000000 !important;
+                                            }
 
-        .page-item.disabled .page-link {
-            color: #6c757d;
-            pointer-events: none;
-            cursor: auto;
-            background-color: #fff;
-            border-color: #000000 !important;
-        } */
-
+                                            .page-item.disabled .page-link {
+                                                color: #6c757d;
+                                                pointer-events: none;
+                                                cursor: auto;
+                                                background-color: #fff;
+                                                border-color: #000000 !important;
+                                            } */
         .grid-table {
             width: 100%;
             text-align: left;
@@ -256,100 +258,137 @@
         <section class="content">
             <div class="women_main">
                 <!-- start content -->
-                            <div class="card">
-                                <div class="row" style="padding: 20px;">
-                                    <div class="col-sm-8 d-inline-flex align-items-center">
-                                        <a href="{{ route('cmskoiAdd') }}" class="mr-2">
-                                            <button type="button" class="btn btn-success" style="background: green; color: white;">
-                                                <b>+ Add KOI</b>
-                                            </button>
-                                        </a>
-                                        
-                                        <form method="GET" action="{{ url()->current() }}" class="d-inline mr-2">
-                                            <input type="hidden" name="layout" value="{{ $layout ?? '' }}">
-                                            <input type="hidden" name="search" value="{{ $search ?? '' }}">
-                                    
-                                            <div class="dropdown">
-                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    Items per page
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    <button type="submit" name="per_page" value="8" class="dropdown-item">8</button>
-                                                    <button type="submit" name="per_page" value="16" class="dropdown-item">15</button>
-                                                    <button type="submit" name="per_page" value="24" class="dropdown-item">20</button>
-                                                    <button type="submit" name="per_page" value="32" class="dropdown-item">30</button>
-                                                    <button type="submit" name="per_page" value="50" class="dropdown-item">50</button>
-                                                    <button type="submit" name="per_page" value="75" class="dropdown-item">75</button>
-                                                    <button type="submit" name="per_page" value="100" class="dropdown-item">100</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                        <button id="print-koi-grid" class="btn btn-primary">Print Koi Grid</button>
-                                    </div>
-                                    
-                                    {{-- <div class="col-sm-4">                                         
-                                        <div class="btn-group">
-                                            <a href="#" type="button" class="btn btn-default btn-flat disabled"><i
-                                                    class="fas fa-filter"></i></a>
-                                            <a href="{{ route("cmskoigfilteraz") }}" type="button"
-                                                class="btn btn-default btn-flat"><i class="fas fa-sort-alpha-down"></i></a>
-                                            <a href="{{ route("cmskoigfilterza") }}" type="button"
-                                                class="btn btn-default btn-flat"><i
-                                                    class="fas fa-sort-alpha-up-alt"></i></a>
-                                            <a href="{{ route("cmskoigfilter19") }}" type="button"
-                                                class="btn btn-default btn-flat"><i
-                                                    class="fas fa-sort-numeric-down"></i></a>
-                                            <a href="{{ route("cmskoigfilter91") }}" type="button"
-                                                class="btn btn-default btn-flat"><i
-                                                    class="fas fa-sort-numeric-up-alt"></i></a>
-                                            <a href="{{ route("cmskoigfilterpricebuyhigh") }}" type="button"
-                                                class="btn btn-default btn-flat"><i class="fas fa-money-bill"></i></a>
-                                            <a href="{{ route("cmskoigfilterpricebuylow") }}" type="button"
-                                                class="btn btn-default btn-flat"><i class="fas fa-money-bill-alt"></i></a>
-                                        </div>
-                                    </div> --}}
-                                    <div class="col-sm-3">
-                                        <div class="card-tools">
-                                            <form id="search-form" method="GET" action="{{ route('cmskoi') }}">
-                                                @csrf
-                                                <div class="input-group">
-                                                    <input type="text" id="search-input" name="search" value="{{ request('search') }}" class="form-control" placeholder="Search for koi...">
-                                                    <input type="hidden" name="layout" value="grid" /> <!-- Ensure the layout is set to grid -->
-                                                    <div class="input-group-append">
-                                                        <button type="submit" class="btn btn-primary">Search</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                            
-                                        </div>
+                <div class="card">
+                    <div class="row" style="padding: 20px;">
+                        <div class="col-sm-6 d-inline-flex align-items-center">
+                            <a href="{{ route("cmskoiAdd") }}" class="mr-2">
+                                <button type="button" class="btn btn-success" style="background: green; color: white;">
+                                    <b>+ Add KOI</b>
+                                </button>
+                            </a>
+
+                            <form method="GET" action="{{ url()->current() }}" class="d-inline mr-2">
+                                <input type="hidden" name="layout" value="{{ $layout ?? "" }}">
+                                <input type="hidden" name="search" value="{{ $search ?? "" }}">
+
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Items per page
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <button type="submit" name="per_page" value="8"
+                                            class="dropdown-item">8</button>
+                                        <button type="submit" name="per_page" value="16"
+                                            class="dropdown-item">15</button>
+                                        <button type="submit" name="per_page" value="24"
+                                            class="dropdown-item">20</button>
+                                        <button type="submit" name="per_page" value="32"
+                                            class="dropdown-item">30</button>
+                                        <button type="submit" name="per_page" value="50"
+                                            class="dropdown-item">50</button>
+                                        <button type="submit" name="per_page" value="75"
+                                            class="dropdown-item">75</button>
+                                        <button type="submit" name="per_page" value="100"
+                                            class="dropdown-item">100</button>
                                     </div>
                                 </div>
+                            </form>
+                            <button id="print-koi-grid" class="btn btn-primary">Print Koi Grid</button>
+                        </div>
+                        <div class="col-sm-3">
+                            <form id="filter-form" method="GET" action="{{ route("cmskoi") }}">
+                                @csrf
+                                <input type="hidden" name="layout" value="{{ request("layout", "grid") }}">
+                                <!-- Always pass layout value -->
 
-                                <div class="card-body pb-0">
-                                    <div class="row koi-grid" id="koi-grid">
-                                        @if($koi && $koi->isNotEmpty())
-                                            @foreach ($koi as $k)
-                                                @include('arthurkaikoiadmin.koi.koi_grid_item', ['k' => $k])
-                                            @endforeach
-                                        @else
-                                            <p>No results found</p>
-                                        @endif
+                                @if (request("layout") == "grid")
+                                    <!-- Only show this form for the grid layout -->
+                                    <div class="input-group">
+                                        <!-- Filter Key Dropdown -->
+                                        <select name="key" class="form-control" id="key-select">
+                                            <option value="">Select Filter</option>
+                                            <option value="code" {{ request("key") == "code" ? "selected" : "" }}>Code
+                                            </option>
+                                            <option value="nickname" {{ request("key") == "nickname" ? "selected" : "" }}>
+                                                Nickname</option>
+                                            <option value="seller" {{ request("key") == "seller" ? "selected" : "" }}>
+                                                Seller</option>
+                                            <option value="handler" {{ request("key") == "handler" ? "selected" : "" }}>
+                                                Handler</option>
+                                            <option value="variety" {{ request("key") == "variety" ? "selected" : "" }}>
+                                                Variety</option>
+                                            <option value="breeder" {{ request("key") == "breeder" ? "selected" : "" }}>
+                                                Breeder</option>
+                                            <option value="bloodline"
+                                                {{ request("key") == "bloodline" ? "selected" : "" }}>Bloodline</option>
+                                        </select>
 
-                                        <div class="clearfix"></div>
+                                        <!-- Filter Value Input -->
+                                        <input type="text" name="value" class="form-control"
+                                            placeholder="Filter value" value="{{ request("value") }}">
+
+                                        <!-- Order Dropdown -->
+                                        <select name="order" class="form-control" id="order-select">
+                                            <option value="asc" {{ request("order") == "asc" ? "selected" : "" }}>
+                                                Ascending</option>
+                                            <option value="desc" {{ request("order") == "desc" ? "selected" : "" }}>
+                                                Descending</option>
+                                        </select>
+
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-primary">Apply Filter</button>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
+                            </form>
+
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="card-tools">
+                                <form id="search-form" method="GET" action="{{ route("cmskoi") }}">
+                                    @csrf
+                                    <div class="input-group">
+                                        <input type="text" id="search-input" name="search"
+                                            value="{{ request("search") }}" class="form-control"
+                                            placeholder="Search for koi...">
+                                        <input type="hidden" name="layout" value="grid" />
+                                        <!-- Ensure the layout is set to grid -->
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-primary">Search</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                        
+                        </div>
+                    </div>
+
+                    <div class="card-body pb-0">
+                        <div class="row koi-grid" id="koi-grid">
+                            @if ($koi && $koi->isNotEmpty())
+                                @foreach ($koi as $k)
+                                    @include("arthurkaikoiadmin.koi.koi_grid_item", ["k" => $k])
+                                @endforeach
+                            @else
+                                <p>No results found</p>
+                            @endif
+
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-         
+
         </section>
 
         <!-- end content -->
 
-            <div class="pagination justify-content-center mb-4">
-                {{ $koi->links() }} <!-- This will create the pagination links -->
-            </div>
-        
+        <div class="pagination justify-content-center mb-4">
+            {{ $koi->links() }} <!-- This will create the pagination links -->
+        </div>
+
     @endsection
 
     @section("script")
@@ -451,13 +490,13 @@
         </script> --}}
         <script>
             const printButton = document.getElementById('print-koi-grid');
-        
-            printButton.addEventListener('click', async function () {
+
+            printButton.addEventListener('click', async function() {
                 try {
                     console.log('Print button clicked');
                     const originalText = printButton.innerText;
                     printButton.innerText = 'Generating PDF...';
-        
+
                     // Cache DOM elements to minimize re-querying
                     const itemContainer = document.querySelector('.koi-grid');
                     const simpleCartItems = document.querySelectorAll('.simpleCart_shelfItem');
@@ -467,23 +506,30 @@
                     const btnDropdown = document.querySelectorAll('#btn-dropdown');
                     const btnStatusItems = document.querySelectorAll('#btn-status');
                     const gridItemTd = document.querySelectorAll('.grid-table td');
-        
+
                     if (!koiGridItems.length) throw new Error("No koi grid items found!");
                     console.log(`Found ${koiGridItems.length} koi grid items`);
-        
+
                     // Set up PDF settings
-                    const { jsPDF } = window.jspdf;
+                    const {
+                        jsPDF
+                    } = window.jspdf;
                     const pdf = new jsPDF('p', 'mm', 'a4');
-                    const pageWidth = 210, pageHeight = 297;
-                    const horizontalMargin = 4, verticalMargin = 8; // Small margins for clarity
+                    const pageWidth = 210,
+                        pageHeight = 297;
+                    const horizontalMargin = 4,
+                        verticalMargin = 8; // Small margins for clarity
                     const itemWidth = (pageWidth - (2 * horizontalMargin)) / 2; // Two items per row
                     const itemHeight = (pageHeight - (2 * verticalMargin)) / 2; // Max 4 items per page
-                    
+
                     if (itemContainer) {
                         itemContainer.style.cssText = 'width: 50%;'; // Set to full width for printing
                     }
-                    [...simpleCartItems, ...btnMin, ...btnDropdown].forEach(item => item.style.cssText = 'display: none; padding: 0 !important;');
-                    [,...btnStatusItems].forEach(item => item.style.cssText = 'background: none !important; border: none; padding: 0 !important; color: inherit; font: inherit;');
+                    [...simpleCartItems, ...btnMin, ...btnDropdown].forEach(item => item.style.cssText =
+                        'display: none; padding: 0 !important;');
+                    [, ...btnStatusItems].forEach(item => item.style.cssText =
+                        'background: none !important; border: none; padding: 0 !important; color: inherit; font: inherit;'
+                    );
                     contentBoxItems.forEach(item => {
                         item.style.cssText = 'padding: 0 !important; min-height: 0;';
                     });
@@ -491,39 +537,46 @@
                         item.style.cssText = 'max-width: 50%; flex: 0 0 50%;';
                     });
                     gridItemTd.forEach(item => {
-                        item.style.cssText ='padding: 0 5px; border-bottom: 0;'
+                        item.style.cssText = 'padding: 0 5px; border-bottom: 0;'
                     })
                     console.log('Adjusted styles for elements');
-        
+
                     // Loop through koiGridItems in batches of 4
                     for (let i = 0; i < koiGridItems.length; i += 4) {
                         if (i > 0) pdf.addPage(); // Add a new page for every set of 4 items
-        
+
                         for (let j = 0; j < 4; j++) {
                             if (i + j >= koiGridItems.length) break; // Prevent accessing out of bounds
-        
+
                             const item = koiGridItems[i + j];
                             try {
-                                const canvas = await html2canvas(item, { scale: 2, logging: false, useCORS: true });
+                                const canvas = await html2canvas(item, {
+                                    scale: window.devicePixelRatio = 2,
+                                    logging: false,
+                                    useCORS: true,
+                                });
                                 const imgData = canvas.toDataURL('image/png');
-        
+
                                 const xOffset = (j % 2 === 0 ? horizontalMargin : itemWidth + horizontalMargin);
                                 const yOffset = Math.floor(j / 2) * (itemHeight + verticalMargin) + verticalMargin;
-        
+
                                 // Add image to PDF with adjusted width and height
-                                pdf.addImage(imgData, 'PNG', xOffset, yOffset, itemWidth - horizontalMargin, itemHeight - verticalMargin);
+                                pdf.addImage(imgData, 'PNG', xOffset, yOffset, itemWidth - horizontalMargin,
+                                    itemHeight - verticalMargin);
                                 console.log(`Added item ${i + j + 1} to PDF at position (${xOffset}, ${yOffset})`);
                             } catch (canvasError) {
                                 console.error(`Error generating canvas for item ${i + j + 1}:`, canvasError);
                             }
                         }
                     }
-        
+
                     console.log('All items processed. Saving PDF...');
                     pdf.save('koi-grid.pdf');
-        
+
                     // Restore original styles if needed (optional)
-                    [...simpleCartItems, ...contentBoxItems, ...btnMin, ...btnDropdown, ...btnStatusItems, ...koiGridItems, itemContainer,...gridItemTd].forEach(item => item.style.cssText = '');
+                    [...simpleCartItems, ...contentBoxItems, ...btnMin, ...btnDropdown, ...btnStatusItems, ...
+                        koiGridItems, itemContainer, ...gridItemTd
+                    ].forEach(item => item.style.cssText = '');
                     printButton.innerText = originalText;
                 } catch (error) {
                     console.error('Error during PDF generation:', error);
@@ -531,10 +584,8 @@
                 }
             });
         </script>
-        
 
         <script>
-            
             var swiper = new Swiper(".mySwiper", {
                 spaceBetween: 30,
                 loop: true,
@@ -613,5 +664,3 @@
         </script> --}}
 
     @endsection
-
-    
