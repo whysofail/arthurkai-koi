@@ -1325,7 +1325,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'bloodline_id' => $request->bloodline,
             'sequence' => $sequence,
             'size' => $request->size,
-            'birthdate' => $request->birth ? Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth() : $koi->birthdate,
+            'birthdate' => $request->birth ? Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth() : null,
             'gender' => $request->gender,
             'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : null,
             'seller' => $request->seller ?? '',
