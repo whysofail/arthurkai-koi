@@ -75,11 +75,11 @@ class C_ArthurkaikoiAdmin extends Controller
         if ($key) {
             // If value is not empty, apply the filter with the provided key and value
             if (!empty($value)) {
-                $this->applyKeyValueFilters($koiQuery, $key, $value);
+                $this->applyKeyValueFilters($koiQuery, $key, $value, null, $order);  // Only passing order, not sortby
             } else {
                 // If value is empty, check for null values in the corresponding column
                 $koiQuery->whereNull($key); // This checks for null values in the column specified by the 
-                $koiQuery->orderBy('koi.updated_at', 'desc');
+                $koiQuery->orderBy('koi.updated_at', $order);
 
             }
         }
