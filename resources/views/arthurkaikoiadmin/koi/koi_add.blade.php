@@ -322,14 +322,14 @@
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <h2>Koi Media</h2>
                                         <hr>
-                                        <div class="input-group row" style="align-items: center;">
-                                            <label for="link_photo" class="col-sm-2 col-form-label">Link Photo</label>
+                                        <div class="input-group row">
+                                            <label for="link_photo" class="col-sm-2 col-form-label pt-4">Link Photo</label>
                                             <div class="col-sm-10" id="satu">
                                                 <div class="form-group">
                                                     <img width="125" id="link_photo" class="img-thumbnailp">
                                                     <div class="input-group realprocodeLP control-group lst incrementLP">
                                                         <input type="file" name="link_photo[]"
-                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)">
+                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)" accept="image/*">
                                                         <div class="input-group-btn">
                                                             <button class="btn btn-success btn-clickLP" type="button"><i
                                                                     class="fldemo glyphicon glyphicon-plus"></i>Add</button>
@@ -354,8 +354,8 @@
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
-                                        <div class="input-group row" style="align-items: center;">
-                                            <label for="link_video" class="col-sm-2 col-form-label">Link Video</label>
+                                        <div class="input-group row">
+                                            <label for="link_video" class="col-sm-2 col-form-label pt-4">Link Video</label>
                                             <div class="col-sm-10">
                                                 <div class="form-group">
                                                     <img width="125" id="link_video" class="img-thumbnailv">
@@ -363,8 +363,12 @@
                                                         <input type="file" name="link_video[]"
                                                             class="myfrm form-control" onchange="link_video(event)"
                                                             accept="video/mp4,video/x-m4v,video/*">
+                                                            <div class="input-group-btn">
+                                                                <button class="btn btn-success btn-clickLV" type="button"><i
+                                                                        class="fldemo glyphicon glyphicon-plus"></i>Add</button>
+                                                            </div>
                                                     </div>
-                                                    {{-- <div class="cloneLV hide" style="display: none;">
+                                                    <div class="cloneLV hide" style="display: none;">
                                                         <div class="realprocodeLV control-group lst input-group"
                                                             style="margin-top:10px">
                                                             <input type="file" name="link_video[]"
@@ -376,7 +380,7 @@
                                                                     Remove</button>
                                                             </div>
                                                         </div>
-                                                    </div> --}}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -384,32 +388,19 @@
 
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="input-group row">
-                                            <label for="name_trophy" class="col-sm-2 col-form-label">Trophy Name</label>
-                                            <div class="col-sm-10" style="margin-bottom: 10px;">
-                                                <input type="text" class="form-control" name="name_trophy"
-                                                    value="{{ old("name_trophy") }}" id="name_trophy"
-                                                    placeholder="Event name">
-                                            </div>
                                             <label for="link_trophy" class="col-sm-2 col-form-label">Trophy File</label>
                                             <div class="col-sm-10">
                                                 <input type="file" class="form-control" name="link_trophy"
                                                     value="{{ old("link_trophy") }}" id="link_trophy"
-                                                    style="height: auto !important;">
-
+                                                    style="height: auto !important;"
+                                                    accept="image/*"
+                                                    >
                                             </div>
-
                                         </div>
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="input-group row">
-                                            <label for="name_certificate" class="col-sm-2 col-form-label">Certificate
-                                                Name</label>
-                                            <div class="col-sm-10" style='margin-bottom: 10px;'>
-                                                <input type="text" class="form-control" name="name_certificate"
-                                                    value="{{ old("name_certificate") }}" id="name_certificate"
-                                                    placeholder="Certificate Name">
-                                            </div>
                                             <label for="link_certificate" class="col-sm-2 col-form-label">
                                                 Certificate File</label>
                                             <div class="col-sm-10">

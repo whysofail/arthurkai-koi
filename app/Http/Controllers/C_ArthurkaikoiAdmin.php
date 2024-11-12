@@ -1064,6 +1064,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function koistore(Request $request)
     {
+
         $request->validate([
             'variety' => ['required'],
             'breeder' => ['required'],
@@ -1084,8 +1085,7 @@ class C_ArthurkaikoiAdmin extends Controller
         $imagev = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
         $link_trophys = $this->handleSingleFileUpload($request->file('link_trophy'), 'img/koi/trophy');
         $link_certificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
-
-        // Create Koi record
+        // Create Koi record    
         $koi = Koi::create([
             'code' => $koiCode,
             'nickname' => $request->nickname,
@@ -1388,16 +1388,22 @@ class C_ArthurkaikoiAdmin extends Controller
     }
     public function koiupdate(Request $request)
     {
+
         // Fetch the existing Koi record
         $koi = Koi::findOrFail($request->id);
         // Retrieve and format current photos
         $currentPhotos = array_filter(explode('|', trim($koi->photo))); // Trim whitespace and remove empty elements
-        $updatedPhotos = $currentPhotos; // Start with existing photos
+        $updatedPhotos = $currentPhotos; // Start with existing 
+
+        $currentVideos = array_filter(explode('|', trim($koi->video))); // Trim whitespace and remove empty elements
+        $updatedVideos = $currentVideos; // Start with existing 
+
+
         // Handle new file uploads
         $newPhotos = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
         $newVideos = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
-        $linkTrophies = $this->handleSingleFileUpload($request->file('link_trophy'), 'img/koi/trophy');
-        $linkCertificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
+        $linkTrophies = $this->handleSingleFileUpload($request->file('trophy'), 'img/koi/trophy');
+        $linkCertificates = $this->handleSingleFileUpload($request->file('certificate'), 'img/koi/certificate');
         // Process edited photos
         foreach ($request->file() as $key => $file) {
             if (preg_match('/edit_photo_(\d+)/', $key, $matches) && $file->isValid()) {
@@ -1420,6 +1426,48 @@ class C_ArthurkaikoiAdmin extends Controller
         // Finalize photo array by merging with new photos
         $finalPhotos = array_merge($updatedPhotos, $newPhotos);
 
+        //remove photo in public path
+        $photoDirectory = public_path('img/koi/photo');
+        $photoToRemove = array_diff(scandir($photoDirectory), ['.', '..']);
+
+        foreach ($photoToRemove as $file) {
+            if (!in_array($file, $finalPhotos)) {
+                $filePath = $photoDirectory . '/' . $file;
+                if (file_exists($filePath)) {
+                    unlink($filePath); // Delete unused photo
+                }
+            }
+        }
+
+        foreach ($request->file() as $key => $file) {
+            if (preg_match('/edit_video_(\d+)/', $key, $matches) && $file->isValid()) {
+                $index = (int) $matches[1];
+                if (isset($updatedVideos[$index])) {
+                    // Handle the upload and replace the corresponding Video
+                    $newVideoPath = $this->handleSingleFileUpload($file, 'img/koi/video');
+                    if ($newVideoPath) {
+                        $updatedVideos[$index] = basename($newVideoPath); // New photo filename
+                    }
+                }
+            }
+        }
+
+        if ($request->has('remove_videos')) {
+            $updatedVideos = array_diff($updatedVideos, $request->remove_videos);
+        }
+        $finalVideos = array_merge($updatedVideos, $newVideos);
+
+        $videoDirectory = public_path('img/koi/video');
+        $videoToRemove = array_diff(scandir($videoDirectory), ['.', '..']);
+
+        foreach ($videoToRemove as $file) {
+            if (!in_array($file, $finalVideos)) {
+                $filePath = $videoDirectory . '/' . $file;
+                if (file_exists($filePath)) {
+                    unlink($filePath); // Delete unused video
+                }
+            }
+        }
         // Update Koi code if base parameters change
         $variety = Variety::find($request->variety);
         $breeder = Breeder::find($request->breeder);
@@ -1458,7 +1506,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'price_sell_jpy' => $request->pricesell_jpy ? (int) $request->pricesell_jpy : $koi->price_sell_jpy,
             'location' => $request->location,
             'photo' => implode('|', $finalPhotos),
-            'video' => implode('|', $newVideos) ?: $koi->video,
+            'video' => implode('|', $finalVideos),
             'trophy' => $linkTrophies ?: $koi->trophy,
             'certificate' => $linkCertificates ?: $koi->certificate,
             'status' => $request->status,

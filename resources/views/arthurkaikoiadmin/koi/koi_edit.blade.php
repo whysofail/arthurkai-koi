@@ -359,6 +359,12 @@
                                             <h2>Koi Media</h2>
                                             <hr>
                                             <div class="col-sm-12" style="margin-top: 10px">
+                                                
+                                                <div class="input-group-btn" style="float:right">
+                                                    <button class="btn btn-success btn-clickLP" type="button">
+                                                        <i class="fldemo glyphicon glyphicon-plus"></i> Add
+                                                    </button>
+                                                </div>
                                                 <div class="form-group row" style="margin-top: 10px">
                                                     <label for="photos" class="col-sm-2 col-form-label">Photos</label>
                                                     <div class="col-sm-10">
@@ -380,6 +386,7 @@
                                                                                     <input type="file"
                                                                                         class="form-control-file edit-photo"
                                                                                         name="edit_photo_{{ $loop->index }}"
+                                                                                        accept="image/*"
                                                                                         style="display: none;">
                                                                                     <button type="button"
                                                                                         class="btn btn-primary btn-sm edit-photo-button"
@@ -410,12 +417,16 @@
                                                                 @if ($image == null)
                                                                     <input type="file" name="link_photo[]"
                                                                         class="myfrm form-control"
+                                                                        accept="image/*"
+
                                                                         onchange="Imagelinkphoto(event)">
 
                                                                     <input type="hidden" name="link_photos">
                                                                 @else
                                                                     <input type="file" name="link_photo[]"
                                                                         class="myfrm form-control"
+                                                                        accept="image/*"
+
                                                                         onchange="Imagelinkphoto(event)">
 
                                                                     <input type="hidden" name="link_photos"
@@ -439,18 +450,15 @@
                                                     <!-- Existing inputs will be appended here -->
                                                 </div>
 
-                                                <div class="input-group-btn">
-                                                    <button class="btn btn-success btn-clickLP" type="button">
-                                                        <i class="fldemo glyphicon glyphicon-plus"></i> Add
-                                                    </button>
-                                                </div>
 
                                                 <!-- Template for cloning -->
                                                 <div class="cloneLP" style="display: none;">
                                                     <div class="realprocodeLP control-group lst input-group"
                                                         style="margin: 1em 0 1em;">
                                                         <input type="file" name="link_photo[]"
-                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)">
+                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)" 
+                                                            accept="image/*"
+                                                            >
                                                         <div class="input-group-btn">
                                                             <button class="btn btn-danger" type="button">
                                                                 <i class="fldemo glyphicon glyphicon-remove"></i> Remove
@@ -468,14 +476,31 @@
                                                     @if (isset($k->video) && !empty($k->video))
                                                         @foreach (explode("|", $k->video) as $video)
                                                             @if (!is_null($video) && $video != "")
-                                                                <video src="{{ asset("img/koi/video/" . $video) }}"
-                                                                    type="video/mp4" width="130px" id="link_video"
-                                                                    controls></video><br>
-
-                                                                <span id="spanLinkVideo"
-                                                                    style="font-size: 0.8rem; color: #62200a;">{{ $video }}</span>
-
-                                                                <br />
+                                                            <div class="my-2 video-item">
+                                                                <video src="{{ asset('img/koi/video/' . $video) }}"
+                                                                       type="video/mp4" width="130px" id="link_video"
+                                                                       controls></video>
+                                                                <div>
+                                                                    <input type="file"
+                                                                           class="form-control-file edit-video"
+                                                                           name="edit_video_{{ $loop->index }}"
+                                                                           accept="video/mp4,video/x-m4v,video/*"
+                                                                           style="display: none;">
+                                                                    <button type="button"
+                                                                            class="btn btn-primary btn-sm edit-video-button"
+                                                                            data-target="input[name='edit_video_{{ $loop->index }}']">
+                                                                        Edit
+                                                                    </button>
+                                                                    <button type="button"
+                                                                            class="btn btn-danger btn-sm remove-video"
+                                                                            data-video="{{ $video }}">
+                                                                        Remove
+                                                                    </button>   
+                                                                    <span id="spanLinkVideo"
+                                                                          style="font-size: 0.8rem; color: #62200a;">{{ $video }}</span>
+                                                                </div>
+                                                            </div>
+                                                            
                                                             @endif
                                                         @endforeach
                                                     @else
@@ -485,10 +510,7 @@
                                                     <p>No video provided</p>
                                                 @endif
                                                 </span>
-                                                <div class="input-group realprocodeLV control-group lst incrementLV">
-                                                    <input type="file" name="link_video[]" class="myfrm form-control"
-                                                        onchange="link_video(event)"
-                                                        accept="video/mp4,video/x-m4v,video/*">
+                                                <div class="input-group realprocodeLV control-group lst incrementLV" style="justify-content: flex-end">
                                                     <div class="input-group-btn">
                                                         <button class="btn btn-success btn-clickLV" type="button"><i
                                                                 class="fldemo glyphicon glyphicon-plus"></i>Add</button>
@@ -511,87 +533,91 @@
                                         </div>
 
                                         <div class="col-sm-12 mt-3">
-                                            <label>Link Trophy</label><br>
-                                            {{-- @foreach ($k->history as $history)
-                                                @if ($loop->first)
-                                                    @if (isset($history->link_trophy) && $history->link_trophy != null)
-                                                        <img width="125" id="link_trophy" class="img-thumbnail"
-                                                            src="{{ asset("img/koi/trophy/" . $history->link_trophy) }}">
+                                            <label>Trophy</label><br>
+                                            @php
+                                                // Split the trophy string by '|' to get an array of trophy filenames
+                                                $trophies = explode('|', $k->trophy);
+                                            @endphp
+                                            
+                                            @forelse ($trophies as $index => $trophy)
+                                                <div class="trophy-item">
+                                                    @if (!empty($trophy))
+                                                        <img width="125" class="img-thumbnail mb-2"
+                                                             src="{{ asset('img/koi/trophy/' . trim($trophy)) }}" alt="Trophy Image">
                                                     @else
-                                                        -
+                                                        <span>No Trophy</span>
                                                     @endif
-
-                                                    <div class="input-group">
-                                                        <div class="custom-file">
-                                                            <input type="file" name="link_trophy" accept="image/*"
-                                                                class="custom-file-input" id="link_trophy"
-                                                                onchange="Imagelinktrophy(event)">
-                                                            <label class="custom-file-label" for="link_trophy"
-                                                                id="labelLinkTrophy">{{ $history->link_trophy ?? "No file chosen" }}</label>
-                                                            <input type="hidden" name="link_trophys"
-                                                                value="{{ $history->link_trophy ?? "" }}">
-                                                        </div>
+                                        
+                                                    <div class="custom-file">
+                                                        <input type="file"
+                                                               class="edit-trophy custom-file-input"
+                                                               name="trophy"
+                                                               accept="image/*"
+                                                               id="trophy_{{ $index }}"
+                                                               onchange="updateTrophyLabel(event, {{ $index }})">
+                                                        <label class="custom-file-label" for="trophy_{{ $index }}" id="labelTrophy_{{ $index }}">
+                                                            {{ $trophy ?? 'No file chosen' }}
+                                                        </label>
                                                     </div>
-                                                @endif
-                                            @endforeach --}}
-
-                                        </div>
-
-                                        <div class="col-sm-12" style="margin-top: 10px">
-                                            <div class="form-group row">
-                                                <div class="col-sm-12">
-                                                    <input type="text" class="form-control" name="name_trophy"
-                                                        {{-- value="@foreach ($k->history as $history)@if ($loop->first){{ old("name_trophy") ? old("name_trophy") : $history->name_trophy }}@else @endif @endforeach" --}} id="name_trophy" placeholder="Nama Event">
                                                 </div>
-                                            </div>
+                                            @empty
+                                                <div class="custom-file">
+                                                    <input type="file"
+                                                           class="edit-trophy custom-file-input"
+                                                           name="trophy"
+                                                           accept="image/*"
+                                                           id="trophy_0"
+                                                           onchange="updateTrophyLabel(event, 0)">
+                                                    <label class="custom-file-label" for="trophy_0" id="labelTrophy_0">
+                                                        No file chosen
+                                                    </label>
+                                                </div>
+                                            @endforelse
                                         </div>
-
+                                        
                                         <div class="col-sm-12 mt-3">
-                                            <label>Link Certificate</label><br>
-                                            {{-- @foreach ($k->history as $history)
-                                                @if ($loop->first)
-                                                    @if ($history->link_certificate == null)
-                                                        -
+                                            <label>Certificate</label><br>
+                                            @php
+                                                // Split the certificate string by '|' to get an array of certificate filenames
+                                                $certificates = explode('|', $k->certificate);
+                                            @endphp
+                                            
+                                            @forelse ($certificates as $index => $certificate)
+                                                <div class="certificate-item">
+                                                    @if (!empty($certificate))
+                                                        <img width="125" class="img-thumbnail mb-2"
+                                                             src="{{ asset('img/koi/certificate/' . trim($certificate)) }}" alt="Certificate Image">
                                                     @else
-                                                        <img width="125" class="img-thumbnail"
-                                                            src="{{ asset("img/koi/certificate/" . $history->link_certificate) }}"
-                                                            id="link_certificate">
+                                                        <span>No Certificate</span>
                                                     @endif
-
-                                                    <div class="input-group">
-
-                                                        <div class="custom-file">
-
-                                                            <input type="file" name="link_certificate"
-                                                                accept="image/*" class="custom-file-input"
-                                                                id="link_certificate"
-                                                                onchange="Imagelinkcertificate(event)">
-
-                                                            <label class="custom-file-label"
-                                                                for="link_certificate">{{ $history->link_certificate }}</label>
-
-                                                            <input type="hidden" name="link_certificates"
-                                                                value="{{ $history->link_certificate }}">
-
-                                                        </div>
-
+                                        
+                                                    <div class="custom-file">
+                                                        <input type="file"
+                                                               class="edit-certificate custom-file-input"
+                                                               name="certificate"
+                                                               accept="image/*"
+                                                               id="certificate_{{ $index }}"
+                                                               onchange="updateCertificateLabel(event, {{ $index }})">
+                                                        <label class="custom-file-label" for="certificate_{{ $index }}" id="labelCertificate_{{ $index }}">
+                                                            {{ $certificate ?? 'No file chosen' }}
+                                                        </label>
                                                     </div>
-                                                @else
-                                                @endif
-                                            @endforeach --}}
-
-                                        </div>
-
-                                        <div class="col-sm-12" style="margin-top: 10px">
-
-                                            <div class="form-group row">
-                                                <div class="col-sm-12">
-                                                    <input type="text" class="form-control" name="name_certificate"
-                                                        {{-- value="@foreach ($k->history as $history)@if ($loop->first){{ old("name_certificate") ? old("name_certificate") : $history->name_certificate }}@else @endif @endforeach" --}} id="name_certificate"
-                                                        placeholder="Nama Event">
                                                 </div>
-                                            </div>
+                                            @empty
+                                                <div class="custom-file">
+                                                    <input type="file"
+                                                           class="edit-certificate custom-file-input"
+                                                           name="certificate"
+                                                           accept="image/*"
+                                                           id="certificate_0"
+                                                           onchange="updateCertificateLabel(event, 0)">
+                                                    <label class="custom-file-label" for="certificate_0" id="labelCertificate_0">
+                                                        No file chosen
+                                                    </label>
+                                                </div>
+                                            @endforelse
                                         </div>
+                                        
                                         <h2>Additional Information</h2>
                                         <hr>
                                         <div class="col-sm-12" style="margin-top: 10px">
@@ -663,6 +689,27 @@
     <!-- Select2 -->
     <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
     <script>
+        function updateTrophyLabel(event, index) {
+                const file = event.target.files[0];
+                const label = document.getElementById('labelTrophy_' + index);
+                
+                if (file) {
+                    label.textContent = file.name; // Update label with file name
+                } else {
+                    // If no file is selected (or file is removed), keep the original label
+                    label.textContent = 'No file chosen';
+                }
+            }
+
+
+        function updateCertificateLabel(event, index) {
+            const fileName = event.target.files[0]?.name || 'No file chosen';
+            const label = document.getElementById('labelCertificate_' + index);
+            label.textContent = fileName;
+        }
+
+
+
         // Function to format Rupiah
         function formatRupiah(angka, prefix) {
             var number_string = angka.replace(/[^,\d]/g, '').toString(),
@@ -755,7 +802,9 @@
                 button.addEventListener('click', function() {
                     // Find the associated file input
                     const targetSelector = this.getAttribute('data-target');
+                    console.log(targetSelector);
                     const fileInput = document.querySelector(targetSelector);
+                    console.log(fileInput)
                     if (fileInput) {
                         fileInput.click(); // Trigger the file input click
                     }
@@ -796,6 +845,53 @@
 
                     // Remove the photo item from the DOM
                     photoItem.remove();
+                });
+            });
+
+            document.querySelectorAll('.edit-video-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetInput = document.querySelector(button.getAttribute('data-target'));
+                    if (targetInput) {
+                        targetInput.click();
+                    }
+                });
+            });
+
+            
+            document.querySelectorAll('.edit-video').forEach(input => {
+                input.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const videoItem = input.closest('.my-2'); // Assuming each video container has this class
+                            const video = videoItem.querySelector('video');
+                            const filenameSpan = videoItem.querySelector('#spanLinkVideo');
+
+                            video.src = e.target.result; // Update video preview
+                            filenameSpan.textContent = file.name; // Update filename
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+
+
+                        // Handle photo removal
+            document.querySelectorAll('.remove-video').forEach(button => {
+                button.addEventListener('click', function() {
+                    const videoItem = this.closest('.video-item');
+                    const video = this.getAttribute('data-video');
+
+                    // Add hidden input to mark this video for removal
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'remove_videos[]';
+                    input.value = video;
+                    document.getElementById('koiForm').appendChild(input);
+
+                    // Remove the video item from the DOM
+                    videoItem.remove();
                 });
             });
         });
@@ -855,7 +951,6 @@
 
         $(document).ready(function() {
             $("body").on("click", ".remove-photo", function() {
-                console.log("clicked");
                 $(this).parents(".photo-item").remove();
             });
         });
@@ -894,7 +989,6 @@
             //replace the "Choose a file" label
             $(this).next('.custom-file-label').html(fileName);
         });
-
 
 
         $('#link_photo').on('change', function() {
