@@ -261,7 +261,7 @@
                                             class="fas fa-long-arrow-alt-left"></i></button>
 
                                     {{-- <a href="{{ route('cmskoiDelete', $k->id) }}"
-    type="button" class="btn btn-danger">Delete</a> --}}
+                                    type="button" class="btn btn-danger">Delete</a> --}}
                                 </div>
                             </div>
                         </div>

@@ -393,7 +393,7 @@
                                                                             <video controls="controls" style="width: 100%"
                                                                                 name="{{ $video }}">
                                                                                 <source
-                                                                                    src="{{ asset("img/koi/video/" . $video) }}">
+                                                                                    src="{{ asset("img/koi/video/" . $video) }}" type="video/mp4">
                                                                             </video><br>
                                                                         </div>
                                                                     @endforeach
