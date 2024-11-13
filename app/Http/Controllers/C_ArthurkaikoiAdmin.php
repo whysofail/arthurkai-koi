@@ -1428,16 +1428,16 @@ class C_ArthurkaikoiAdmin extends Controller
 
         //remove photo in public path
         $photoDirectory = public_path('img/koi/photo');
-        $photoToRemove = array_diff(scandir($photoDirectory), ['.', '..']);
+        // $photoToRemove = array_diff(scandir($photoDirectory), ['.', '..']);
 
-        foreach ($photoToRemove as $file) {
-            if (!in_array($file, $finalPhotos)) {
-                $filePath = $photoDirectory . '/' . $file;
-                if (file_exists($filePath)) {
-                    unlink($filePath); // Delete unused photo
-                }
-            }
-        }
+        // foreach ($photoToRemove as $file) {
+        //     if (!in_array($file, $finalPhotos)) {
+        //         $filePath = $photoDirectory . '/' . $file;
+        //         if (file_exists($filePath)) {
+        //             unlink($filePath); // Delete unused photo
+        //         }
+        //     }
+        // }
 
         foreach ($request->file() as $key => $file) {
             if (preg_match('/edit_video_(\d+)/', $key, $matches) && $file->isValid()) {
@@ -1457,17 +1457,17 @@ class C_ArthurkaikoiAdmin extends Controller
         }
         $finalVideos = array_merge($updatedVideos, $newVideos);
 
-        $videoDirectory = public_path('img/koi/video');
-        $videoToRemove = array_diff(scandir($videoDirectory), ['.', '..']);
+        // $videoDirectory = public_path('img/koi/video');
+        // $videoToRemove = array_diff(scandir($videoDirectory), ['.', '..']);
 
-        foreach ($videoToRemove as $file) {
-            if (!in_array($file, $finalVideos)) {
-                $filePath = $videoDirectory . '/' . $file;
-                if (file_exists($filePath)) {
-                    unlink($filePath); // Delete unused video
-                }
-            }
-        }
+        // foreach ($videoToRemove as $file) {
+        //     if (!in_array($file, $finalVideos)) {
+        //         $filePath = $videoDirectory . '/' . $file;
+        //         if (file_exists($filePath)) {
+        //             unlink($filePath); // Delete unused video
+        //         }
+        //     }
+        // }
         // Update Koi code if base parameters change
         $variety = Variety::find($request->variety);
         $breeder = Breeder::find($request->breeder);
