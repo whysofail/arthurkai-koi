@@ -243,7 +243,7 @@
                                                     @if ($index == 0 && !empty($video))
                                                         <video controls style="width: 80%"
                                                             name="{{ $video }}">
-                                                            <source src="{{ asset("img/koi/video/" . $video) }}">
+                                                            <source src="{{ asset("img/koi/video/" . $video) }}" type="video/mp4">
                                                         </video>
                                                     @endif
                                                 </div>
