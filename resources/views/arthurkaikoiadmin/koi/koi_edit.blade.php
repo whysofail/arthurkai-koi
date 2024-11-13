@@ -362,7 +362,7 @@
                                                 
                                                 <div class="input-group-btn" style="float:right">
                                                     <button class="btn btn-success btn-clickLP" type="button">
-                                                        <i class="fldemo glyphicon glyphicon-plus"></i> Add
+                                                        <i class="fldemo glyphicon glyphicon-plus"></i> Add More Photos
                                                     </button>
                                                 </div>
                                                 <div class="form-group row" style="margin-top: 10px">
@@ -513,7 +513,7 @@
                                                 <div class="input-group realprocodeLV control-group lst incrementLV" style="justify-content: flex-end">
                                                     <div class="input-group-btn">
                                                         <button class="btn btn-success btn-clickLV" type="button"><i
-                                                                class="fldemo glyphicon glyphicon-plus"></i>Add</button>
+                                                                class="fldemo glyphicon glyphicon-plus"></i>Add More Videos</button>
                                                     </div>
                                                 </div>
                                                 <div class="cloneLV hide" style="display: none;">
