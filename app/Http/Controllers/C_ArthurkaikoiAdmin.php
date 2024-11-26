@@ -98,7 +98,7 @@ class C_ArthurkaikoiAdmin extends Controller
                 'layout' => $layout,
                 'search' => $search,
                 'per_page' => $perPage,
-                'filter' => $filters,
+                'filters' => $filters,
                 'value' => $value,
                 'sort_by' => $sortby,
                 'order' => $order
