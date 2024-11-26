@@ -54,7 +54,7 @@ class C_ArthurkaikoiAdmin extends Controller
         $layout = $request->query('layout', 'list');
         $search = $request->query('search');
         $perPage = $request->query('per_page', 8); // Default to 8 items per page
-        $key = $request->query('key'); // Filter key
+        $filters = $request->query('filters', []);
         $value = $request->query('value'); // Filter value
         $sortby = $request->query('sort_by'); // Sorting key
         $order = $request->query('order', 'asc'); // Default to ascending order
@@ -72,24 +72,11 @@ class C_ArthurkaikoiAdmin extends Controller
         }
 
         // Apply key-value filters if both key and value are provided
-        if ($key) {
-            // If value is not empty, apply the filter with the provided key and value
-            if (!empty($value)) {
-                $this->applyKeyValueFilters($koiQuery, $key, $value, null, $order);  // Only passing order, not sortby
-            } else {
-                if (in_array($key, ['breeder', 'variety', 'bloodline'])) {
-                    // For breeder, variety, or bloodline, check for null in the 'name' column
-                    $koiQuery->whereHas($key, function ($query) {
-                        $query->whereNull('name');
-                    });
-                } else {
-                    // Default behavior: check for null values in the specified column
-                    $koiQuery->whereNull($key);
+        if ($filters) {
+            foreach ($filters as $filter) {
+                if (isset($filter['key']) && isset($filter['value'])) {
+                    $this->applyKeyValueFilters($koiQuery, $filter['key'], $filter['value']);
                 }
-                if (!$sortby) {
-                    $koiQuery->orderBy('koi.updated_at', $order);
-                }
-
             }
         }
         // Apply ordering if sortby and order are provided
@@ -102,7 +89,7 @@ class C_ArthurkaikoiAdmin extends Controller
             return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi', 'layout', 'perPage'));
         } else {
             // Conditionally apply 'latest()' if no search, key-value filters, or sorting are applied
-            if (!$search && !$key && !$value && !$sortby) {
+            if (!$search && !$filters && !$value && !$sortby) {
                 $koiQuery->orderBy('koi.updated_at', 'desc');
             }
             // return dd($koiQuery->toSql());
@@ -111,7 +98,7 @@ class C_ArthurkaikoiAdmin extends Controller
                 'layout' => $layout,
                 'search' => $search,
                 'per_page' => $perPage,
-                'key' => $key,
+                'filter' => $filters,
                 'value' => $value,
                 'sort_by' => $sortby,
                 'order' => $order
@@ -134,7 +121,12 @@ class C_ArthurkaikoiAdmin extends Controller
                 });
             }
         });
+
+        foreach ($searchTerms as $term) {
+            $query->orderByRaw("LOWER((SELECT name FROM variety WHERE variety.id = koi.variety_id)) LIKE ? DESC", ["%$term%"]);
+        }
     }
+
 
     private function addSearchConditions($query, $term)
     {
@@ -152,36 +144,33 @@ class C_ArthurkaikoiAdmin extends Controller
             ->orWhereHas('bloodline', function ($q) use ($term) {
                 $this->addRelatedSearchConditions($q, $term);
             });
+        // return dd($query->toSql());
     }
 
 
     private function addRelatedSearchConditions($query, $term)
     {
-        $query->whereRaw('LOWER(name) LIKE ?', ["%$term%"])
-            ->orWhereRaw('LOWER(code) LIKE ?', ["%$term%"]);
+        $query->whereRaw('LOWER(name) LIKE ?', ["%$term%"]);
+        // ->orWhereRaw('LOWER(code) LIKE ?', ["%$term%"]);
     }
 
-    public function applyKeyValueFilters($query, $key, $value, $sortBy = null, $order = 'desc')
+    public function applyKeyValueFilters($query, $key, $value)
     {
         $relatedColumns = ['variety', 'breeder', 'bloodline'];
 
+        // Check if the key is in related columns and apply the respective filter
         $query->where(function ($subQuery) use ($key, $value, $relatedColumns) {
             if (in_array($key, $relatedColumns)) {
                 $subQuery->whereHas($key, function ($q) use ($value) {
                     $this->addRelatedKeyValueConditions($q, $value);
                 });
             } else {
+                // Apply raw filtering if not a related column
                 $subQuery->whereRaw("LOWER($key) LIKE ?", ["%$value%"]);
             }
         });
-
-        // Default ordering logic: If $sortBy is empty, order by `koi.updated_at`
-        if ($sortBy) {
-            $query->orderBy($sortBy, $order);
-        } else {
-            // $query->orderBy('koi.updated_at', $order);
-        }
     }
+
 
 
 

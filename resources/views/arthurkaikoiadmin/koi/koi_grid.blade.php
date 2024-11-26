@@ -300,56 +300,78 @@
                             <button id="print-koi-grid" class="btn btn-primary">Print Koi Grid</button>
                         </div>
                         <div class="col-sm-4">
-                            <form id="filter-form" method="GET" action="{{ route('cmskoi') }}">
-                                @csrf
-                                <input type="hidden" name="layout" value="{{ request('layout', 'grid') }}">
-                                <!-- Always pass layout value -->
-                            
-                                @if (request('layout') == 'grid')
-                                    <!-- Only show this form for the grid layout -->
-                                    <div class="input-group">
-                                        <!-- Filter Key Dropdown -->
-                                        <select name="key" class="form-control" id="key-select">
-                                            <option value="">Select Filter</option>
-                                            <option value="code" {{ request('key') == 'code' ? 'selected' : '' }}>Code</option>
-                                            <option value="nickname" {{ request('key') == 'nickname' ? 'selected' : '' }}>Nickname</option>
-                                            <option value="seller" {{ request('key') == 'seller' ? 'selected' : '' }}>Seller</option>
-                                            <option value="handler" {{ request('key') == 'handler' ? 'selected' : '' }}>Handler</option>
-                                            <option value="variety" {{ request('key') == 'variety' ? 'selected' : '' }}>Variety</option>
-                                            <option value="breeder" {{ request('key') == 'breeder' ? 'selected' : '' }}>Breeder</option>
-                                            <option value="bloodline" {{ request('key') == 'bloodline' ? 'selected' : '' }}>Bloodline</option>
-                                        </select>
-                                        <!-- Filter Value Input -->
-                                        <input type="text" name="value" class="form-control"
-                                               placeholder="Filter value" value="{{ request('value') }}">
-                            
-                                        <!-- Sort By Dropdown -->
-                                        <select name="sort_by" class="form-control" id="sort-by-select">
-                                            <option value="">Sort by</option>
-                                            <option value="code" {{ request('sort_by') == 'code' ? 'selected' : '' }}>Code</option>
-                                            <option value="nickname" {{ request('sort_by') == 'nickname' ? 'selected' : '' }}>Nickname</option>
-                                            <option value="seller" {{ request('sort_by') == 'seller' ? 'selected' : '' }}>Seller</option>
-                                            <option value="handler" {{ request('sort_by') == 'handler' ? 'selected' : '' }}>Handler</option>
-                                            <option value="variety" {{ request('sort_by') == 'variety' ? 'selected' : '' }}>Variety</option>
-                                            <option value="breeder" {{ request('sort_by') == 'breeder' ? 'selected' : '' }}>Breeder</option>
-                                            <option value="bloodline" {{ request('sort_by') == 'bloodline' ? 'selected' : '' }}>Bloodline</option>
-                                        </select>
-                            
-                                        <!-- Order Dropdown -->
-                                        <select name="order" class="form-control" id="order-select">
-                                            <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
-                                            <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descending</option>
-                                        </select>
-                            
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-primary">Apply Filter</button>
+                         <!-- Trigger Button -->
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">
+                                Apply Filters
+                            </button>
+
+                            <!-- Filter Modal -->
+                            <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="filterModalLabel">Apply Filters</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="filter-form" method="GET" action="{{ route('cmskoi') }}">
+                                                @csrf
+                                                <input type="hidden" name="layout" value="{{ request('layout', 'grid') }}">
+                                            
+                                                <!-- Filters Container -->
+                                                <div id="filters-container">
+                                                    @foreach (request('filters', []) as $index => $filter)
+                                                        <div class="input-group filter-group">
+                                                            <select name="filters[{{ $index }}][key]" class="form-control filter-key-select">
+                                                                <option value="">Select Filter</option>
+                                                                <option value="code" {{ $filter['key'] == 'code' ? 'selected' : '' }}>Code</option>
+                                                                <option value="nickname" {{ $filter['key'] == 'nickname' ? 'selected' : '' }}>Nickname</option>
+                                                                <option value="seller" {{ $filter['key'] == 'seller' ? 'selected' : '' }}>Seller</option>
+                                                                <option value="handler" {{ $filter['key'] == 'handler' ? 'selected' : '' }}>Handler</option>
+                                                                <option value="variety" {{ $filter['key'] == 'variety' ? 'selected' : '' }}>Variety</option>
+                                                                <option value="breeder" {{ $filter['key'] == 'breeder' ? 'selected' : '' }}>Breeder</option>
+                                                                <option value="bloodline" {{ $filter['key'] == 'bloodline' ? 'selected' : '' }}>Bloodline</option>
+                                                            </select>
+                                                            <input type="text" name="filters[{{ $index }}][value]" class="form-control filter-value-input"
+                                                                placeholder="Filter value" value="{{ $filter['value'] }}">
+                                                            <button type="button" class="btn btn-danger remove-filter">Remove</button>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            
+                                                <!-- Add Filter Button -->
+                                                <button type="button" class="btn btn-secondary mt-3" id="add-filter">Add Filter</button>
+                                            
+                                                <!-- Sort and Order -->
+                                                <div class="input-group mt-4">
+                                                    <select name="sort_by" class="form-control" id="sort-by-select">
+                                                        <option value="">Sort by</option>
+                                                        <option value="code" {{ request('sort_by') == 'code' ? 'selected' : '' }}>Code</option>
+                                                        <option value="nickname" {{ request('sort_by') == 'nickname' ? 'selected' : '' }}>Nickname</option>
+                                                        <option value="seller" {{ request('sort_by') == 'seller' ? 'selected' : '' }}>Seller</option>
+                                                        <option value="handler" {{ request('sort_by') == 'handler' ? 'selected' : '' }}>Handler</option>
+                                                        <option value="variety" {{ request('sort_by') == 'variety' ? 'selected' : '' }}>Variety</option>
+                                                        <option value="breeder" {{ request('sort_by') == 'breeder' ? 'selected' : '' }}>Breeder</option>
+                                                        <option value="bloodline" {{ request('sort_by') == 'bloodline' ? 'selected' : '' }}>Bloodline</option>
+                                                    </select>
+                                                    <select name="order" class="form-control" id="order-select">
+                                                        <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
+                                                        <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descending</option>
+                                                    </select>
+                                                </div>
+                                            </form>
+                                            
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary" form="filter-form">Apply Filters</button>
                                         </div>
                                     </div>
-                                @endif
-                            </form>
-                            
+                                </div>
+                            </div>
                         </div>
-
                         <div class="col-sm-4">
                             <div class="card-tools">
                                 <form id="search-form" method="GET" action="{{ route("cmskoi") }}">
@@ -605,6 +627,94 @@
                 },
             });
         </script>
+        <script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Function to get the value of a query parameter by name
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    // Function to populate the form with query parameters
+    function populateFormFields() {
+        // Populate filters dynamically
+        const filters = getQueryParam('filters');
+        if (filters) {
+            const filterArray = JSON.parse(filters);
+            filterArray.forEach((filter, index) => {
+                if (index >= 0) {
+                    // Add a new filter input field dynamically if necessary
+                    if (index > 0) {
+                        const newFilterGroup = document.createElement('div');
+                        newFilterGroup.classList.add('input-group', 'filter-group');
+                        newFilterGroup.innerHTML = `
+                            <select name="filters[${index}][key]" class="form-control filter-key-select">
+                                <option value="code">Code</option>
+                                <option value="nickname">Nickname</option>
+                                <option value="seller">Seller</option>
+                                <option value="handler">Handler</option>
+                                <option value="variety">Variety</option>
+                                <option value="breeder">Breeder</option>
+                                <option value="bloodline">Bloodline</option>
+                            </select>
+                            <input type="text" name="filters[${index}][value]" class="form-control filter-value-input" placeholder="Filter value">
+                            <button type="button" class="btn btn-danger remove-filter">Remove</button>
+                        `;
+                        document.getElementById('filters-container').appendChild(newFilterGroup);
+                    }
+
+                    // Set the filter key and value
+                    const filterKeySelect = document.querySelector(`select[name="filters[${index}][key]"]`);
+                    const filterValueInput = document.querySelector(`input[name="filters[${index}][value]"]`);
+                    filterKeySelect.value = filter.key;
+                    filterValueInput.value = filter.value;
+                }
+            });
+        }
+
+        // Set sort_by and order
+        const sortBy = getQueryParam('sort_by');
+        const order = getQueryParam('order');
+        if (sortBy) {
+            document.querySelector('select[name="sort_by"]').value = sortBy;
+        }
+        if (order) {
+            document.querySelector('select[name="order"]').value = order;
+        }
+    }
+
+    // Populate the form fields when the page is loaded
+    populateFormFields();
+
+    // Remove filter event handler
+    document.addEventListener('click', function(event) {
+        if (event.target && event.target.classList.contains('remove-filter')) {
+            event.target.closest('.filter-group').remove();
+        }
+    });
+
+    // Add new filter event handler
+    document.getElementById('add-filter').addEventListener('click', function() {
+        const filterGroup = document.createElement('div');
+        filterGroup.classList.add('input-group', 'filter-group');
+        filterGroup.innerHTML = `
+            <select name="filters[${document.querySelectorAll('.filter-group').length}][key]" class="form-control filter-key-select">
+                <option value="code">Code</option>
+                <option value="nickname">Nickname</option>
+                <option value="seller">Seller</option>
+                <option value="handler">Handler</option>
+                <option value="variety">Variety</option>
+                <option value="breeder">Breeder</option>
+                <option value="bloodline">Bloodline</option>
+            </select>
+            <input type="text" name="filters[${document.querySelectorAll('.filter-group').length}][value]" class="form-control filter-value-input" placeholder="Filter value">
+            <button type="button" class="btn btn-danger remove-filter">Remove</button>
+        `;
+        document.getElementById('filters-container').appendChild(filterGroup);
+    });
+});
+
+        </script>
         {{-- <script>
             $(document).ready(function() {
                 $.ajaxSetup({
@@ -667,5 +777,6 @@
                 });
             });
         </script> --}}
+
 
     @endsection
