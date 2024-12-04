@@ -153,14 +153,12 @@
             </div> --}}
             <div class="row infoart justify-content-center">
                 <div class="col-lg-5 col-12">
-                    <img class="articleimg" src="{{ asset("website/images/koi.jpg") }}">
+                    <img class="articleimg" src="{{ asset('img/koi/website/aboutus/'.$aboutUs->image) }}">
                 </div>
                 <div class="col-lg-3 col-12">
                     <div class="article">
-                        <h3>ARTHUR KAI KOI</h3>
-                        <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.
-                            Risus commodo viverra maecenas accumsan lacus vel facilisis.</p>
+                        <h3>About Us</h3>
+                        {!! $aboutUs->description !!}
                     </div>
                 </div>
 

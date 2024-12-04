@@ -68,10 +68,10 @@
                                 <section id="section-1" class="content-current">
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="form-group row">
-                                            <label for="nama" class="col-sm-2 col-form-label">Title</label>
+                                            <label for="name" class="col-sm-2 col-form-label">Name</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="nama"
-                                                    value="{{ old("nama") }}" id="nama">
+                                                <input type="text" class="form-control" name="name"
+                                                    value="{{ old("name ") }}" id="name">
                                             </div>
                                         </div>
                                     </div>
@@ -87,10 +87,10 @@
 
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="form-group row">
-                                            <label for="no_wa" class="col-sm-2 col-form-label">WhatsApp Number</label>
+                                            <label for="whatsapp" class="col-sm-2 col-form-label">WhatsApp Number</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="no_wa"
-                                                    value="{{ old("no_wa") }}" id="no_wa">
+                                                <input type="text" class="form-control" name="whatsapp"
+                                                    value="{{ old("whatsapp") }}" id="whatsapp">
                                             </div>
                                         </div>
                                     </div>

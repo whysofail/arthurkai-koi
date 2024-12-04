@@ -8,12 +8,14 @@
             <img class="banner" src="{{ asset("website/images/collectionbanner.png") }}" alt="Collection Banner">
         </div>
     </section>
-    <section>
-        <h1>
+        <section class="artists-section pt-4">
+            <div class="container">
+                <img class="img-fluid" src="{{ asset("img/koi/website/news/" . $news->image) }}">
+                <h1>
             {{ $news->title }}
         </h1>
-        <img src="{{ asset("img/koi/website/news/" . $news->image) }}">
         {!! $news->description !!}
+    </div>
     </section>
 @endsection
 

@@ -24,216 +24,6 @@
 
     <!-- Main Sidebar Container -->
 
-    <aside class="main-sidebar sidebar-dark-primary elevation-4"
-        style="background: #2c7abe; overflow-y: scroll; overflow-x: hidden;">
-
-        <!-- Brand Logo -->
-
-        <a href="{{ route("dashboard") }}" class="brand-link"
-            style="text-align: center; padding-top: 22px; padding-bottom: 22px;">
-
-            <img width="55" src="{{ asset("images/logo/koilogo.png") }}">
-
-        </a>
-
-        <!-- Sidebar -->
-
-        <div class="sidebar" style="background: #2c7abe">
-
-            <!-- Sidebar Menu -->
-
-            <nav class="mt-2">
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false">
-
-                    <li class="nav-item" style="border-bottom: 3px solid #0186fc; display:flex;">
-
-                        <a href="{{ route("cmskoi") }}" class="nav-link" style="height: 50px;">
-
-                            <i class="whitefont nav-icon far fa-image" style="font-size: 18px !important;"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi
-
-                            </p>
-
-                        </a>
-
-                        <a href="{{ route("cmskoigrid") }}" class="nav-link" style="text-align: right; height: 50px;">
-
-                            <i class="fa-solid fa-table-cells" style="font-size: 18px !important; color: white"></i>
-
-                            <p class="whitefont" style="font-size: 18px !important;">
-
-                                Koi<span> Grid</span>
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Setting
-
-                            Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsvariety") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Variety
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbloodline") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Bloodline
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsbreeder") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Breeder
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white; border-bottom: 0.6px solid white;">
-
-                        <a href="{{ route("cmsagent") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Agent
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                    data-accordion="false" style="margin-top: 20px;">
-
-                    <li class="nav-header whitefontlist"><i class="fas fa-cog"></i> <span style="margin-left: 10px">Live
-
-                            Website Koi</span></li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsourcollection") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Our Collection
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsnews") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                News
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item" style="border-top: 0.6px solid white;">
-
-                        <a href="{{ route("cmsaboutus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                About Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                    <li class="nav-item"
-                        style="border-top: 0.6px solid white; border-bottom: 0.6px solid white; background: black;">
-
-                        <a href="{{ route("cmscontactus") }}" class="nav-link">
-
-                            <i class="whitefont nav-icon fas fa-minus"></i>
-
-                            <p class="whitefont">
-
-                                Contact Us
-
-                            </p>
-
-                        </a>
-
-                    </li>
-
-                </ul>
-
-            </nav>
-
-            <!-- /.sidebar-menu -->
-
-        </div>
-
-        <!-- /.sidebar -->
-
-    </aside>
-
     <!-- Content Wrapper. Contains page content -->
 
     <div class="content-wrapper" style="background: white;">
@@ -331,7 +121,7 @@
 
                     @csrf
 
-                    <input type="hidden" name="id" value="{{ $c->id_contactus }}">
+                    <input type="hidden" name="id" value="{{ $c->id }}">
 
                     <div class="col-sm-12">
 
@@ -356,50 +146,36 @@
 
                                             <div class="form-group row">
 
-                                                <label for="nama" class="col-sm-2 col-form-label">nama</label>
+                                                <label for="name" class="col-sm-2 col-form-label">Name</label>
 
                                                 <div class="col-sm-10">
 
-                                                    <input type="text" class="form-control" name="nama"
-                                                        value="{{ old("nama") ? old("nama") : $c->nama }}"
+                                                    <input type="text" class="form-control" name="name"
+                                                        value="{{ old("name") ? old("name") : $c->name }}"
                                                         id="nama">
-
                                                 </div>
-
                                             </div>
-
                                         </div>
 
                                         <div class="col-sm-12" style="margin-top: 10px">
-
                                             <div class="form-group row">
-
                                                 <label for="email" class="col-sm-2 col-form-label">email</label>
-
                                                 <div class="col-sm-10">
-
                                                     <input type="email" class="form-control" name="email"
                                                         value="{{ old("email") ? old("email") : $c->email }}"
                                                         id="email">
-
                                                 </div>
-
                                             </div>
-
                                         </div>
 
                                         <div class="col-sm-12" style="margin-top: 10px">
 
                                             <div class="form-group row">
-
-                                                <label for="no_wa" class="col-sm-2 col-form-label">no_wa</label>
-
+                                                <label for="whatsapp" class="col-sm-2 col-form-label">WhatsApp</label>
                                                 <div class="col-sm-10">
-
-                                                    <input type="number" class="form-control" name="no_wa"
-                                                        value="{{ old("no_wa") ? old("no_wa") : $c->no_wa }}"
+                                                    <input type="text" class="form-control" name="whatsapp"
+                                                        value="{{ old("whatsapp") ? old("whatsapp") : $c->whatsapp }}"
                                                         id="no_wa">
-
                                                 </div>
 
                                             </div>
@@ -407,10 +183,8 @@
                                         </div>
 
                                         <div class="col-sm-12" style="margin-top: 10px">
-
                                             <div class="form-group row">
-
-                                                <label for="message" class="col-sm-2 col-form-label">message</label>
+                                                <label for="message" class="col-sm-2 col-form-label">Message</label>
 
                                                 <div class="col-sm-10">
 

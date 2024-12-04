@@ -62,15 +62,17 @@
                                                     <td>{{ $no }}</td>
                                                     <td>
                                                         <span style="display: flex !important">
-                                                            <a href="{{ route("cmscontactusDelete", $c->id) }}"
-                                                                type="button" class="btn btn-danger btn-xs">Delete</a>
+                                                            <a href="{{ route("cmscontactusEdit", $c->id) }}"
+                                                                type="button" class="btn btn-primary btn-xs">Edit</a>
+                                                                <a href="{{ route("cmscontactusDelete", $c->id) }}"
+                                                                    type="button" class="btn btn-danger btn-xs">Delete</a>
                                                         </span>
                                                     </td>
                                                     <td>{{ $c->name }}</td>
                                                     <td>{{ $c->email }}</td>
                                                     <td>{{ $c->whatsapp }}</td>
                                                     <td>
-                                                        {{ Str::limit($o->description, 25, "...") }}
+                                                        {{ Str::limit($c->message, 25, "...") }}
                                                     </td>
                                                 </tr>
                                                 <?php $no++; ?>

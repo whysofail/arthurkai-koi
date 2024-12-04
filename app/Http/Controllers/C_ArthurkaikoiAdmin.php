@@ -1377,22 +1377,27 @@ class C_ArthurkaikoiAdmin extends Controller
     }
     public function koiupdate(Request $request)
     {
-
         // Fetch the existing Koi record
         $koi = Koi::findOrFail($request->id);
+
         // Retrieve and format current photos
         $currentPhotos = array_filter(explode('|', trim($koi->photo))); // Trim whitespace and remove empty elements
-        $updatedPhotos = $currentPhotos; // Start with existing 
+        Log::info('Current Photos', ['currentPhotos' => $currentPhotos]);
 
+        $updatedPhotos = $currentPhotos; // Start with existing photos
+
+        // Retrieve and format current videos
         $currentVideos = array_filter(explode('|', trim($koi->video))); // Trim whitespace and remove empty elements
-        $updatedVideos = $currentVideos; // Start with existing 
-
+        $updatedVideos = $currentVideos; // Start with existing videos
 
         // Handle new file uploads
         $newPhotos = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
+        Log::info('New Photos Uploaded', ['newPhotos' => $newPhotos]);
+
         $newVideos = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
         $linkTrophies = $this->handleSingleFileUpload($request->file('trophy'), 'img/koi/trophy');
         $linkCertificates = $this->handleSingleFileUpload($request->file('certificate'), 'img/koi/certificate');
+
         // Process edited photos
         foreach ($request->file() as $key => $file) {
             if (preg_match('/edit_photo_(\d+)/', $key, $matches) && $file->isValid()) {
@@ -1402,6 +1407,7 @@ class C_ArthurkaikoiAdmin extends Controller
                     $newPhotoPath = $this->handleSingleFileUpload($file, 'img/koi/photo');
                     if ($newPhotoPath) {
                         $updatedPhotos[$index] = basename($newPhotoPath); // New photo filename
+                        Log::info('Replaced Photo', ['index' => $index, 'newPhotoPath' => $newPhotoPath]);
                     }
                 }
             }
@@ -1410,53 +1416,40 @@ class C_ArthurkaikoiAdmin extends Controller
         // Handle photo removals
         if ($request->has('remove_photos')) {
             $updatedPhotos = array_diff($updatedPhotos, $request->remove_photos);
+            Log::info('Photos Marked for Removal', ['remove_photos' => $request->remove_photos]);
+
         }
 
         // Finalize photo array by merging with new photos
         $finalPhotos = array_merge($updatedPhotos, $newPhotos);
+        Log::info('Final Photos Array', ['finalPhotos' => $finalPhotos]);
 
-        //remove photo in public path
-        $photoDirectory = public_path('img/koi/photo');
-        // $photoToRemove = array_diff(scandir($photoDirectory), ['.', '..']);
-
-        // foreach ($photoToRemove as $file) {
-        //     if (!in_array($file, $finalPhotos)) {
-        //         $filePath = $photoDirectory . '/' . $file;
-        //         if (file_exists($filePath)) {
-        //             unlink($filePath); // Delete unused photo
-        //         }
-        //     }
-        // }
-
+        // Process edited videos
         foreach ($request->file() as $key => $file) {
             if (preg_match('/edit_video_(\d+)/', $key, $matches) && $file->isValid()) {
                 $index = (int) $matches[1];
                 if (isset($updatedVideos[$index])) {
-                    // Handle the upload and replace the corresponding Video
+                    // Handle the upload and replace the corresponding video
                     $newVideoPath = $this->handleSingleFileUpload($file, 'img/koi/video');
                     if ($newVideoPath) {
-                        $updatedVideos[$index] = basename($newVideoPath); // New photo filename
+                        $updatedVideos[$index] = basename($newVideoPath); // New video filename
                     }
                 }
             }
         }
 
+        // Handle video removals
         if ($request->has('remove_videos')) {
             $updatedVideos = array_diff($updatedVideos, $request->remove_videos);
         }
+
+        // Finalize video array by merging with new videos
         $finalVideos = array_merge($updatedVideos, $newVideos);
 
-        // $videoDirectory = public_path('img/koi/video');
-        // $videoToRemove = array_diff(scandir($videoDirectory), ['.', '..']);
+        // Remove unused photos and videos for the current Koi
+        $this->removeUnusedFilesForCurrentKoi('img/koi/photo', $currentPhotos, $finalPhotos);
+        $this->removeUnusedFilesForCurrentKoi('img/koi/video', $currentVideos, $finalVideos);
 
-        // foreach ($videoToRemove as $file) {
-        //     if (!in_array($file, $finalVideos)) {
-        //         $filePath = $videoDirectory . '/' . $file;
-        //         if (file_exists($filePath)) {
-        //             unlink($filePath); // Delete unused video
-        //         }
-        //     }
-        // }
         // Update Koi code if base parameters change
         $variety = Variety::find($request->variety);
         $breeder = Breeder::find($request->breeder);
@@ -1475,6 +1468,7 @@ class C_ArthurkaikoiAdmin extends Controller
             $koiCode = $koi->code;
             $sequence = $koi->sequence;
         }
+
         // Update Koi record
         $koi->update([
             'code' => $koiCode,
@@ -1501,13 +1495,45 @@ class C_ArthurkaikoiAdmin extends Controller
             'status' => $request->status,
         ]);
 
-
         $entryUrl = $request->input('entryUrl', route('cmskoi') . '?layout=grid'); // Fallback if no entryUrl is provided
 
         // Ensure we're using the correct entryUrl when redirecting back to the edit page
         return redirect('/CMS/koi/edit/' . $koi->id . '?entryUrl=' . urlencode($entryUrl))
             ->with('success', 'Koi record updated successfully.');
     }
+
+    /**
+     * Remove unused files from the specified directory for the current koi.
+     *
+     * @param string $directory Path to the directory.
+     * @param array $currentFiles List of filenames currently associated with the koi.
+     * @param array $updatedFiles List of filenames still in use after the update.
+     * @return void
+     */
+    private function removeUnusedFilesForCurrentKoi(string $directory, array $currentFiles, array $updatedFiles): void
+    {
+        // Get the unused files (those that were removed in the update)
+        $unusedFiles = array_diff($currentFiles, $updatedFiles);
+
+        foreach ($unusedFiles as $file) {
+            $filePath = public_path($directory . DIRECTORY_SEPARATOR . $file);
+
+            // Log the file that will be removed
+            Log::info('Attempting to remove unused file', ['file' => $file, 'filePath' => $filePath]);
+
+            // Check if the file exists before deleting
+            if (is_file($filePath)) {
+                unlink($filePath); // Delete the file
+
+                // Log the successful deletion
+                Log::info('Removed unused file', ['file' => $file, 'filePath' => $filePath]);
+            } else {
+                // Log if the file doesn't exist (for troubleshooting)
+                Log::warning('File not found during cleanup', ['file' => $file, 'filePath' => $filePath]);
+            }
+        }
+    }
+
 
     public function koigupdate(request $request)
     {
@@ -2276,7 +2302,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
         AboutUs::create([
             'image' => $image,
-            'deskripsi' => $request->deskripsi,
+            'description' => $request->deskripsi,
         ]);
 
         return redirect('/CMS/aboutus');
@@ -2328,9 +2354,9 @@ class C_ArthurkaikoiAdmin extends Controller
     public function contactusstore(request $request)
     {
         ContactUs::create([
-            'nama' => $request->nama,
+            'name' => $request->name,
             'email' => $request->email,
-            'no_wa' => $request->no_wa,
+            'whatsapp' => $request->whatsapp,
             'message' => $request->message,
         ]);
 
@@ -2339,17 +2365,16 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function contactusedit($id)
     {
-        $contactus = ContactUs::where('id_contactus', $id)->get();
+        $contactus = ContactUs::where('id', $id)->get();
         return view('arthurkaikoiadmin.website.contactus.contactus_edit', compact('contactus'));
     }
 
     public function contactusupdate(request $request)
     {
-
-        ContactUs::where('id_contactus', $request->id)->update([
-            'nama' => $request->nama,
+        ContactUs::where('id', $request->id)->update([
+            'name' => $request->name,
             'email' => $request->email,
-            'no_wa' => $request->no_wa,
+            'whatsapp' => $request->whatsapp,
             'message' => $request->message,
         ]);
 
@@ -2361,5 +2386,4 @@ class C_ArthurkaikoiAdmin extends Controller
         ContactUs::where('id', $id)->delete();
         return redirect('/CMS/contactus');
     }
-
 }
