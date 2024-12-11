@@ -27,7 +27,7 @@ class C_Arthurkaikoi extends Controller
 
     public function our()
     {
-        $ourCollection = OurCollection::with('koi')->paginate(10);
+        $ourCollection = OurCollection::with('koi')->latest()->paginate(10);
         return view('arthurkaikoi.our', compact('ourCollection'));
     }
 
