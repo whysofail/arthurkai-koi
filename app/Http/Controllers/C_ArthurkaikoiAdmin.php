@@ -2125,7 +2125,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function ourcollection()
     {
-        $ourcollection = OurCollection::with('koi')->get();
+        $ourcollection = OurCollection::with('koi')->latest()->get();
         //  return response()->json($ourcollection);
         return view('arthurkaikoiadmin.website.ourcollection.ourcollection', compact('ourcollection'));
     }
@@ -2160,9 +2160,13 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function ourcollectionedit($id)
     {
-        $ourcollection = OurCollection::where('id', $id)->get();
+        // Fetch the OurCollection entry with associated Koi, Breeder, and Variety data
+        $ourcollection = OurCollection::with(['koi', 'koi.breeder', 'koi.variety'])->findOrFail($id);
+
+        // Pass the data to the view
         return view('arthurkaikoiadmin.website.ourcollection.ourcollection_edit', compact('ourcollection'));
     }
+
 
     public function ourcollectionupdate(request $request)
     {

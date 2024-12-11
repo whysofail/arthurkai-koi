@@ -177,80 +177,75 @@
     </script>
 
     <script>
-        $(document).ready(function() {
-            // Fetch pre-populated search suggestions on focus/click
-            $('#koi_search').on('focus click', function() {
-                $.ajax({
-                    url: "{{ url("/api/koi") }}",
-                    type: "GET",
-                    success: function(data) {
-                        if (data.suggestions.length > 0) {
-                            $('#results').empty();
-                            $.each(data.suggestions, function(index, item) {
-                                $('#results').append(
-                                    '<li class="list-group-item list-group-item-action" data-id="' +
-                                    item.id + '">' + item.code + ' | ' + item
-                                    .variety
-                                    .name + ' | ' + item.breeder
-                                    .name +
-                                    '</li>');
-                            });
-                        }
-                    }
-                });
-            });
+    $(document).ready(function() {
 
-            // Handle live search
-            $('#koi_search').on('keyup', function() {
-                let query = $(this).val();
-                if (query.length > 1) {
-                    $.ajax({
-                        url: "{{ url("/api/koi/search") }}",
-                        type: "GET",
-                        data: {
-                            query: query
-                        },
-                        success: function(data) {
-                            $('#results').empty();
-                            if (data.length > 0) {
-                                $.each(data, function(index, item) {
-                                    $('#results').append(
-                                        '<li class="list-group-item list-group-item-action" data-id="' +
-                                        item.id + '">' + item.code + ' | ' + item
-                                        .variety
-                                        .name + ' | ' + item.breeder
-                                        .name +
-                                        '</li>');
-                                });
-                            } else {
-                                $('#results').append(
-                                    '<li class="list-group-item">No results found</li>');
-                            }
-                        }
+    // Fetch pre-populated search suggestions on focus/click
+    $('#koi_search').on('focus click', function() {
+        $('#results').empty();  // Clear previous results
+        $.ajax({
+            url: "{{ url('/api/koi') }}",
+            type: "GET",
+            success: function(data) {
+                if (data.data.length > 0) {
+                    console.log(data)
+                    $.each(data.data, function(index, item) {
+                        $('#results').append(
+                            '<li class="list-group-item list-group-item-action" data-id="' +
+                            item.id + '">' + item.code + ' | ' + item.variety.name ?? '' + ' | ' + item.breeder.name + '</li>'
+                        );
                     });
-                } else {
-                    $('#results').empty();
                 }
-            });
-
-            // Hide results on clicking outside
-            $(document).click(function(e) {
-                if (!$(e.target).closest('.position-relative').length) {
-                    $('#results').empty();
-                }
-            });
-
-            // Fill the input field when a suggestion is clicked
-            $('#results').on('click', '.list-group-item', function() {
-                let selectedText = $(this).text(); // Get the full text of the selected item
-                let selectedKoiId = $(this).data('id');
-                $('#koi_search').val(selectedText); // Set the text input with the full text
-                $('#koi_id').val(selectedKoiId); // Set the hidden input with the Koi ID (integer)
-                $('#results').empty();
-                // Optionally, do something with the selected koi ID
-                console.log('Selected Koi ID:', selectedKoiId);
-            });
+            }
         });
+    });
+
+    // Handle live search
+    $('#koi_search').on('keyup', function() {
+        let query = $(this).val();
+        if (query.length >= 2) {  // Ensure at least 2 characters
+            $.ajax({
+                url: "{{ url('/api/koi/search') }}",
+                type: "GET",
+                data: {
+                    query: query
+                },
+                success: function(data) {
+                    console.log(data)
+                    $('#results').empty();
+                    if (data.data.length > 0) {
+                        $.each(data.data, function(index, item) {
+                            $('#results').append(
+                                '<li class="list-group-item list-group-item-action" data-id="' +
+                                item.id + '">' + item.code + ' | ' + item.variety_name + ' | ' + item.breeder_name + '</li>'
+                            );
+                        });
+                    } else {
+                        $('#results').append('<li class="list-group-item">No results found</li>');
+                    }
+                }
+            });
+        } else {
+            $('#results').empty();
+        }
+    });
+
+    // Hide results when clicking outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.col-sm-10').length) {  // Ensure this selector matches your input container
+            $('#results').empty();
+        }
+    });
+
+    // Fill the input field when a suggestion is clicked
+    $('#results').on('click', '.list-group-item', function() {
+        let selectedText = $(this).text(); // Get the full text of the selected item
+        let selectedKoiId = $(this).data('id');
+        $('#koi_search').val(selectedText); // Set the text input with the full text
+        $('#koi_id').val(selectedKoiId); // Set the hidden input with the Koi ID
+        $('#results').empty(); // Clear the results dropdown
+    });
+    });
+
     </script>
 
 @endsection

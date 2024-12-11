@@ -104,12 +104,11 @@
 
         <section class="content">
 
-            @foreach ($ourcollection as $o)
                 <form action="{{ route("cmsourcollectionUpdate") }}" method="POST" enctype="multipart/form-data">
 
                     @csrf
 
-                    <input type="hidden" name="id" value="{{ $o->id }}">
+                    <input type="hidden" name="id" value="{{ $ourcollection->id }}">
 
                     <div class="col-sm-12">
 
@@ -127,38 +126,28 @@
                             <div class="card-body">
 
                                 <div class="content tab">
-
                                     <section id="section-1" class="content-current">
-
                                         <div class="col-sm-12" style="margin-top: 10px">
-
                                             <div class="form-group row">
-
                                                 <label for="title" class="col-sm-2 col-form-label">Title</label>
-
                                                 <div class="col-sm-10">
-
                                                     <input type="text" class="form-control" name="title"
-                                                        value="{{ old("title") ? old("title") : $o->title }}"
+                                                        value="{{ old("title") ? old("title") : $ourcollection->title }}"
                                                         id="title">
-
                                                 </div>
-
                                             </div>
-
                                         </div>
-
                                         <div class="col-sm-12" style="margin-top: 10px">
-
                                             <div class="form-group row">
-
                                                 <label for="koi_id" class="col-sm-2 col-form-label">Select Koi</label>
-
                                                 <div class="col-sm-10">
                                                     <input type="text" class="form-control" placeholder="Search Koi"
-                                                        id="koi_search" value="{{ old("koi_id") }}" autocomplete="off">
+                                                    id="koi_search" 
+                                                    value="{{ old('koi_id', $ourcollection->koi->code . ' | ' . optional($ourcollection->koi->variety)->name . ' | ' . optional($ourcollection->koi->breeder)->name) }}" 
+                                                    autocomplete="off">
+                                             
                                                     <input type="hidden" name="koi_id" id="koi_id"
-                                                        value="{{ old("koi_id") ?? $o->koi_id }}">
+                                                        value="{{ old("koi_id") ?? $ourcollection->koi_id }}">
                                                     <ul id="results"
                                                         class="list-group position-absolute w-100 search-dropdown"
                                                         style="z-index: 1000; max-height:200px; overflow-y:auto;"></ul>
@@ -168,7 +157,7 @@
                                         <div class="col-sm-12" style="margin-top: 20px;">
                                             <label>Description</label>
                                             <textarea id="description" name="description" rows="7">
-                                        {{ $o->description }}
+                                        {{ $ourcollection->description }}
                                     </textarea>
                                         </div>
                                         <div class="col-sm-12 mt-3" style="margin-top: 50px">
@@ -182,7 +171,6 @@
                         </div>
                     </div>
                 </form>
-            @endforeach
 
             <!-- ./row -->
 
@@ -225,95 +213,76 @@
             });
         });
     </script>
-    <script>
-        $(document).ready(function() {
-            // Handle live search
-            $('#koi_search').on('keyup', function() {
-                let query = $(this).val();
-                if (query.length > 1) {
-                    $.ajax({
-                        url: "{{ url("/api/koi/search") }}",
-                        type: "GET",
-                        data: {
-                            query: query
-                        },
-                        success: function(data) {
-                            $('#results').empty();
-                            if (data.length > 0) {
-                                $.each(data, function(index, item) {
-                                    $('#results').append(
-                                        '<li class="list-group-item list-group-item-action" data-id="' +
-                                        item.id + '">' + item.code + ' | ' + item
-                                        .variety.name + ' | ' + item.breeder.name +
-                                        '</li>');
-                                });
-                            } else {
-                                $('#results').append(
-                                    '<li class="list-group-item">No results found</li>');
-                            }
-                        }
+ <script>
+    $(document).ready(function() {
+
+    // Fetch pre-populated search suggestions on focus/click
+    $('#koi_search').on('focus click', function() {
+        $('#results').empty();  // Clear previous results
+        $.ajax({
+            url: "{{ url('/api/koi') }}",
+            type: "GET",
+            success: function(data) {
+                if (data.data.length > 0) {
+                    console.log(data)
+                    $.each(data.data, function(index, item) {
+                        $('#results').append(
+                            '<li class="list-group-item list-group-item-action" data-id="' +
+                            item.id + '">' + item.code + ' | ' + item.variety.name ?? '' + ' | ' + item.breeder.name + '</li>'
+                        );
                     });
-                } else {
-                    $('#results').empty();
                 }
-            });
-
-            // Fetch pre-populated search suggestions on focus/click
-            $('#koi_search').on('focus click', function() {
-                $.ajax({
-                    url: "{{ url("/api/koi") }}",
-                    type: "GET",
-                    success: function(data) {
-                        if (data.suggestions.length > 0) {
-                            $('#results').empty();
-                            $.each(data.suggestions, function(index, item) {
-                                $('#results').append(
-                                    '<li class="list-group-item list-group-item-action" data-id="' +
-                                    item.id + '">' + item.code + ' | ' + item
-                                    .variety
-                                    .name + ' | ' + item.breeder
-                                    .name +
-                                    '</li>');
-                            });
-                        }
-                    }
-                });
-            });
-
-            // Hide results on clicking outside
-            $(document).click(function(e) {
-                if (!$(e.target).closest('.position-relative').length) {
-                    $('#results').empty();
-                }
-            });
-
-            // Fill the input field when a suggestion is clicked
-            $('#results').on('click', '.list-group-item', function() {
-                let selectedKoiCode = $(this).text()
-                let selectedKoiId = $(this).data('id');
-                $('#koi_search').val(selectedKoiCode); // Set the text input with the Koi code
-                $('#koi_id').val(selectedKoiId); // Set the hidden input with the Koi ID (integer)
-                $('#results').empty();
-                // Optionally, do something with the selected koi ID
-                console.log('Selected Koi ID:', selectedKoiId);
-            });
-
-            // Set initial value for koi_search based on prefilled koi_id
-            let initialKoiId = @json($o->koi_id); // Embed initial Koi ID from PHP
-            if (initialKoiId) {
-                $.ajax({
-                    url: "{{ url("/api/koi/") }}/" + initialKoiId, // Correctly construct URL
-                    type: "GET",
-                    success: function(data) {
-                        if (data.koi) {
-                            $('#koi_search').val(
-                                `${data.koi.code} | ${data.koi.variety.name} | ${data.koi.breeder.name}`
-                            );
-                        }
-                    }
-                });
             }
         });
+    });
+
+    // Handle live search
+    $('#koi_search').on('keyup', function() {
+        let query = $(this).val();
+        if (query.length >= 2) {  // Ensure at least 2 characters
+            $.ajax({
+                url: "{{ url('/api/koi/search') }}",
+                type: "GET",
+                data: {
+                    query: query
+                },
+                success: function(data) {
+                    console.log(data)
+                    $('#results').empty();
+                    if (data.data.length > 0) {
+                        $.each(data.data, function(index, item) {
+                            $('#results').append(
+                                '<li class="list-group-item list-group-item-action" data-id="' +
+                                item.id + '">' + item.code + ' | ' + item.variety_name + ' | ' + item.breeder_name + '</li>'
+                            );
+                        });
+                    } else {
+                        $('#results').append('<li class="list-group-item">No results found</li>');
+                    }
+                }
+            });
+        } else {
+            $('#results').empty();
+        }
+    });
+
+    // Hide results when clicking outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.col-sm-10').length) {  // Ensure this selector matches your input container
+            $('#results').empty();
+        }
+    });
+
+    // Fill the input field when a suggestion is clicked
+    $('#results').on('click', '.list-group-item', function() {
+        let selectedText = $(this).text(); // Get the full text of the selected item
+        let selectedKoiId = $(this).data('id');
+        $('#koi_search').val(selectedText); // Set the text input with the full text
+        $('#koi_id').val(selectedKoiId); // Set the hidden input with the Koi ID
+        $('#results').empty(); // Clear the results dropdown
+    });
+    });
+
     </script>
 
 @endsection
