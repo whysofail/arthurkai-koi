@@ -108,7 +108,6 @@
                 <form action="{{ route("cmskoiUpdate") }}" method="POST" enctype="multipart/form-data" id='koiForm'>
                     @csrf
                     <input type="hidden" name="id" id="id" value="{{ $k->id }}">
-                    <input type="hidden" name="status" value="{{ $k->status }}">
                     <input type="hidden" name="entryUrl" value="{{ $entryUrl }}">
                     <div class="col-sm-12">
                         <a href="{{ $entryUrl ?? route("cmskoi") }}" class="btn btn-sm"
@@ -620,6 +619,23 @@
                                         
                                         <h2>Additional Information</h2>
                                         <hr>
+                                        <div class="col-sm-12" style="margin-top: 10px">
+                                            <div class="form-group row">
+                                                <label for="status" class="col-sm-2 col-form-label">Status</label>
+                                                <div class="col-sm-10">
+                                                    <select class="form-control select2" name="status" style="width: 100%;">
+                                                        <option value="{{ $k->status }}" selected>{{ ucfirst($k->status) }}</option>
+                                                        @foreach (['available' => 'Available', 'sold' => 'Sold', 'death' => 'Death', 'auction' => 'Auction'] as $value => $label)
+                                                            @if ($value !== $k->status) {{-- Avoid duplicate current status --}}
+                                                                <option value="{{ $value }}">{{ $label }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        
                                         <div class="col-sm-12" style="margin-top: 10px">
                                             <div class="form-group row">
                                                 <label for="date_sell" class="col-sm-2 col-form-label">Date of

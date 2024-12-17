@@ -135,6 +135,9 @@
                         @elseif($k->status == "Death")
                             <button type="button" id="btn-status" class="btn btn-sm btn-default"
                                 style="background: purple; color: white; font-size: 12px;">Death</button>
+                        @elseif($k->status == "Auction")
+                        <button type="button" id="btn-status" class="btn btn-sm btn-default"
+                            style="background: rgb(87, 58, 218); color: white; font-size: 12px;">Auction</button>
                         @else
                         @endif
 
