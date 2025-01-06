@@ -401,7 +401,9 @@
                                                     @elseif($koi->status == "Death")
                                                         <button type="button" class="btn btn-sm btn-default"
                                                             style="background: purple; color: white">Death</button>
-                                                    @else
+                                                    @elseif($koi->status == "Auction")
+                                                        <button type="button" class="btn btn-sm btn-default"
+                                                            style="background: rgb(87, 58, 218); color: white;">Auction</button>
                                                     @endif
 
                                                     <button type="button"
@@ -432,6 +434,13 @@
                                                                 value="{{ $koi->id }}">
                                                             <input type="hidden" name="status" value="Death">
                                                             <button class="dropdown-item">Death</button>
+                                                        </form>
+                                                        <form action="{{ route("cmsstatusupdate") }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="id"
+                                                                value="{{ $koi->id }}">
+                                                            <input type="hidden" name="status" value="Auction">
+                                                            <button class="dropdown-item">Auction</button>
                                                         </form>
 
                                                     </div>
@@ -514,7 +523,8 @@
                                                                             <label for="size">Size</label>
                                                                             <input type="text" class="form-control"
                                                                                 name="size" id="size"
-                                                                                placeholder="Enter Koi Size">
+                                                                                type="number"
+                                                                                placeholder="Enter Koi Size" required>
                                                                         </div>
 
                                                                         <!-- New Photos Input -->
@@ -525,7 +535,6 @@
                                                                                 accept="image/*">
 
                                                                         </div>
-
                                                                         <!-- New Photos Preview -->
                                                                         <div id="new-photos-preview" class="mb-3">
                                                                             <!-- Preview of newly selected photos will be added here -->
@@ -533,6 +542,7 @@
 
                                                                         <!-- Existing Photos Preview -->
                                                                         <div id="existing-photos-preview" class="mb-3">
+                                                                            existing
                                                                             <!-- Existing photos will be added here dynamically -->
                                                                         </div>
 
@@ -929,10 +939,8 @@
                 let formData = new FormData($('#historyForm')[0]); // Create FormData object from the form
 
                 // Add the new, deleted, and edited photos arrays to formData
-                newPhotos.forEach(photo => {
-                    formData.append('new_photos[]',
-                        photo); // Using 'new_photos[]' to handle multiple files
-                });
+                formData.append('photos[]',
+                    newPhotos); // Using 'new_photos[]' to handle multiple files
 
                 formData.append('deleted_photos', JSON.stringify(deletedPhotos));
                 formData.append('edited_photos', JSON.stringify(editedPhotos));
@@ -942,10 +950,6 @@
                             .newPhoto); // Directly append the file object
                     }
                 });
-
-
-                console.log('ini data edited photo')
-                console.table(editedPhotos);
 
                 $.ajax({
                     url: "{{ route("history.store") }}", // Your route for saving data
@@ -958,8 +962,6 @@
                             'content') // Add CSRF token header
                     },
                     success: function(response) {
-                        console.log('ini data respon')
-                        console.table(response.data);
                         $('#historyModal').modal('hide'); // Close modal on success
                         setTimeout(function() {
                             location.reload(); // Reload after a short delay
@@ -996,14 +998,17 @@
                         success: function(response) {
                             if (response.success) {
                                 alert(response.message); // Show success message
-                                location.reload(); // Reload the page to refresh the data
+                                location
+                                    .reload(); // Reload the page to refresh the data
                             } else {
                                 alert('Error: ' + response.error);
                             }
                         },
                         error: function(xhr, status, error) {
-                            console.error('Delete Error:', xhr.responseText, status, error);
-                            alert('An error occurred: ' + (xhr.responseJSON?.error || error));
+                            console.error('Delete Error:', xhr.responseText, status,
+                                error);
+                            alert('An error occurred: ' + (xhr.responseJSON
+                                ?.error || error));
                         }
                     });
                 }
@@ -1012,7 +1017,12 @@
             // Handle file input change (photo selection)
             $('#photos').on('change', function(e) {
                 let files = e.target.files;
-                $('#new-photos-preview').empty(); // Clear previous previews for new photos
+
+                // Clear existing previews
+                $('#new-photos-preview').html('');
+
+                // Track new photos (reset array if necessary)
+                newPhotos = []; // Reset array if using a tracking array
 
                 // Show previews for selected images
                 for (let i = 0; i < files.length; i++) {
@@ -1020,17 +1030,18 @@
                     reader.onload = function(event) {
                         // Append image preview with delete option for new photos
                         $('#new-photos-preview').append(`
-                    <div class="photo-preview" style="display: inline-block; margin-right: 10px;">
-                        <img src="${event.target.result}" class="img-thumbnail" style="width: 100px;">
-                        <button type="button" class="btn btn-danger btn-sm delete-photo" data-index="${i}">Delete</button>
-                    </div>
-                `);
+                            <div class="photo-preview" style="display: inline-block; margin-right: 10px; position: relative;">
+                                <img src="${event.target.result}" class="img-thumbnail" style="width: 100px;">
+                                <button type="button" class="btn btn-danger btn-sm delete-photo" data-index="${i}">Delete</button>
+                            </div>
+                        `);
                         // Track new photos in the array
                         newPhotos.push(files[i]);
                     };
                     reader.readAsDataURL(files[i]);
                 }
             });
+
 
             // Handle photo deletion (new photo delete)
             $('#new-photos-preview').on('click', '.delete-photo', function() {
@@ -1040,7 +1051,8 @@
                 let files = $('#photos')[0].files;
                 let fileList = Array.from(files);
                 fileList.splice(index, 1); // Remove file from the list
-                $('#photos')[0].files = createFileList(fileList); // Update file input with new file list
+                $('#photos')[0].files = createFileList(
+                    fileList); // Update file input with new file list
 
                 // Remove the preview and delete button
                 $(this).closest('.photo-preview').remove();
@@ -1074,10 +1086,12 @@
 
                                         // If photos exist, split and display them as existing photos
                                         if (item.photo) {
-                                            let photoArray = item.photo.split('|');
+                                            let photoArray = item.photo
+                                                .split('|');
                                             $('#existing-photos-preview')
                                                 .empty(); // Clear existing photos before adding new ones
-                                            photoArray.forEach(function(photo) {
+                                            photoArray.forEach(function(
+                                                photo) {
                                                 $('#existing-photos-preview')
                                                     .append(`
                                                 <div class="photo-preview" style="display: inline-block; margin-right: 10px;">
@@ -1095,7 +1109,8 @@
                             // If no data was found for the selected date, clear the inputs
                             if (!foundData) {
                                 $('#size').val('');
-                                $('#existing-photos-preview').empty(); // Clear photo previews
+                                $('#existing-photos-preview')
+                                    .empty(); // Clear photo previews
                             }
                         } else {
                             // If no history found, clear the inputs
@@ -1136,30 +1151,55 @@
                 }
             });
 
-            // Handle photo edit (replace) for existing photos
+            let clickedEditButton = null;
+
+            // Handle the click on the "Edit" button
             $('#existing-photos-preview').on('click', '.edit-existing-photo', function() {
+                console.log('Edit button clicked');
                 const oldPhoto = $(this).data('photo'); // Get the photo to edit (replace)
+                console.log('Old photo:', oldPhoto);
 
-                // Trigger the hidden file input to allow replacing the selected photo
-                $('#edit-photos').trigger('click'); // Open file input for editing
+                // Save the reference to the clicked button
+                clickedEditButton = $(this);
 
-                // Store the old photo to replace
-                $('#edit-photos').one('change', function(e) { // Using one-time listener
-                    console.log('changed')
-                    let files = e.target.files;
-                    if (files.length > 0) {
-                        let newPhoto = files[0]; // Get the newly uploaded file
+                // Trigger the hidden file input for editing
+                $('#edit-photos').trigger('click'); // Open file input
+            });
 
-                        // Add the edited photo object to the array (keep it separate from newPhotos array)
+            // Handle the file input change for editing
+            $('#edit-photos').on('change', function(e) {
+                let files = e.target.files;
+                if (files.length > 0 && clickedEditButton) {
+                    let newPhoto = files[0]; // Get the newly selected file
+                    const oldPhoto = clickedEditButton.data('photo'); // Get the photo being replaced
+
+                    // Check if the oldPhoto already exists in editedPhotos
+                    const existingIndex = editedPhotos.findIndex(
+                        (item) => item.oldPhoto === oldPhoto
+                    );
+
+                    if (existingIndex > -1) {
+                        // Update the existing entry
+                        editedPhotos[existingIndex].newPhoto = newPhoto;
+                    } else {
+                        // Add a new entry to the array
                         editedPhotos.push({
                             oldPhoto: oldPhoto,
-                            newPhoto: newPhoto
+                            newPhoto: newPhoto,
                         });
-                        // Replace the old photo preview with the new one
-                        $(this).closest('.photo-preview').find('img').attr('src', URL
-                            .createObjectURL(newPhoto));
                     }
-                });
+
+                    // Replace the old photo preview with the new one
+                    clickedEditButton
+                        .closest('.photo-preview')
+                        .find('img')
+                        .attr('src', URL.createObjectURL(newPhoto));
+
+                    console.log('Preview updated with:', newPhoto.name);
+
+                    // Reset file input value to allow selecting the same file again
+                    $(this).val('');
+                }
             });
 
         });
