@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class ModifyKoiColumn extends Migration
 {
@@ -13,9 +14,8 @@ class ModifyKoiColumn extends Migration
      */
     public function up()
     {
-        Schema::table('koi', function (Blueprint $table) {
-            $table->enum('status', ['Available', 'Sold', 'Death', 'Auction'])->default('Available')->change();
-        });
+        // Modify the 'status' column to add 'Auction' to the ENUM options
+        DB::statement("ALTER TABLE koi MODIFY COLUMN status ENUM('Available', 'Sold', 'Death', 'Auction') DEFAULT 'Available'");
     }
 
     /**
@@ -25,8 +25,11 @@ class ModifyKoiColumn extends Migration
      */
     public function down()
     {
-        Schema::table('koi', function (Blueprint $table) {
-            $table->enum('status', ['Available', 'Sold', 'Death'])->default('Available')->change();
-        });
+        // Ensure no invalid values are in the 'status' column
+        DB::statement("UPDATE koi SET status = 'Available' WHERE status NOT IN ('Available', 'Sold', 'Death')");
+
+        // Rollback the 'status' column to the previous ENUM options
+        DB::statement("ALTER TABLE koi MODIFY COLUMN status ENUM('Available', 'Sold', 'Death') DEFAULT 'Available'");
     }
+
 }
