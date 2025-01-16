@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::get('kois', [APIKoiController::class, 'index'])->name('kois.index');
+Route::get('kois/{id}', [APIKoiController::class, 'index'])->name('kois.index');
 Route::get('kois/search', [APIKoiController::class, 'searchKoi']);
 
 Route::middleware('validate.api_key')->group(function () {
