@@ -167,10 +167,11 @@ Route::post('CMS/contactus/update', [C_ArthurkaikoiAdmin::class, 'contactusupdat
 Route::get('CMS/contactus/delete/{id}', [C_ArthurkaikoiAdmin::class, 'contactusdelete'])->name('cmscontactusDelete')->middleware('auth');
 
 // API (JSON) Stuff
+Route::post('/api/koi/history', [KoiController::class, 'storeHistory'])->name('history.store');
 Route::get('/api/koi', [KoiController::class, 'index'])->name('api_koi');
 Route::get('/api/koi/search', [KoiController::class, 'searchKoi'])->name('api.koi_search');
 Route::get('/api/koi/{id}', [KoiController::class, 'getKoi'])->name('api_koi_id');
-Route::post('/api/koi/history', [KoiController::class, 'storeHistory'])->name('history.store');
-Route::get('/api/koi/history/{koi_id}/', [KoiController::class, 'getKoiHistory'])->name('history.get');
-Route::get('/api/koi/history/{koi_id}/{year}', [KoiController::class, 'getHistoryByYear'])->name('history.getByYear');
 
+Route::get('/api/koi/history/{koi_id}/', [KoiController::class, 'getKoiHistory'])->name('history.get');
+Route::get('/api/koi/history/{koi_id}/{date}', [KoiController::class, 'getHistoryByYear'])->name('history.getByYear');
+Route::delete('/api/koi/history/{koi_id}/{date}', [KoiController::class, 'deleteHistory'])->name('history.delete');

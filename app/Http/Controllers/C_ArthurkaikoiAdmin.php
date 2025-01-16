@@ -1002,7 +1002,9 @@ class C_ArthurkaikoiAdmin extends Controller
         $koi = Koi::with('history')->where('id', $id)->first();
         // return response()->json($koi);
         $entryUrl = $request->entryUrl ?? url()->previous();
-
+        if (strpos($entryUrl, 'detail') !== false || strpos($entryUrl, '500') !== false) {
+            $entryUrl = url('/CMS/koi?layout=grid'); // Fallback to the grid layout
+        }
 
         return view('arthurkaikoiadmin.koi.koi_detail', compact('koi', 'entryUrl'));
     }

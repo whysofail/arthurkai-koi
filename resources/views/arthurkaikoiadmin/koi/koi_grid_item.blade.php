@@ -136,8 +136,8 @@
                             <button type="button" id="btn-status" class="btn btn-sm btn-default"
                                 style="background: purple; color: white; font-size: 12px;">Death</button>
                         @elseif($k->status == "Auction")
-                        <button type="button" id="btn-status" class="btn btn-sm btn-default"
-                            style="background: rgb(87, 58, 218); color: white; font-size: 12px;">Auction</button>
+                            <button type="button" id="btn-status" class="btn btn-sm btn-default"
+                                style="background: rgb(87, 58, 218); color: white; font-size: 12px;">Auction</button>
                         @else
                         @endif
 
@@ -175,8 +175,13 @@
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $k->id }}">
                                 <input type="hidden" name="status" value="Death">
-
                                 <button class="dropdown-item btn-sm">Death</button>
+                            </form>
+                            <form action="{{ route("cmsstatusupdate") }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $k->id }}">
+                                <input type="hidden" name="status" value="Auction">
+                                <button class="dropdown-item btn-sm">Auction</button>
                             </form>
                         </div>
                     </div>
@@ -188,8 +193,8 @@
         <div class="grid_1 simpleCart_shelfItem" style="margin-top: 32px; padding-bottom: 16px;">
             <div class="item_add" style="display: inline-flex;">
                 <span style="display: flex !important; gap: 2px;">
-                    <a href="{{ route("cmskoiEdit", $k->id) }}" class="btn btn-warning btn-xs" style="width: 30px"><i
-                            class="fas fa-edit"></i></a>
+                    <a href="{{ route("cmskoiEdit", $k->id) }}" class="btn btn-warning btn-xs"
+                        style="width: 30px"><i class="fas fa-edit"></i></a>
 
                     <a href="#bannerformmodal{{ $k->id }}" class="btn btn-danger btn-xs" data-toggle="modal"
                         data-target="#modal-danger{{ $k->id }}" style="color: black; width: 30px"><i
@@ -246,7 +251,8 @@
                                                     @if ($index == 0 && !empty($video))
                                                         <video controls style="width: 80%"
                                                             name="{{ $video }}">
-                                                            <source src="{{ asset("img/koi/video/" . $video) }}" type="video/mp4">
+                                                            <source src="{{ asset("img/koi/video/" . $video) }}"
+                                                                type="video/mp4">
                                                         </video>
                                                     @endif
                                                 </div>
