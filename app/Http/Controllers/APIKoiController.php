@@ -15,24 +15,33 @@ class APIKoiController extends Controller
      */
     public function index(Request $request)
     {
-        // Define default query parameters
-        $defaultParams = [
-            'page' => $request->get('page', 1), // Default to page 1
-            'per_page' => $request->get('per_page', 10), // Default to 10 items per page
-        ];
+        // Default pagination parameters
+        $page = $request->input('page', 1);
+        $perPage = $request->input('per_page', 10);
 
-        // If parameters are missing, redirect with defaults
+        // If either `page` or `per_page` is missing, redirect with defaults
         if (!$request->has(['page', 'per_page'])) {
-            return redirect()->route('kois.index', array_merge($request->all(), $defaultParams));
+            return redirect()->route('kois.index', array_merge(
+                $request->all(),
+                ['page' => $page, 'per_page' => $perPage]
+            ));
         }
 
-        // Fetch paginated Koi records
-        $koi = Koi::with(['breeder', 'variety', 'bloodline', 'history'])
-            ->where('status', 'Available')
-            ->latest()
-            ->paginate($request->input('per_page', 10));
+        // Get and normalize the `status` parameter
+        $status = $request->input('status', 'Available'); // Default to 'available'
+        $parsedStatus = ucfirst(strtolower($status));
+        if (!in_array($parsedStatus, ['Available', 'Sold', 'Death', 'Auction'])) {
+            return response()->json(['message' => 'Invalid status'], 400);
+        }
 
-        // Append additional query parameters to pagination links
+        // Fetch Koi records with relationships and filter by status
+        $koiQuery = Koi::with(['breeder', 'variety', 'bloodline', 'history'])
+            ->where('status', $parsedStatus);
+
+        // Paginate the results
+        $koi = $koiQuery->latest()->paginate($perPage);
+
+        // Append query parameters to pagination links
         $koi->appends($request->query());
 
         // Return the paginated response as JSON
