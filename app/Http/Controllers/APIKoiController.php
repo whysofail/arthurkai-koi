@@ -122,7 +122,7 @@ class APIKoiController extends Controller
     {
         // Validate input
         $validator = Validator::make($request->all(), [
-            'status' => 'required|string|in:Available,Sold,Pending,Auction,inAuction',
+            'status' => 'required|string|in:Available,Sold,Pending,Auction,InAuction',
             'buyer_name' => 'required_if:status,Sold|string|nullable',
         ]);
 
