@@ -138,7 +138,10 @@
                         @elseif($k->status == "Auction")
                             <button type="button" id="btn-status" class="btn btn-sm btn-default"
                                 style="background: rgb(87, 58, 218); color: white; font-size: 12px;">Auction</button>
-                        @else
+                        @elseif($k->status == "InAuction")
+                        <button type="button" id="btn-status" class="btn btn-sm btn-default"
+                            style="background: rgb(42, 25, 119); color: white; font-size: 12px;">In Auction</button>
+                    @else
                         @endif
 
                         <button type="button" id='btn-dropdown'

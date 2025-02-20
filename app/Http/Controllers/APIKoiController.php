@@ -25,7 +25,8 @@ class APIKoiController extends Controller
 
         // Get and normalize the `status` parameter
         $status = ucfirst(strtolower($request->input('status', 'Available')));
-        if (!in_array($status, ['Available', 'Sold', 'Death', 'Auction'])) {
+
+        if (!in_array($status, ['Available', 'Sold', 'Death', 'Auction', 'InAuction'])) {
             return response()->json(['message' => 'Invalid status'], 400);
         }
 
@@ -52,7 +53,7 @@ class APIKoiController extends Controller
         }
 
         // Paginate results
-        $koi = $koiQuery->latest()->paginate($perPage);
+        $koi = $koiQuery->latest('updated_at')->paginate($perPage);
         $koi->appends($request->query()); // Preserve query parameters in pagination links
 
         return response()->json($koi);
@@ -122,7 +123,7 @@ class APIKoiController extends Controller
     {
         // Validate input
         $validator = Validator::make($request->all(), [
-            'status' => 'required|string|in:Available,Sold,Pending,Auction,InAuction',
+            // 'status' => 'required|string|in:Available,Sold,Pending,Auction,InAuction,Death',
             'buyer_name' => 'required_if:status,Sold|string|nullable',
         ]);
 
