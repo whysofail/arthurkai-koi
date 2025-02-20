@@ -153,12 +153,16 @@
             </div> --}}
             <div class="row infoart justify-content-center">
                 <div class="col-lg-5 col-12">
+                    @if (!empty($aboutUs->image))
                     <img class="articleimg" src="{{ asset('img/koi/website/aboutus/'.$aboutUs->image) }}">
+                    @endif
                 </div>
                 <div class="col-lg-3 col-12">
                     <div class="article">
                         <h3>About Us</h3>
+                        @if (!empty($aboutUs->title))
                         {!! $aboutUs->description !!}
+                        @endif
                     </div>
                 </div>
 
