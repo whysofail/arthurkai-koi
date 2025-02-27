@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APIKoiController;
+use App\Http\Controllers\APIUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,10 @@ Route::middleware('validate.api_key')->group(function () {
     Route::put('kois/{id}', [APIKoiController::class, 'update'])->name('kois.update');
     Route::delete('kois/{id}', [APIKoiController::class, 'destroy'])->name('kois.destroy');
 });
+
+Route::post('register', [APIUserController::class, 'register'])->name('register');
+Route::post('reset-password', [APIUserController::class, 'resetPassword'])->name('reset-password');
+
 
 
 
