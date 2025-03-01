@@ -28,12 +28,16 @@ Route::get('breeders', [APIKoiController::class, 'getBreeders']);
 Route::get('varieties', [APIKoiController::class, 'getVarieties']);
 
 Route::middleware('validate.api_key')->group(function () {
+    // Koi operation
     Route::put('kois/{id}', [APIKoiController::class, 'update'])->name('kois.update');
     Route::delete('kois/{id}', [APIKoiController::class, 'destroy'])->name('kois.destroy');
+
+    // User Operation
+    Route::post('register', [APIUserController::class, 'register'])->name('register');
+    Route::post('reset-password', [APIUserController::class, 'resetPassword'])->name('reset-password');
 });
 
-Route::post('register', [APIUserController::class, 'register'])->name('register');
-Route::post('reset-password', [APIUserController::class, 'resetPassword'])->name('reset-password');
+
 
 
 
