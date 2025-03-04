@@ -23,12 +23,23 @@ class APIKoiController extends Controller
         $page = $request->input('page', 1);
         $perPage = $request->input('per_page', 10);
 
-        // Get and normalize the `status` parameter
-        $status = ucfirst(strtolower($request->input('status', 'Available')));
+        // Define valid statuses with correct casing
+        $validStatuses = [
+            'available' => 'Available',
+            'sold' => 'Sold',
+            'death' => 'Death',
+            'auction' => 'Auction',
+            'inauction' => 'InAuction'
+        ];
 
-        if (!in_array($status, ['Available', 'Sold', 'Death', 'Auction', 'InAuction'])) {
+        // Get and normalize the `status` parameter
+        $statusInput = strtolower($request->input('status', 'available'));
+
+        if (!isset($validStatuses[$statusInput])) {
             return response()->json(['message' => 'Invalid status'], 400);
         }
+
+        $status = $validStatuses[$statusInput]; // Use the correct casing
 
         // Initialize query
         $koiQuery = Koi::with(['breeder', 'variety', 'bloodline', 'history'])
@@ -53,11 +64,12 @@ class APIKoiController extends Controller
         }
 
         // Paginate results
-        $koi = $koiQuery->latest('updated_at')->paginate($perPage);
+        $koi = $koiQuery->latest('updated_at')->paginate($perPage, ['*'], 'page', $page);
         $koi->appends($request->query()); // Preserve query parameters in pagination links
 
         return response()->json($koi);
     }
+
 
     /**
      * Show the form for creating a new resource.
