@@ -33,8 +33,8 @@ Route::middleware('validate.api_key')->group(function () {
     Route::delete('kois/{id}', [APIKoiController::class, 'destroy'])->name('kois.destroy');
 
     // User Operation
-    Route::post('register', [APIUserController::class, 'register'])->name('register');
-    Route::post('reset-password', [APIUserController::class, 'resetPassword'])->name('reset-password');
+    Route::post('register', [APIUserController::class, 'register'])->name('api.register');
+    Route::post('reset-password', [APIUserController::class, 'resetPassword'])->name('api.reset-password');
 });
 
 
