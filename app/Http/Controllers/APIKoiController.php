@@ -19,6 +19,7 @@ class APIKoiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index(Request $request)
     {
         // Default pagination parameters
@@ -35,17 +36,21 @@ class APIKoiController extends Controller
         ];
 
         // Get and normalize the `status` parameter
-        $statusInput = strtolower($request->input('status', 'available'));
-
-        if (!isset($validStatuses[$statusInput])) {
-            return response()->json(['message' => 'Invalid status'], 400);
-        }
-
-        $status = $validStatuses[$statusInput]; // Use the correct casing
+        $statusInput = $request->input('status');
 
         // Initialize query
-        $koiQuery = Koi::with(['breeder', 'variety', 'bloodline', 'history'])
-            ->where('status', $status);
+        $koiQuery = Koi::with(['breeder', 'variety', 'bloodline', 'history']);
+
+        // Apply status filter only if `status` is provided and valid
+        if ($statusInput !== null) {
+            $normalizedStatus = strtolower($statusInput);
+            if (!isset($validStatuses[$normalizedStatus])) {
+                return response()->json(['message' => 'Invalid status'], 400);
+            }
+
+            $status = $validStatuses[$normalizedStatus]; // Use the correct casing
+            $koiQuery->where('status', $status);
+        }
 
         // Apply search filters
         if ($request->filled('code')) {
@@ -71,6 +76,7 @@ class APIKoiController extends Controller
 
         return response()->json($koi);
     }
+
 
 
     /**
