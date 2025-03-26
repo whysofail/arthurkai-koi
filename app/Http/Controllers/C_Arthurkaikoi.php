@@ -60,4 +60,6 @@ class C_Arthurkaikoi extends Controller
         $contactus = ContactUs::latest()->first();
         return view('arthurkaikoi.contactus', compact('contactus'));
     }
+
+
 }

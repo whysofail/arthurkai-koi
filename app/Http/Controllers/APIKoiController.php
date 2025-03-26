@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Koi;
 use App\Models\Variety;
 use App\Models\Breeder;
+use App\Models\ContactUs;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
@@ -184,6 +186,12 @@ class APIKoiController extends Controller
         $varieties = Variety::select('name')->distinct()->orderBy('name')->get();
 
         return response()->json($varieties);
+    }
+
+    public function getContactUs()
+    {
+        $contactus = ContactUs::latest()->first();
+        return response()->json($contactus);
     }
 
     /**
