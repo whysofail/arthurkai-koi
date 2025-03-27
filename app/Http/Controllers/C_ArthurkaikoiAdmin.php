@@ -1495,6 +1495,10 @@ class C_ArthurkaikoiAdmin extends Controller
             'trophy' => $linkTrophies ?: $koi->trophy,
             'certificate' => $linkCertificates ?: $koi->certificate,
             'status' => $request->status,
+            'death_date' => $request->death_date ? Carbon::createFromFormat('Y-m-d', $request->death_date) : null,
+            'sell_date' => $request->date_sell ? Carbon::createFromFormat('Y-m-d', $request->date_sell) : null,
+            'buyer_name' => $request->buyer_name,
+            'death_note' => $request->death_note,
         ]);
 
         $entryUrl = $request->input('entryUrl', route('cmskoi') . '?layout=grid'); // Fallback if no entryUrl is provided

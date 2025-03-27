@@ -1,12 +1,12 @@
-@extends("layouts.apparthuradm")
+@extends('layouts.apparthuradm')
 
-@section("title", "Edit")
+@section('title', 'Edit')
 
-@section("css")
+@section('css')
     <!-- Select2 -->
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <link rel="stylesheet" href="{{ asset("plugins/select2/css/select2.min.css") }}">
-    <link rel="stylesheet" href="{{ asset("plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <style>
         .note-editor.note-airframe .note-editing-area .note-editable,
         .note-editor.note-frame .note-editing-area .note-editable {
@@ -65,7 +65,7 @@
 
 @endsection
 
-@section("content")
+@section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper" style="background: white;">
         <!-- /.content-header -->
@@ -105,12 +105,12 @@
 
         <section class="content">
             @foreach ($koi as $k)
-                <form action="{{ route("cmskoiUpdate") }}" method="POST" enctype="multipart/form-data" id='koiForm'>
+                <form action="{{ route('cmskoiUpdate') }}" method="POST" enctype="multipart/form-data" id='koiForm'>
                     @csrf
                     <input type="hidden" name="id" id="id" value="{{ $k->id }}">
                     <input type="hidden" name="entryUrl" value="{{ $entryUrl }}">
                     <div class="col-sm-12">
-                        <a href="{{ $entryUrl ?? route("cmskoi") }}" class="btn btn-sm"
+                        <a href="{{ $entryUrl ?? route('cmskoi') }}" class="btn btn-sm"
                             style="margin-bottom: 5px; border-radius: 20px 1px 10px; border: black solid 1px; ">
                             <i class="fas fa-arrow-circle-left" style="position: relative; right: 3%; top: 1px;"></i>
                             Back
@@ -128,7 +128,7 @@
                                                 <div class="col-sm-10">
                                                     <input type="hidden" name="koi_code" value="{{ $k->code }}">
                                                     <input type="text" class="form-control" name="koi_code"
-                                                        value="{{ old("code") ? old("code") : $k->code }}" id="koi_code"
+                                                        value="{{ old('code') ? old('code') : $k->code }}" id="koi_code"
                                                         disabled>
                                                 </div>
                                             </div>
@@ -138,7 +138,7 @@
                                                 <label for="nickname" class="col-sm-2 col-form-label">Nickname</label>
                                                 <div class="col-sm-10">
                                                     <input type="text" class="form-control" name="nickname"
-                                                        value="{{ old("nickname") ? old("nickname") : $k->nickname }}"
+                                                        value="{{ old('nickname') ? old('nickname') : $k->nickname }}"
                                                         id="nickname">
                                                 </div>
                                             </div>
@@ -150,11 +150,11 @@
                                                     <select class="form-control select2" name="variety"
                                                         style="width: 100%;">
                                                         <option value="{{ $k->variety->id ?? 1 }}"
-                                                            {{ isset($k->variety) && $k->variety->id == ($k->variety->id ?? 1) ? "selected" : "" }}>
-                                                            {{ $k->variety->name ?? "Unknown" }}</option>
+                                                            {{ isset($k->variety) && $k->variety->id == ($k->variety->id ?? 1) ? 'selected' : '' }}>
+                                                            {{ $k->variety->name ?? 'Unknown' }}</option>
                                                         @foreach ($variety as $v)
                                                             <option value="{{ $v->id }}"
-                                                                {{ isset($k->variety) && $k->variety->id == $v->id ? "selected" : "" }}>
+                                                                {{ isset($k->variety) && $k->variety->id == $v->id ? 'selected' : '' }}>
                                                                 {{ $v->name }}</option>
                                                         @endforeach
                                                     </select>
@@ -169,7 +169,7 @@
                                                     <select class="form-control select2" name="breeder"
                                                         style="width: 100%;">
                                                         <option value="{{ $k->breeder_id }}"
-                                                            {{ $k->breeder == null ? $k->breeder->name : "" }}>
+                                                            {{ $k->breeder == null ? $k->breeder->name : '' }}>
                                                             {{ $k->breeder->name }}</option>
                                                         @foreach ($breeder as $b)
                                                             <option value="{{ $b->id }}">
@@ -206,7 +206,7 @@
                                                     <select class="form-control select2" name="gender"
                                                         style="width: 100%;">
                                                         <option value="{{ $k->gender }}"
-                                                            {{ $k->gender == $k->gender ? "selected" : "" }}>
+                                                            {{ $k->gender == $k->gender ? 'selected' : '' }}>
                                                             {{ $k->gender }}</option>
                                                         <option value="Male">Male</option>
                                                         <option value="Female">Female</option>
@@ -221,7 +221,7 @@
                                                 <label for="birth" class="col-sm-2 col-form-label">Birthdate</label>
                                                 <div class="col-sm-10">
                                                     <input type="month" class="form-control" name="birth"
-                                                        value="{{ $k->birthdate ? \Carbon\Carbon::parse($k->birthdate)->format("Y-m") : "" }}"
+                                                        value="{{ $k->birthdate ? \Carbon\Carbon::parse($k->birthdate)->format('Y-m') : '' }}"
                                                         id="birth">
                                                 </div>
                                             </div>
@@ -232,7 +232,7 @@
                                                 <label for="size" class="col-sm-2 col-form-label">Size</label>
                                                 <div class="col-sm-10">
                                                     <input type="text" class="form-control" name="size"
-                                                        value="{{ old("size") ? old("size") : $k->size }}"
+                                                        value="{{ old('size') ? old('size') : $k->size }}"
                                                         id="size">
                                                 </div>
                                             </div>
@@ -245,7 +245,7 @@
                                                 </label>
                                                 <div class="col-sm-10">
                                                     <input type="month" class="form-control" name="purchase_date"
-                                                        value="{{ $k->purchase_date ? \Carbon\Carbon::parse($k->purchase_date)->format("Y-m") : "" }}"
+                                                        value="{{ $k->purchase_date ? \Carbon\Carbon::parse($k->purchase_date)->format('Y-m') : '' }}"
                                                         id="purchase_date">
                                                 </div>
                                             </div>
@@ -259,7 +259,7 @@
                                                     <select class="form-control select2" name="seller"
                                                         style="width: 100%;">
                                                         <option value="{{ $k->seller }}"
-                                                            {{ $k->seller == $k->seller ? "selected" : "" }}>
+                                                            {{ $k->seller == $k->seller ? 'selected' : '' }}>
                                                             {{ $k->seller }}</option>
                                                         @foreach ($agent as $a)
                                                             <option value="{{ $a->owner }}">
@@ -279,7 +279,7 @@
                                                     <select class="form-control select2" name="handler"
                                                         style="width: 100%;">
                                                         <option value="{{ $k->handler }}"
-                                                            {{ $k->handler == $k->handler ? "selected" : "" }}>
+                                                            {{ $k->handler == $k->handler ? 'selected' : '' }}>
                                                             {{ $k->handler }}</option>
                                                         @foreach ($agent as $a)
                                                             <option value="{{ $a->owner }}">
@@ -298,10 +298,10 @@
                                                 <div class="col-sm-4">
                                                     <input type="hidden" id="pricebuy_idr" class="form-control"
                                                         name="pricebuy_idr"
-                                                        value="{{ old("pricebuy_idr") ? old("pricebuy_idr") : $k->price_buy_idr }}">
+                                                        value="{{ old('pricebuy_idr') ? old('pricebuy_idr') : $k->price_buy_idr }}">
                                                     <input type="text" id="pricebuy_idr_display" class="form-control"
                                                         name="pricebuy_idr_display"
-                                                        value="{{ old("pricebuy_idr_display") ? old("price_buy_idr_display") : $k->price_buy_idr }}">
+                                                        value="{{ old('pricebuy_idr_display') ? old('price_buy_idr_display') : $k->price_buy_idr }}">
                                                 </div>
 
                                                 <label for="pricebuy_jpy" class="col-sm-2 col-form-label">Price Buy
@@ -309,10 +309,10 @@
                                                 <div class="col-sm-4">
                                                     <input type="hidden" id="pricebuy_jpy" class="form-control"
                                                         name="pricebuy_jpy"
-                                                        value="{{ old("pricebuy_jpy") ? old("price_buy_jpy") : $k->price_buy_jpy }}">
+                                                        value="{{ old('pricebuy_jpy') ? old('price_buy_jpy') : $k->price_buy_jpy }}">
                                                     <input type="text" id="pricebuy_jpy_display" class="form-control"
                                                         name="pricebuy_jpy_display"
-                                                        value="{{ old("pricebuy_jpy_display") ? old("pricebuy_jpy_display") : $k->price_buy_idr }}">
+                                                        value="{{ old('pricebuy_jpy_display') ? old('pricebuy_jpy_display') : $k->price_buy_idr }}">
                                                 </div>
                                             </div>
                                         </div>
@@ -323,7 +323,7 @@
                                                     Location</label>
                                                 <div class="col-sm-10">
                                                     <input type="text" class="form-control" name="location"
-                                                        value="{{ old("location") ? old("location") : $k->location }}"
+                                                        value="{{ old('location') ? old('location') : $k->location }}"
                                                         id="location">
                                                 </div>
                                             </div>
@@ -336,10 +336,10 @@
                                                 <div class="col-sm-4">
                                                     <input type="hidden" id="pricesell_idr" class="form-control"
                                                         name="pricesell_idr"
-                                                        value="{{ old("pricesell_idr") ? old("pricesell_idr") : $k->price_sell_idr }}">
+                                                        value="{{ old('pricesell_idr') ? old('pricesell_idr') : $k->price_sell_idr }}">
                                                     <input type="text" id="pricesell_idr_display" class="form-control"
                                                         name="pricesell_idr_display"
-                                                        value="{{ old("pricesell_idr") ? old("pricesell_idr") : $k->price_sell_idr }}">
+                                                        value="{{ old('pricesell_idr') ? old('pricesell_idr') : $k->price_sell_idr }}">
                                                 </div>
 
                                                 <label for="pricesell_jpy" class="col-sm-2 col-form-label">Sell Price
@@ -347,10 +347,10 @@
                                                 <div class="col-sm-4">
                                                     <input type="hidden" id="pricesell_jpy" class="form-control"
                                                         name="pricesell_jpy"
-                                                        value="{{ old("pricesell_jpy") ? old("pricesell_jpy") : $k->price_sell_jpy }}">
+                                                        value="{{ old('pricesell_jpy') ? old('pricesell_jpy') : $k->price_sell_jpy }}">
                                                     <input type="text" id="pricesell_jpy_display" class="form-control"
                                                         name="pricesell_jpy_display"
-                                                        value="{{ old("pricesell_jpy") ? old("pricesell_jpy") : $k->price_sell_jpy }}">
+                                                        value="{{ old('pricesell_jpy') ? old('pricesell_jpy') : $k->price_sell_jpy }}">
                                                 </div>
                                             </div>
                                         </div>
@@ -358,7 +358,7 @@
                                             <h2>Koi Media</h2>
                                             <hr>
                                             <div class="col-sm-12" style="margin-top: 10px">
-                                                
+
                                                 <div class="input-group-btn" style="float:right">
                                                     <button class="btn btn-success btn-clickLP" type="button">
                                                         <i class="fldemo glyphicon glyphicon-plus"></i> Add More Photos
@@ -369,7 +369,7 @@
                                                     <div class="col-sm-10">
                                                         @if (!empty($k->photo))
                                                             @php
-                                                                $photos = explode("|", $k->photo);
+                                                                $photos = explode('|', $k->photo);
                                                             @endphp
                                                             <div id="existing-photos">
                                                                 @foreach ($photos as $photo)
@@ -379,7 +379,7 @@
                                                                             <div
                                                                                 style="display: flex; justify-content: space-between; align-items: center;">
                                                                                 <img width="125"
-                                                                                    src="{{ asset("img/koi/photo/" . $photo) }}"
+                                                                                    src="{{ asset('img/koi/photo/' . $photo) }}"
                                                                                     class="img-thumbnail">
                                                                                 <div>
                                                                                     <input type="file"
@@ -412,20 +412,16 @@
 
                                                     @foreach ($k->history as $history)
                                                         @if ($loop->first)
-                                                            @foreach (explode("|", $history->link_photo) as $image)
+                                                            @foreach (explode('|', $history->link_photo) as $image)
                                                                 @if ($image == null)
                                                                     <input type="file" name="link_photo[]"
-                                                                        class="myfrm form-control"
-                                                                        accept="image/*"
-
+                                                                        class="myfrm form-control" accept="image/*"
                                                                         onchange="Imagelinkphoto(event)">
 
                                                                     <input type="hidden" name="link_photos">
                                                                 @else
                                                                     <input type="file" name="link_photo[]"
-                                                                        class="myfrm form-control"
-                                                                        accept="image/*"
-
+                                                                        class="myfrm form-control" accept="image/*"
                                                                         onchange="Imagelinkphoto(event)">
 
                                                                     <input type="hidden" name="link_photos"
@@ -455,9 +451,8 @@
                                                     <div class="realprocodeLP control-group lst input-group"
                                                         style="margin: 1em 0 1em;">
                                                         <input type="file" name="link_photo[]"
-                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)" 
-                                                            accept="image/*"
-                                                            >
+                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)"
+                                                            accept="image/*">
                                                         <div class="input-group-btn">
                                                             <button class="btn btn-danger" type="button">
                                                                 <i class="fldemo glyphicon glyphicon-remove"></i> Remove
@@ -473,33 +468,32 @@
                                                 <img width="125" id="link_video" class="img-thumbnailv">
                                                 @if ($loop->first)
                                                     @if (isset($k->video) && !empty($k->video))
-                                                        @foreach (explode("|", $k->video) as $video)
-                                                            @if (!is_null($video) && $video != "")
-                                                            <div class="my-2 video-item">
-                                                                <video src="{{ asset('img/koi/video/' . $video) }}"
-                                                                       type="video/mp4" width="130px" id="link_video"
-                                                                       controls></video>
-                                                                <div>
-                                                                    <input type="file"
-                                                                           class="form-control-file edit-video"
-                                                                           name="edit_video_{{ $loop->index }}"
-                                                                           accept="video/mp4,video/x-m4v,video/*"
-                                                                           style="display: none;">
-                                                                    <button type="button"
+                                                        @foreach (explode('|', $k->video) as $video)
+                                                            @if (!is_null($video) && $video != '')
+                                                                <div class="my-2 video-item">
+                                                                    <video src="{{ asset('img/koi/video/' . $video) }}"
+                                                                        type="video/mp4" width="130px" id="link_video"
+                                                                        controls></video>
+                                                                    <div>
+                                                                        <input type="file"
+                                                                            class="form-control-file edit-video"
+                                                                            name="edit_video_{{ $loop->index }}"
+                                                                            accept="video/mp4,video/x-m4v,video/*"
+                                                                            style="display: none;">
+                                                                        <button type="button"
                                                                             class="btn btn-primary btn-sm edit-video-button"
                                                                             data-target="input[name='edit_video_{{ $loop->index }}']">
-                                                                        Edit
-                                                                    </button>
-                                                                    <button type="button"
+                                                                            Edit
+                                                                        </button>
+                                                                        <button type="button"
                                                                             class="btn btn-danger btn-sm remove-video"
                                                                             data-video="{{ $video }}">
-                                                                        Remove
-                                                                    </button>   
-                                                                    <span id="spanLinkVideo"
-                                                                          style="font-size: 0.8rem; color: #62200a;">{{ $video }}</span>
+                                                                            Remove
+                                                                        </button>
+                                                                        <span id="spanLinkVideo"
+                                                                            style="font-size: 0.8rem; color: #62200a;">{{ $video }}</span>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            
                                                             @endif
                                                         @endforeach
                                                     @else
@@ -509,10 +503,12 @@
                                                     <p>No video provided</p>
                                                 @endif
                                                 </span>
-                                                <div class="input-group realprocodeLV control-group lst incrementLV" style="justify-content: flex-end">
+                                                <div class="input-group realprocodeLV control-group lst incrementLV"
+                                                    style="justify-content: flex-end">
                                                     <div class="input-group-btn">
                                                         <button class="btn btn-success btn-clickLV" type="button"><i
-                                                                class="fldemo glyphicon glyphicon-plus"></i>Add More Videos</button>
+                                                                class="fldemo glyphicon glyphicon-plus"></i>Add More
+                                                            Videos</button>
                                                     </div>
                                                 </div>
                                                 <div class="cloneLV hide" style="display: none;">
@@ -537,122 +533,123 @@
                                                 // Split the trophy string by '|' to get an array of trophy filenames
                                                 $trophies = explode('|', $k->trophy);
                                             @endphp
-                                            
+
                                             @forelse ($trophies as $index => $trophy)
                                                 <div class="trophy-item">
                                                     @if (!empty($trophy))
                                                         <img width="125" class="img-thumbnail mb-2"
-                                                             src="{{ asset('img/koi/trophy/' . trim($trophy)) }}" alt="Trophy Image">
+                                                            src="{{ asset('img/koi/trophy/' . trim($trophy)) }}"
+                                                            alt="Trophy Image">
                                                     @else
                                                         <span>No Trophy</span>
                                                     @endif
-                                        
+
                                                     <div class="custom-file">
-                                                        <input type="file"
-                                                               class="edit-trophy custom-file-input"
-                                                               name="trophy"
-                                                               accept="image/*"
-                                                               id="trophy_{{ $index }}"
-                                                               onchange="updateTrophyLabel(event, {{ $index }})">
-                                                        <label class="custom-file-label" for="trophy_{{ $index }}" id="labelTrophy_{{ $index }}">
+                                                        <input type="file" class="edit-trophy custom-file-input"
+                                                            name="trophy" accept="image/*"
+                                                            id="trophy_{{ $index }}"
+                                                            onchange="updateTrophyLabel(event, {{ $index }})">
+                                                        <label class="custom-file-label" for="trophy_{{ $index }}"
+                                                            id="labelTrophy_{{ $index }}">
                                                             {{ $trophy ?? 'No file chosen' }}
                                                         </label>
                                                     </div>
                                                 </div>
                                             @empty
                                                 <div class="custom-file">
-                                                    <input type="file"
-                                                           class="edit-trophy custom-file-input"
-                                                           name="trophy"
-                                                           accept="image/*"
-                                                           id="trophy_0"
-                                                           onchange="updateTrophyLabel(event, 0)">
+                                                    <input type="file" class="edit-trophy custom-file-input"
+                                                        name="trophy" accept="image/*" id="trophy_0"
+                                                        onchange="updateTrophyLabel(event, 0)">
                                                     <label class="custom-file-label" for="trophy_0" id="labelTrophy_0">
                                                         No file chosen
                                                     </label>
                                                 </div>
                                             @endforelse
                                         </div>
-                                        
+
                                         <div class="col-sm-12 mt-3">
                                             <label>Certificate</label><br>
                                             @php
                                                 // Split the certificate string by '|' to get an array of certificate filenames
                                                 $certificates = explode('|', $k->certificate);
                                             @endphp
-                                            
+
                                             @forelse ($certificates as $index => $certificate)
                                                 <div class="certificate-item">
                                                     @if (!empty($certificate))
                                                         <img width="125" class="img-thumbnail mb-2"
-                                                             src="{{ asset('img/koi/certificate/' . trim($certificate)) }}" alt="Certificate Image">
+                                                            src="{{ asset('img/koi/certificate/' . trim($certificate)) }}"
+                                                            alt="Certificate Image">
                                                     @else
                                                         <span>No Certificate</span>
                                                     @endif
-                                        
+
                                                     <div class="custom-file">
-                                                        <input type="file"
-                                                               class="edit-certificate custom-file-input"
-                                                               name="certificate"
-                                                               accept="image/*"
-                                                               id="certificate_{{ $index }}"
-                                                               onchange="updateCertificateLabel(event, {{ $index }})">
-                                                        <label class="custom-file-label" for="certificate_{{ $index }}" id="labelCertificate_{{ $index }}">
+                                                        <input type="file" class="edit-certificate custom-file-input"
+                                                            name="certificate" accept="image/*"
+                                                            id="certificate_{{ $index }}"
+                                                            onchange="updateCertificateLabel(event, {{ $index }})">
+                                                        <label class="custom-file-label"
+                                                            for="certificate_{{ $index }}"
+                                                            id="labelCertificate_{{ $index }}">
                                                             {{ $certificate ?? 'No file chosen' }}
                                                         </label>
                                                     </div>
                                                 </div>
                                             @empty
                                                 <div class="custom-file">
-                                                    <input type="file"
-                                                           class="edit-certificate custom-file-input"
-                                                           name="certificate"
-                                                           accept="image/*"
-                                                           id="certificate_0"
-                                                           onchange="updateCertificateLabel(event, 0)">
-                                                    <label class="custom-file-label" for="certificate_0" id="labelCertificate_0">
+                                                    <input type="file" class="edit-certificate custom-file-input"
+                                                        name="certificate" accept="image/*" id="certificate_0"
+                                                        onchange="updateCertificateLabel(event, 0)">
+                                                    <label class="custom-file-label" for="certificate_0"
+                                                        id="labelCertificate_0">
                                                         No file chosen
                                                     </label>
                                                 </div>
                                             @endforelse
                                         </div>
-                                        
+
                                         <h2>Additional Information</h2>
                                         <hr>
                                         <div class="col-sm-12" style="margin-top: 10px">
                                             <div class="form-group row">
                                                 <label for="status" class="col-sm-2 col-form-label">Status</label>
                                                 <div class="col-sm-10">
-                                                    <select class="form-control select2" name="status" style="width: 100%;">
-                                                        <option value="{{ $k->status }}" selected>{{ ucfirst($k->status) }}</option>
+                                                    <select class="form-control select2" name="status"
+                                                        style="width: 100%;">
+                                                        <option value="{{ $k->status }}" selected>
+                                                            {{ ucfirst($k->status) }}</option>
                                                         @foreach (['available' => 'Available', 'sold' => 'Sold', 'death' => 'Death', 'auction' => 'Auction'] as $value => $label)
-                                                            @if ($value !== $k->status) {{-- Avoid duplicate current status --}}
-                                                                <option value="{{ $value }}">{{ $label }}</option>
+                                                            @if ($value !== $k->status)
+                                                                {{-- Avoid duplicate current status --}}
+                                                                <option value="{{ $value }}">{{ $label }}
+                                                                </option>
                                                             @endif
                                                         @endforeach
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        
+
                                         <div class="col-sm-12" style="margin-top: 10px">
                                             <div class="form-group row">
                                                 <label for="date_sell" class="col-sm-2 col-form-label">Date of
                                                     Sell</label>
                                                 <div class="col-sm-10">
-                                                    <input type="month" class="form-control" name="date_sell"
-                                                        {{-- value="@foreach ($k->history as $history)@if ($loop->first){{ old("date_sell") ? old("date_sell") : $history->date_sell }}@else @endif @endforeach" --}} id="date_sell">
+                                                    <input type="date" class="form-control" name="date_sell"
+                                                        id="date_sell" value="{{ $k->sell_date }}">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="col-sm-12" style="margin-top: 10px">
                                             <div class="form-group row">
-                                                <label for="buyer_name" class="col-sm-2 col-form-label">Buyer Name</label>
+                                                <label for="buyer_name" class="col-sm-2 col-form-label">Buyer
+                                                    Name</label>
                                                 <div class="col-sm-10">
                                                     <input type="text" class="form-control" name="buyer_name"
-                                                        {{-- value="@foreach ($k->history as $history)@if ($loop->first){{ old("buyer_name") ? old("buyer_name") : $history->buyer_name }}@else @endif @endforeach" --}} id="buyer_name">
+                                                        id="buyer_name" value="{{ $k->buyer_name ?? '' }}">
+
                                                 </div>
                                             </div>
                                         </div>
@@ -663,7 +660,7 @@
                                                     Death</label>
                                                 <div class="col-sm-10">
                                                     <input type="date" class="form-control" name="death_date"
-                                                        {{-- value="@foreach ($k->history as $history)@if ($loop->first){{ old("death_date") ? old("death_date") : $history->death_date }}@else @endif @endforeach" --}} id="death_date">
+                                                        value="{{ $k->death_date }}">
                                                 </div>
                                             </div>
 
@@ -673,7 +670,7 @@
                                                 <label for="death_note" class="col-sm-2 col-form-label">Death Note</label>
                                                 <div class="col-sm-10">
                                                     <textarea name="death_note" class="form-control" id="death_note" rows="3">
-                                                    {{ $k->death_node ?? "" }}
+                                                    {{ $k->death_note ?? '' }}
                                                     </textarea>
                                                 </div>
                                             </div>
@@ -701,21 +698,21 @@
 
 @endsection
 
-@section("script")
+@section('script')
     <!-- Select2 -->
-    <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
+    <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script>
         function updateTrophyLabel(event, index) {
-                const file = event.target.files[0];
-                const label = document.getElementById('labelTrophy_' + index);
-                
-                if (file) {
-                    label.textContent = file.name; // Update label with file name
-                } else {
-                    // If no file is selected (or file is removed), keep the original label
-                    label.textContent = 'No file chosen';
-                }
+            const file = event.target.files[0];
+            const label = document.getElementById('labelTrophy_' + index);
+
+            if (file) {
+                label.textContent = file.name; // Update label with file name
+            } else {
+                // If no file is selected (or file is removed), keep the original label
+                label.textContent = 'No file chosen';
             }
+        }
 
 
         function updateCertificateLabel(event, index) {
@@ -873,14 +870,15 @@
                 });
             });
 
-            
+
             document.querySelectorAll('.edit-video').forEach(input => {
                 input.addEventListener('change', function() {
                     const file = this.files[0];
                     if (file) {
                         const reader = new FileReader();
                         reader.onload = function(e) {
-                            const videoItem = input.closest('.my-2'); // Assuming each video container has this class
+                            const videoItem = input.closest(
+                                '.my-2'); // Assuming each video container has this class
                             const video = videoItem.querySelector('video');
                             const filenameSpan = videoItem.querySelector('#spanLinkVideo');
 
@@ -893,7 +891,7 @@
             });
 
 
-                        // Handle photo removal
+            // Handle photo removal
             document.querySelectorAll('.remove-video').forEach(button => {
                 button.addEventListener('click', function() {
                     const videoItem = this.closest('.video-item');
@@ -1144,7 +1142,7 @@
                 let id = $('#id').val();
 
                 $.ajax({
-                    url: "{{ route("cmsgetyear") }}",
+                    url: "{{ route('cmsgetyear') }}",
                     method: 'GET', // Menggunakan metode GET
                     data: {
                         id: id,

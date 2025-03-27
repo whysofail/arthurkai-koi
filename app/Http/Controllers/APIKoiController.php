@@ -145,6 +145,7 @@ class APIKoiController extends Controller
         $validator = Validator::make($request->all(), [
             // 'status' => 'required|string|in:Available,Sold,Pending,Auction,InAuction,Death',
             'buyer_name' => 'required_if:status,Sold|string|nullable',
+            // 'sell_date' => 'required_if:status,Sold|date|nullable',
         ]);
 
         if ($validator->fails()) {
@@ -158,7 +159,11 @@ class APIKoiController extends Controller
         $koi = Koi::findOrFail($id);
 
         // Update fields
-        $updateData = ['status' => $request->status];
+        $updateData = [
+            'status' => $request->status,
+            'sell_date' => $request->sell_date,
+        ];
+
 
         if ($request->status === 'Sold') {
             if ($request->input('buyer_name') === null) {
@@ -167,7 +172,6 @@ class APIKoiController extends Controller
                     'errors' => ['buyer_name' => ['The buyer name field is required when status is Sold']],
                 ], 422);
             }
-            $updateData['sell_date'] = Carbon::now()->toDateString();
             $updateData['buyer_name'] = $request->input('buyer_name');
         }
 
