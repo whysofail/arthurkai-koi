@@ -142,10 +142,11 @@ class APIKoiController extends Controller
     public function update(Request $request, $id)
     {
         // Validate input
+
         $validator = Validator::make($request->all(), [
-            // 'status' => 'required|string|in:Available,Sold,Pending,Auction,InAuction,Death',
+            'status' => 'required|string|in:Available,Sold,Pending,Auction,InAuction,Death',
             'buyer_name' => 'required_if:status,Sold|string|nullable',
-            // 'sell_date' => 'required_if:status,Sold|date|nullable',
+            'sell_date' => 'required_if:status,Sold|date|date_format:Y-m-d|nullable', // ✅ Ensures YYYY-MM-DD format
         ]);
 
         if ($validator->fails()) {
@@ -158,21 +159,15 @@ class APIKoiController extends Controller
         // Find the Koi or return 404 if not found
         $koi = Koi::findOrFail($id);
 
-        // Update fields
+        // Prepare update data
         $updateData = [
             'status' => $request->status,
-            'sell_date' => $request->sell_date,
         ];
 
-
+        // Only update buyer_name and sell_date if status is "Sold"
         if ($request->status === 'Sold') {
-            if ($request->input('buyer_name') === null) {
-                return response()->json([
-                    'message' => 'Validation failed',
-                    'errors' => ['buyer_name' => ['The buyer name field is required when status is Sold']],
-                ], 422);
-            }
             $updateData['buyer_name'] = $request->input('buyer_name');
+            $updateData['sell_date'] = $request->input('sell_date') ? Carbon::parse($request->input('sell_date')) : null;
         }
 
         $koi->update($updateData);
@@ -182,6 +177,7 @@ class APIKoiController extends Controller
             'data' => $koi,
         ]);
     }
+
     public function getBreeders(Request $request)
     {
         // Ensure we get unique breeder names from the related breeder table
