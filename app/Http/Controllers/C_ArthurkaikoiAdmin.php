@@ -1142,14 +1142,23 @@ class C_ArthurkaikoiAdmin extends Controller
             $extension = $file->getClientOriginalExtension();
             $uniqueFilename = uniqid() . "_" . pathinfo($originalName, PATHINFO_FILENAME) . '.' . $extension;
 
-            // 👇 FIXED: prepend public_path here
-            $file->move(public_path($destinationPath), $uniqueFilename);
+            $fullPath = public_path($destinationPath);
+            if (!file_exists($fullPath)) {
+                mkdir($fullPath, 0755, true);
+            }
+
+            $file->move($fullPath, $uniqueFilename);
+
+            Log::info('File stored', [
+                'type' => 'multi',
+                'originalName' => $originalName,
+                'storedAs' => $uniqueFilename,
+                'path' => $fullPath . '/' . $uniqueFilename,
+            ]);
 
             return $uniqueFilename;
         }, $files);
     }
-
-
 
     /**
      * Handle single file upload.
@@ -1164,14 +1173,22 @@ class C_ArthurkaikoiAdmin extends Controller
         $extension = $file->getClientOriginalExtension();
         $uniqueFilename = uniqid() . "_" . pathinfo($originalName, PATHINFO_FILENAME) . '.' . $extension;
 
-        // 👇 FIXED: prepend public_path here too
-        $file->move(public_path($destinationPath), $uniqueFilename);
+        $fullPath = public_path($destinationPath);
+        if (!file_exists($fullPath)) {
+            mkdir($fullPath, 0755, true);
+        }
+
+        $file->move($fullPath, $uniqueFilename);
+
+        Log::info('File stored', [
+            'type' => 'single',
+            'originalName' => $originalName,
+            'storedAs' => $uniqueFilename,
+            'path' => $fullPath . '/' . $uniqueFilename,
+        ]);
 
         return $uniqueFilename;
     }
-
-
-
 
 
     public function koigstore(request $request)
