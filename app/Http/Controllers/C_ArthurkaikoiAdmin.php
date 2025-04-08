@@ -1072,10 +1072,10 @@ class C_ArthurkaikoiAdmin extends Controller
         $koiCode = $variety->code . $breeder->code . ($purchaseDate != '' ? $purchaseDate : '0000') . $sequence;
         // return dd($koiCode);
         // Handle file uploads
-        $image = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
-        $imagev = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
-        $link_trophys = $this->handleSingleFileUpload($request->file('link_trophy'), 'img/koi/trophy');
-        $link_certificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
+        $image = $this->handleFileUploads($request->file('link_photo'), public_path('img/koi/photo'));
+        $imagev = $this->handleFileUploads($request->file('link_video'), public_path('img/koi/video'));
+        $link_trophys = $this->handleSingleFileUpload($request->file('link_trophy'), public_path('img/koi/trophy'));
+        $link_certificates = $this->handleSingleFileUpload($request->file('link_certificate'), public_path('img/koi/certificate'));
         // Create Koi record    
         $koi = Koi::create([
             'code' => $koiCode,
@@ -1393,12 +1393,18 @@ class C_ArthurkaikoiAdmin extends Controller
         $updatedVideos = $currentVideos; // Start with existing videos
 
         // Handle new file uploads
-        $newPhotos = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
+        $newPhotos = $this->handleFileUploads($request->file('link_photo'), public_path('img/koi/photo'));
         Log::info('New Photos Uploaded', ['newPhotos' => $newPhotos]);
 
-        $newVideos = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
-        $linkTrophies = $this->handleSingleFileUpload($request->file('trophy'), 'img/koi/trophy');
-        $linkCertificates = $this->handleSingleFileUpload($request->file('certificate'), 'img/koi/certificate');
+        $newVideos = $this->handleFileUploads($request->file('link_video'), public_path('img/koi/video'));
+        Log::info('New Videos Uploaded', ['newVideos' => $newVideos]);
+
+        $linkTrophies = $this->handleSingleFileUpload($request->file('trophy'), public_path('img/koi/trophy'));
+        Log::info('Trophy Uploaded', ['trophy' => $linkTrophies]);
+
+        $linkCertificates = $this->handleSingleFileUpload($request->file('certificate'), public_path('img/koi/certificate'));
+        Log::info('Certificate Uploaded', ['certificate' => $linkCertificates]);
+
 
         // Process edited photos
         foreach ($request->file() as $key => $file) {
