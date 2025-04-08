@@ -1134,24 +1134,21 @@ class C_ArthurkaikoiAdmin extends Controller
         }
 
         return array_map(function ($file) use ($destinationPath) {
-            // Ensure the file is valid
             if (!$file->isValid()) {
-                return ''; // Skip invalid files
+                return '';
             }
 
-            // Get the original filename and its extension
             $originalName = $file->getClientOriginalName();
             $extension = $file->getClientOriginalExtension();
-
-            // Create a unique filename, preserving the original name
             $uniqueFilename = uniqid() . "_" . pathinfo($originalName, PATHINFO_FILENAME) . '.' . $extension;
 
-            // Move the file to the specified path
-            $file->move($destinationPath, $uniqueFilename);
+            // 👇 FIXED: prepend public_path here
+            $file->move(public_path($destinationPath), $uniqueFilename);
 
-            return $uniqueFilename; // Return just the filename
+            return $uniqueFilename;
         }, $files);
     }
+
 
 
     /**
@@ -1163,18 +1160,16 @@ class C_ArthurkaikoiAdmin extends Controller
             return '';
         }
 
-        // Get the original filename and its extension
         $originalName = $file->getClientOriginalName();
         $extension = $file->getClientOriginalExtension();
-
-        // Create a unique filename, preserving the original name
         $uniqueFilename = uniqid() . "_" . pathinfo($originalName, PATHINFO_FILENAME) . '.' . $extension;
 
-        // Move the file to the specified path
-        $file->move($destinationPath, $uniqueFilename);
+        // 👇 FIXED: prepend public_path here too
+        $file->move(public_path($destinationPath), $uniqueFilename);
 
-        return $uniqueFilename; // Return just the filename, not the full path
+        return $uniqueFilename;
     }
+
 
 
 
@@ -1412,7 +1407,7 @@ class C_ArthurkaikoiAdmin extends Controller
                 $index = (int) $matches[1];
                 if (isset($updatedPhotos[$index])) {
                     // Handle the upload and replace the corresponding photo
-                    $newPhotoPath = $this->handleSingleFileUpload($file, 'img/koi/photo');
+                    $newPhotoPath = $this->handleSingleFileUpload($file, public_path('img/koi/photo'));
                     if ($newPhotoPath) {
                         $updatedPhotos[$index] = basename($newPhotoPath); // New photo filename
                         Log::info('Replaced Photo', ['index' => $index, 'newPhotoPath' => $newPhotoPath]);
@@ -1438,7 +1433,7 @@ class C_ArthurkaikoiAdmin extends Controller
                 $index = (int) $matches[1];
                 if (isset($updatedVideos[$index])) {
                     // Handle the upload and replace the corresponding video
-                    $newVideoPath = $this->handleSingleFileUpload($file, 'img/koi/video');
+                    $newVideoPath = $this->handleSingleFileUpload($file, public_path('img/koi/video'));
                     if ($newVideoPath) {
                         $updatedVideos[$index] = basename($newVideoPath); // New video filename
                     }
