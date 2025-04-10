@@ -29,7 +29,7 @@ class LoginController extends Controller
     protected $redirectTo = '/CMS/dashboard';
     public function redirectTo()
     {
-        return '/cms/dashboard'; // make sure casing matches the actual route
+        return '/CMS/dashboard'; // make sure casing matches the actual route
     }
 
 
