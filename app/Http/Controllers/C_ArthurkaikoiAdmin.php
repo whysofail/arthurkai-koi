@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
 use App\Models\Koi;
@@ -72,14 +73,20 @@ class C_ArthurkaikoiAdmin extends Controller
             $this->applySearchFilters($koiQuery, $search);
         }
 
-        // Apply key-value filters if both key and value are provided
         if ($filters) {
             foreach ($filters as $filter) {
-                if (isset($filter['key']) && isset($filter['value'])) {
+                if (
+                    array_key_exists('key', $filter) &&
+                    $filter['key'] !== null &&
+                    $filter['key'] !== '' &&
+                    array_key_exists('value', $filter)
+                ) {
                     $this->applyKeyValueFilters($koiQuery, $filter['key'], $filter['value']);
                 }
             }
         }
+
+
         // Apply ordering if sortby and order are provided
         if ($sortby && $order) {
             $this->applyOrdering($koiQuery, $sortby, $order);
@@ -159,19 +166,36 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $relatedColumns = ['variety', 'breeder', 'bloodline'];
 
-        // Check if the key is in related columns and apply the respective filter
         $query->where(function ($subQuery) use ($key, $value, $relatedColumns) {
+            $isEmpty = is_null($value) || $value === '';
+
             if (in_array($key, $relatedColumns)) {
-                $subQuery->whereHas($key, function ($q) use ($value) {
-                    $this->addRelatedKeyValueConditions($q, $value);
+                $subQuery->whereHas($key, function ($q) use ($isEmpty, $value) {
+                    if ($isEmpty) {
+                        $q->where(function ($nested) {
+                            $nested->whereNull('name')
+                                ->orWhere('name', '')
+                                ->orWhereNull('code')
+                                ->orWhere('code', '');
+                        });
+                    } else {
+                        $q->where(function ($nested) use ($value) {
+                            $nested->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($value) . '%'])
+                                ->orWhereRaw('LOWER(code) LIKE ?', ['%' . strtolower($value) . '%']);
+                        });
+                    }
                 });
             } else {
-                // Apply raw filtering if not a related column
-                $subQuery->whereRaw("LOWER($key) LIKE ?", ["%$value%"]);
+                if ($isEmpty) {
+                    $subQuery->where(function ($q) use ($key) {
+                        $q->whereNull($key)->orWhere($key, '');
+                    });
+                } else {
+                    $subQuery->whereRaw("LOWER($key) LIKE ?", ['%' . strtolower($value) . '%']);
+                }
             }
         });
     }
-
 
 
 
@@ -1874,7 +1898,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
         Variety::create([
             'name' => $request->name,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
         ]);
 
         return redirect('/CMS/variety');
@@ -1899,7 +1923,7 @@ class C_ArthurkaikoiAdmin extends Controller
         // Update the variety
         $variety->update([
             'name' => $request->name,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
         ]);
 
         // Update all Koi that have this variety
@@ -1949,11 +1973,11 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $request->validate([
             'bloodline_name' => ['required'],
-            'bloodline_code' => ['required']
+            'bloodline_code' => ['required', 'unique:bloodline,code']
         ]);
         Bloodline::create([
             'name' => $request->bloodline_name,
-            'code' => $request->bloodline_code,
+            'code' => Str::upper($request->code),
             // 'variety' => $request->variety,
         ]);
 
@@ -1968,9 +1992,17 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function bloodlineupdate(request $request)
     {
+        $request->validate([
+            'bloodline_name' => ['required'],
+            'code' => [
+                'required',
+                Rule::unique('breeder', 'code')->ignore($request->id)
+            ]
+        ]);
+
         Bloodline::where('id', $request->id)->update([
             'name' => $request->name,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
         ]);
         return redirect('/CMS/bloodline');
     }
@@ -1998,13 +2030,13 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $request->validate([
             'name' => ['required'],
-            'code' => ['required']
+            'code' => ['required', 'unique:breeder,code']
         ]);
         Breeder::create([
             'name' => $request->name,
             'location' => $request->location,
             'contact' => $request->contact,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
             'website' => $request->website,
         ]);
 
@@ -2021,14 +2053,17 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $request->validate([
             'name' => ['required'],
-            'code' => ['required']
+            'code' => [
+                'required',
+                Rule::unique('breeder', 'code')->ignore($request->id)
+            ]
         ]);
 
         Breeder::where('id', $request->id)->update([
             'name' => $request->name,
             'location' => $request->location,
             'contact' => $request->contact,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
             'website' => $request->website,
         ]);
 
@@ -2057,7 +2092,7 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $request->validate([
             'name' => ['required'],
-            'code' => ['required']
+            'code' => ['required', 'unique:agent,code']
         ]);
 
         Agent::create([
@@ -2065,7 +2100,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'location' => $request->location,
             'website' => $request->website,
             'owner' => $request->owner,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
         ]);
 
         return redirect('/CMS/agent');
@@ -2081,14 +2116,18 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $request->validate([
             'name' => ['required'],
-            'code' => ['required']
+            'code' => [
+                'required',
+                Rule::unique('breeder', 'code')->ignore($request->id)
+            ]
         ]);
+
         Agent::where('id', $request->id)->update([
             'name' => $request->name,
             'location' => $request->location,
             'website' => $request->website,
             'owner' => $request->owner,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
         ]);
 
         return redirect('/CMS/agent');
