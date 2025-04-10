@@ -59,6 +59,7 @@ class C_ArthurkaikoiAdmin extends Controller
         $sortby = $request->query('sort_by'); // Sorting key
         $order = $request->query('order', 'asc'); // Default to ascending order
 
+
         // Validate layout
         $validLayouts = ['list', 'grid'];
         $layout = in_array($layout, $validLayouts) ? $layout : 'list';
