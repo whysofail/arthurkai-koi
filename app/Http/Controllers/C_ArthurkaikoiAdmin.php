@@ -1025,7 +1025,7 @@ class C_ArthurkaikoiAdmin extends Controller
     public function koidetail($id)
     {
         $koi = Koi::with('history')->where('id', $id)->first();
-        // return response()->json($koi);
+
         $entryUrl = $request->entryUrl ?? url()->previous();
         if (strpos($entryUrl, 'detail') !== false || strpos($entryUrl, '500') !== false) {
             $entryUrl = url('/CMS/koi?layout=grid'); // Fallback to the grid layout
@@ -1110,7 +1110,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'bloodline_id' => is_string($request->bloodline) ? 1 : $request->bloodline,
             'sequence' => $sequence,
             'size' => $request->size,
-            'birthdate' => $request->birth ? Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth() : null,
+            'birthdate' => $request->birthdate ? Carbon::createFromFormat('Y-m', $request->birthdate)->startOfMonth() : null,
             'gender' => $request->gender,
             'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : null,
             'seller' => $request->seller ?? '',
@@ -1125,6 +1125,11 @@ class C_ArthurkaikoiAdmin extends Controller
             'trophy' => $link_trophys,
             'certificate' => $link_certificates,
             'status' => $request->status,
+            'sell_date' => $request->sell_date,
+            'buyer_name' => $request->buyer_name,
+            'death_date' => $request->death_date,
+            'death_note' => $request->death_note,
+
         ]);
         return redirect('/CMS/koi/detail/' . $koi->id);
     }
@@ -1416,6 +1421,7 @@ class C_ArthurkaikoiAdmin extends Controller
     }
     public function koiupdate(Request $request)
     {
+
         // Fetch the existing Koi record
         $koi = Koi::findOrFail($request->id);
 
@@ -1528,10 +1534,11 @@ class C_ArthurkaikoiAdmin extends Controller
             'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : null,
             'seller' => $request->seller ?? '',
             'handler' => $request->handler ?? '',
-            'price_buy_idr' => $request->pricebuy_idr ? (int) $request->pricebuy_idr : $koi->price_buy_idr,
-            'price_buy_jpy' => $request->pricebuy_jpy ? (int) $request->pricebuy_jpy : $koi->price_buy_jpy,
-            'price_sell_idr' => $request->pricesell_idr ? (int) $request->pricesell_idr : $koi->price_sell_idr,
-            'price_sell_jpy' => $request->pricesell_jpy ? (int) $request->pricesell_jpy : $koi->price_sell_jpy,
+            'price_buy_idr' => isset($request->pricebuy_idr) ? (int) $request->pricebuy_idr : $koi->price_buy_idr,
+            'price_buy_jpy' => isset($request->pricebuy_jpy) ? (int) $request->pricebuy_jpy : $koi->price_buy_jpy,
+            'price_sell_idr' => isset($request->pricesell_idr) ? (int) $request->pricesell_idr : $koi->price_sell_idr,
+            'price_sell_jpy' => isset($request->pricesell_jpy) ? (int) $request->pricesell_jpy : $koi->price_sell_jpy,
+
             'location' => $request->location,
             'photo' => implode('|', $finalPhotos),
             'video' => implode('|', $finalVideos),
@@ -1547,7 +1554,7 @@ class C_ArthurkaikoiAdmin extends Controller
         $entryUrl = $request->input('entryUrl', route('cmskoi') . '?layout=grid'); // Fallback if no entryUrl is provided
 
         // Ensure we're using the correct entryUrl when redirecting back to the edit page
-        return redirect('/CMS/koi/edit/' . $koi->id . '?entryUrl=' . urlencode($entryUrl))
+        return redirect('/CMS/koi/detail/' . $koi->id . '?entryUrl=' . urlencode($entryUrl))
             ->with('success', 'Koi record updated successfully.');
     }
 

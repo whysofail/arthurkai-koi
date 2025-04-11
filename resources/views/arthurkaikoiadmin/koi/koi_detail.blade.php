@@ -705,6 +705,7 @@
                                                         <td><strong>Price Buy (JPY)</strong></td>
                                                         <td>:</td>
                                                         <td style="padding: 10px">
+
                                                             {{ isset($koi->price_buy_jpy) ? '¥ ' . number_format($koi->price_buy_jpy, 0, ',', '.') : '-' }}
                                                         </td>
                                                     </tr>
@@ -765,33 +766,34 @@
                                             <div class="row" style="text-align: center">
 
                                                 <div class="col-sm-4">
-                                                    @if ($koi->trophy == null)
-                                                        -
-                                                    @else
-                                                        <img style="width: 100%" width="150" class="img-thumbnail"
-                                                            src="{{ asset('img/koi/certificate/' . $koi->link_certificate) }}"><br><br>
-
-                                                        <p>{{ $koi->name_trophy }}</p>
+                                                    @php
+                                                        // Split the trophy string by '|' to get an array of trophy filenames
+                                                        $trophies = explode('|', $koi->trophy);
+                                                    @endphp
+                                                    <h5 style="font-weight: bold">Trophy</h5>
+                                                    @if ($koi->trophy)
+                                                        @foreach ($trophies as $trophy)
+                                                            <img style="width: 100%" class="img-thumbnail"
+                                                                src="{{ asset('img/koi/trophy/' . $trophy) }}"><br><br>
+                                                        @endforeach
                                                     @endif
-
                                                 </div>
 
                                                 <div class="col-sm-4">
-
-                                                    @if ($koi->name_certificate == null)
-                                                        -
-                                                    @else
-                                                        <img style="width: 100%" class="img-thumbnail"
-                                                            src="{{ asset('img/koi/trophy/' . $koi->link_trophy) }}"><br><br>
-
-                                                        <p>{{ $koi->name_certificate }}</p>
+                                                    @php
+                                                        // Split the trophy string by '|' to get an array of trophy filenames
+                                                        $trophies = explode('|', $koi->certificate);
+                                                    @endphp
+                                                    <h5 style="font-weight: bold">Certificate</h5>
+                                                    @if ($koi->certificate)
+                                                        @foreach ($trophies as $trophy)
+                                                            <img style="width: 100%" class="img-thumbnail"
+                                                                src="{{ asset('img/koi/certificate/' . $trophy) }}"><br><br>
+                                                        @endforeach
                                                     @endif
-
                                                 </div>
 
-                                                <div class="col-sm-4">
 
-                                                </div>
 
                                             </div>
 

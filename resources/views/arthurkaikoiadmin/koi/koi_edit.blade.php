@@ -220,7 +220,7 @@
                                             <div class="form-group row">
                                                 <label for="birth" class="col-sm-2 col-form-label">Birthdate</label>
                                                 <div class="col-sm-10">
-                                                    <input type="month" class="form-control" name="birth"
+                                                    <input class="form-control" name="birth"
                                                         value="{{ $k->birthdate ? \Carbon\Carbon::parse($k->birthdate)->format('Y-m') : '' }}"
                                                         id="birth">
                                                 </div>
@@ -244,7 +244,7 @@
                                                     Date
                                                 </label>
                                                 <div class="col-sm-10">
-                                                    <input type="month" class="form-control" name="purchase_date"
+                                                    <input class="form-control" name="purchase_date"
                                                         value="{{ $k->purchase_date ? \Carbon\Carbon::parse($k->purchase_date)->format('Y-m') : '' }}"
                                                         id="purchase_date">
                                                 </div>
@@ -312,7 +312,7 @@
                                                         value="{{ old('pricebuy_jpy') ? old('price_buy_jpy') : $k->price_buy_jpy }}">
                                                     <input type="text" id="pricebuy_jpy_display" class="form-control"
                                                         name="pricebuy_jpy_display"
-                                                        value="{{ old('pricebuy_jpy_display') ? old('pricebuy_jpy_display') : $k->price_buy_idr }}">
+                                                        value="{{ old('pricebuy_jpy_display') ? old('pricebuy_jpy_display') : $k->price_buy_jpy }}">
                                                 </div>
                                             </div>
                                         </div>
@@ -660,7 +660,7 @@
                                                     Death</label>
                                                 <div class="col-sm-10">
                                                     <input type="date" class="form-control" name="death_date"
-                                                        value="{{ $k->death_date }}">
+                                                        id="death_date" value="{{ $k->death_date }}">
                                                 </div>
                                             </div>
 
@@ -1198,6 +1198,37 @@
                     }
                 });
             });
+        });
+    </script>
+    <script>
+        flatpickr("#purchase_date", {
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: true, // abbreviates month names
+                    dateFormat: "Y-m", // format to match <input type="month">
+                    altFormat: "F Y", // what user sees (optional)
+                    theme: "light"
+                })
+            ]
+        });
+
+        flatpickr("#birth", {
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: true, // abbreviates month names
+                    dateFormat: "Y-m", // format to match <input type="month">
+                    altFormat: "F Y", // what user sees (optional)
+                    theme: "light"
+                })
+            ]
+        });
+
+        flatpickr("#date_sell", {
+            dateFormat: "Y-m-d" // or your preferred format
+        });
+
+        flatpickr("#death_date", {
+            dateFormat: "Y-m-d" // or your preferred format
         });
     </script>
 

@@ -1,12 +1,12 @@
-@extends("layouts.apparthuradm")
+@extends('layouts.apparthuradm')
 
-@section("title", "Add")
+@section('title', 'Add')
 
-@section("css")
+@section('css')
     <!-- Select2 -->
-    <link rel="stylesheet" href="{{ asset("plugins/select2/css/select2.min.css") }}">
+    <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
 
-    <link rel="stylesheet" href="{{ asset("plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 
     <style>
         .note-editor.note-airframe .note-editing-area .note-editable,
@@ -63,7 +63,7 @@
 
 @endsection
 
-@section("content")
+@section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper" style="background: white;">
         <!-- /.content-header -->
@@ -103,12 +103,12 @@
         <!-- Main content -->
 
         <section class="content">
-            <form action="{{ route("cmskoistore") }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('cmskoistore') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="status" value="Available">
                 <div class="col-sm-12">
 
-                    <a href="{{ route("cmskoi") }}" class="btn btn-sm"
+                    <a href="{{ route('cmskoi') }}" class="btn btn-sm"
                         style="margin-bottom: 5px; border-radius: 20px 1px 10px; border: black solid 1px; ">
                         <i class="fas fa-arrow-circle-left" style="position: relative; right: 3%; top: 1px;"></i>
                         Back
@@ -136,7 +136,7 @@
                                             <label for="nickname" class="col-sm-2 col-form-label">Nickname</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="nickname"
-                                                    value="{{ old("nickname") }}" id="nickname">
+                                                    value="{{ old('nickname') }}" id="nickname">
                                             </div>
                                         </div>
                                     </div>
@@ -146,7 +146,8 @@
                                             <div class="col-sm-10">
                                                 <select class="form-control select2 required" id="variety-select"
                                                     name="variety" style="width: 100%;" required>
-                                                    <option selected="selected" disabled>Selected Variety</option>
+                                                    <option selected="selected" value="" disabled>Selected Variety
+                                                    </option>
                                                     @foreach ($variety as $v)
                                                         <option value="{{ $v->id }}" data-code='{{ $v->code }}'>
                                                             {{ $v->name }}
@@ -162,7 +163,8 @@
                                             <div class="col-sm-10">
                                                 <select class="form-control select2" id="breeder-select" name="breeder"
                                                     style="width: 100%;" required>
-                                                    <option selected="selected">Selected Breeder</option>
+                                                    <option selected="selected" value="" disabled>Selected Breeder
+                                                    </option>
                                                     @foreach ($breeder as $b)
                                                         <option value="{{ $b->id }}" data-code="{{ $b->code }}">
                                                             {{ $b->name }}
@@ -177,8 +179,9 @@
                                             <label for="bloodline" class="col-sm-2 col-form-label">Bloodline</label>
                                             <div class="col-sm-10">
                                                 <select class="form-control select2" name="bloodline"
-                                                    style="width: 100%;">
-                                                    <option selected="selected">Selected Bloodline</option>
+                                                    style="width: 100%;" required>
+                                                    <option selected="selected" value="" disabled>Selected Bloodline
+                                                    </option>
                                                     @foreach ($bloodline as $b)
                                                         <option value="{{ $b->id }}">{{ $b->name }}
                                                         </option>
@@ -191,8 +194,10 @@
                                         <div class="form-group row">
                                             <label for="gender" class="col-sm-2 col-form-label">Gender</label>
                                             <div class="col-sm-10">
-                                                <select class="form-control select2" name="gender" style="width: 100%;">
-                                                    <option value="" selected="selected">Selected Gender</option>
+                                                <select class="form-control select2" name="gender" style="width: 100%;"
+                                                    required>
+                                                    <option value="" selected="selected" disabled>Selected Gender
+                                                    </option>
                                                     <option value="Male">Male</option>
                                                     <option value="Female">Female</option>
                                                     <option value="Unknown">Unknown</option>
@@ -200,13 +205,12 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="form-group row">
-                                            <label for="birth" class="col-sm-2 col-form-label">Birthdate</label>
+                                            <label for="birthdate" class="col-sm-2 col-form-label">Birthdate</label>
                                             <div class="col-sm-10">
-                                                <input type="month" class="form-control" name="birth"
-                                                    value="{{ old("birth") }}" id="birth">
+                                                <input type="text" class="form-control" name="birthdate"
+                                                    value="{{ old('birthdate') }}" id="birthdate">
                                             </div>
                                         </div>
                                     </div>
@@ -214,8 +218,8 @@
                                         <div class="form-group row">
                                             <label for="size" class="col-sm-2 col-form-label">Size</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="size"
-                                                    value="{{ old("size") }}" id="size">
+                                                <input type="number" class="form-control" name="size"
+                                                    value="{{ old('size') }}" id="size">
                                             </div>
                                         </div>
                                     </div>
@@ -224,17 +228,20 @@
                                             <label for="purchase_date" class="col-sm-2 col-form-label">Purchase
                                                 Date</label>
                                             <div class="col-sm-10">
-                                                <input type="month" class="form-control" name="purchase_date"
-                                                    value="{{ old("purchase_date") }}" id="purchase_date">
+                                                <input type="text" class="form-control" name="purchase_date"required
+                                                    value="{{ old('purchase_date') }}" id="purchase_date">
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="form-group row">
                                             <label for="seller" class="col-sm-2 col-form-label">Seller Agent</label>
                                             <div class="col-sm-10">
-                                                <select class="form-control select2" name="seller" style="width: 100%;">
-                                                    <option selected="selected">Selected Seller Agent</option>
+                                                <select class="form-control select2" name="seller" style="width: 100%;"
+                                                    required>
+                                                    <option selected="selected" value="">Selected Seller Agent
+                                                    </option>
                                                     @foreach ($agent as $a)
                                                         <option value="{{ $a->owner }}">
                                                             {{ $a->owner }}
@@ -249,12 +256,14 @@
                                         <div class="form-group row">
                                             <label for="handler" class="col-sm-2 col-form-label">Handling Agent</label>
                                             <div class="col-sm-10">
-                                                <select class="form-control select2" name="handler" style="width: 100%;">
-                                                    <option selected="selected">Selected Handling Agent</option>
-                                                    @foreach ($agent as $a)
-                                                        <option value="{{ $a->owner }}">
-                                                            {{ $a->owner }}
-                                                        </option>
+                                                <select class="form-control select2" name="handler" style="width: 100%;"
+                                                    required>
+                                                    <option selected="selected" value="" disabled>Selected Handling
+                                                        Agent
+                                                        @foreach ($agent as $a)
+                                                    <option value="{{ $a->owner }}">
+                                                        {{ $a->owner }}
+                                                    </option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -267,20 +276,20 @@
                                                 (IDR)</label>
                                             <div class="col-sm-4">
                                                 <input type="hidden" id="pricebuy_idr" class="form-control"
-                                                    name="pricebuy_idr" value="{{ old("pricebuy_idr") }}">
+                                                    name="pricebuy_idr" value="{{ old('pricebuy_idr') }}">
                                                 <input type="text" id="pricebuy_idr_display" class="form-control"
                                                     name="pricebuy_idr_display"
-                                                    value="{{ old("pricebuy_idr_display") }}">
+                                                    value="{{ old('pricebuy_idr_display') }}">
                                             </div>
 
                                             <label for="pricebuy_jpy" class="col-sm-2 col-form-label">Price Buy
                                                 (JPY)</label>
                                             <div class="col-sm-4">
                                                 <input type="hidden" id="pricebuy_jpy" class="form-control"
-                                                    name="pricebuy_jpy" value="{{ old("pricebuy_jpy") }}">
+                                                    name="pricebuy_jpy" value="{{ old('pricebuy_jpy') }}">
                                                 <input type="text" id="pricebuy_jpy_display" class="form-control"
                                                     name="pricebuy_jpy_display"
-                                                    value="{{ old("pricebuy_jpy_display") }}">
+                                                    value="{{ old('pricebuy_jpy_display') }}">
                                             </div>
                                         </div>
                                     </div>
@@ -290,7 +299,7 @@
                                             <label for="location" class="col-sm-2 col-form-label">Keeping Location</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="location"
-                                                    value="{{ old("location") }}" id="location">
+                                                    value="{{ old('location') }}" id="location">
 
                                             </div>
                                         </div>
@@ -302,19 +311,19 @@
                                                 (IDR)</label>
                                             <div class="col-sm-4">
                                                 <input type="hidden" id="pricesell_idr" class="form-control"
-                                                    name="pricesell_idr" value="{{ old("pricesell_idr") }}">
+                                                    name="pricesell_idr" value="{{ old('pricesell_idr') }}">
                                                 <input type="text" id="pricesell_idr_display" class="form-control"
                                                     name="pricesell_idr_display"
-                                                    value="{{ old("pricesell_idr_display") }}">
+                                                    value="{{ old('pricesell_idr_display') }}">
                                             </div>
                                             <label for="pricesell_jpy" class="col-sm-2 col-form-label">Sell Price
                                                 (JPY)</label>
                                             <div class="col-sm-4">
                                                 <input type="hidden" id="pricesell_jpy" class="form-control"
-                                                    name="pricesell_jpy" value="{{ old("pricesell_jpy") }}">
+                                                    name="pricesell_jpy" value="{{ old('pricesell_jpy') }}">
                                                 <input type="text" id="pricesell_jpy_display" class="form-control"
                                                     name="pricesell_jpy_display"
-                                                    value="{{ old("pricesell_jpy_display") }}">
+                                                    value="{{ old('pricesell_jpy_display') }}">
                                             </div>
                                         </div>
                                     </div>
@@ -323,13 +332,15 @@
                                         <h2>Koi Media</h2>
                                         <hr>
                                         <div class="input-group row">
-                                            <label for="link_photo" class="col-sm-2 col-form-label pt-4">Link Photo</label>
+                                            <label for="link_photo" class="col-sm-2 col-form-label pt-4">Link
+                                                Photo</label>
                                             <div class="col-sm-10" id="satu">
                                                 <div class="form-group">
                                                     <img width="125" id="link_photo" class="img-thumbnailp">
                                                     <div class="input-group realprocodeLP control-group lst incrementLP">
                                                         <input type="file" name="link_photo[]"
-                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)" accept="image/*">
+                                                            class="myfrm form-control" onchange="Imagelinkphoto(event)"
+                                                            accept="image/*">
                                                         <div class="input-group-btn">
                                                             <button class="btn btn-success btn-clickLP" type="button"><i
                                                                     class="fldemo glyphicon glyphicon-plus"></i>Add</button>
@@ -355,7 +366,8 @@
 
                                     <div class="col-sm-12" style="margin-top: 10px">
                                         <div class="input-group row">
-                                            <label for="link_video" class="col-sm-2 col-form-label pt-4">Link Video</label>
+                                            <label for="link_video" class="col-sm-2 col-form-label pt-4">Link
+                                                Video</label>
                                             <div class="col-sm-10">
                                                 <div class="form-group">
                                                     <img width="125" id="link_video" class="img-thumbnailv">
@@ -363,10 +375,10 @@
                                                         <input type="file" name="link_video[]"
                                                             class="myfrm form-control" onchange="link_video(event)"
                                                             accept="video/mp4,video/x-m4v,video/*">
-                                                            <div class="input-group-btn">
-                                                                <button class="btn btn-success btn-clickLV" type="button"><i
-                                                                        class="fldemo glyphicon glyphicon-plus"></i>Add</button>
-                                                            </div>
+                                                        <div class="input-group-btn">
+                                                            <button class="btn btn-success btn-clickLV" type="button"><i
+                                                                    class="fldemo glyphicon glyphicon-plus"></i>Add</button>
+                                                        </div>
                                                     </div>
                                                     <div class="cloneLV hide" style="display: none;">
                                                         <div class="realprocodeLV control-group lst input-group"
@@ -391,10 +403,8 @@
                                             <label for="link_trophy" class="col-sm-2 col-form-label">Trophy File</label>
                                             <div class="col-sm-10">
                                                 <input type="file" class="form-control" name="link_trophy"
-                                                    value="{{ old("link_trophy") }}" id="link_trophy"
-                                                    style="height: auto !important;"
-                                                    accept="image/*"
-                                                    >
+                                                    value="{{ old('link_trophy') }}" id="link_trophy"
+                                                    style="height: auto !important;" accept="image/*">
                                             </div>
                                         </div>
                                     </div>
@@ -405,7 +415,7 @@
                                                 Certificate File</label>
                                             <div class="col-sm-10">
                                                 <input type="file" class="form-control" name="link_certificate"
-                                                    value="{{ old("link_certificate") }}" id="link_certificate"
+                                                    value="{{ old('link_certificate') }}" id="link_certificate"
                                                     style="height: auto !important;">
                                             </div>
                                         </div>
@@ -416,16 +426,15 @@
                                         <div class="form-group row">
                                             <label for="date_sell" class="col-sm-2 col-form-label">Date Of Sell</label>
                                             <div class="col-sm-10">
-                                                <input type="month" class="form-control" name="date_sell"
-                                                    value="{{ old("date_sell") }}" id="date_sell">
+                                                <input class="form-control" name="date_sell"
+                                                    value="{{ old('date_sell') }}" id="date_sell">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="buyer_name" class="col-sm-2 col-form-label">Buyer Name</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="buyer_name"
-                                                    value="{{ old("buyer_name") }}" id="buyer_name">
-
+                                                    value="{{ old('buyer_name') }}" id="buyer_name">
                                             </div>
                                         </div>
 
@@ -434,8 +443,8 @@
                                         <div class="form-group row">
                                             <label for="death_date" class="col-sm-2 col-form-label">Date of Death</label>
                                             <div class="col-sm-10">
-                                                <input type="month" class="form-control" name="death_date"
-                                                    value="{{ old("death_date") }}" id="death_date">
+                                                <input class="form-control" name="death_date"
+                                                    value="{{ old('death_date') }}" id="death_date">
                                             </div>
                                         </div>
                                     </div>
@@ -448,7 +457,7 @@
 
                                             <div class="col-sm-10">
 
-                                                <textarea name="death_note" class="form-control" rows="3">{{ old("death_note") }}</textarea>
+                                                <textarea name="death_note" class="form-control" rows="3">{{ old('death_note') }}</textarea>
 
                                             </div>
 
@@ -495,11 +504,11 @@
 
 @endsection
 
-@section("script")
+@section('script')
 
     <!-- Select2 -->
 
-    <script src="{{ asset("plugins/select2/js/select2.full.min.js") }}"></script>
+    <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
 
     <script>
         $('#variety-select').select2();
@@ -746,7 +755,7 @@
         $(document).ready(function() {
             // Fetch pre-populated search suggestions on page load
             $.ajax({
-                url: "{{ url("/koi") }}",
+                url: "{{ url('/koi') }}",
                 type: "GET",
                 success: function(data) {
                     if (data.suggestions.length > 0) {
@@ -764,7 +773,7 @@
                 let query = $(this).val();
                 if (query.length > 2) {
                     $.ajax({
-                        url: "{{ url("/koi/search") }}",
+                        url: "{{ url('/koi/search') }}",
                         type: "GET",
                         data: {
                             query: query
@@ -796,5 +805,37 @@
             });
         });
     </script>
+    <script>
+        flatpickr("#purchase_date", {
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: true, // abbreviates month names
+                    dateFormat: "Y-m", // format to match <input type="month">
+                    altFormat: "F Y", // what user sees (optional)
+                    theme: "light"
+                })
+            ]
+        });
+
+        flatpickr("#birthdate", {
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: true, // abbreviates month names
+                    dateFormat: "Y-m", // format to match <input type="month">
+                    altFormat: "F Y", // what user sees (optional)
+                    theme: "light"
+                })
+            ]
+        });
+
+        flatpickr("#date_sell", {
+            dateFormat: "Y-m-d" // or your preferred format
+        });
+
+        flatpickr("#death_date", {
+            dateFormat: "Y-m-d" // or your preferred format
+        });
+    </script>
+
 
 @endsection
