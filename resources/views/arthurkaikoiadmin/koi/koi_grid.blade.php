@@ -84,30 +84,30 @@
         }
 
         /* .page-item.active .page-link {
-                                                                                                                        z-index: 3;
-                                                                                                                        color: #fff;
-                                                                                                                        background-color: #000000 !important;
-                                                                                                                        border-color: black !important;
-                                                                                                                    }
+                                                                                                                            z-index: 3;
+                                                                                                                            color: #fff;
+                                                                                                                            background-color: #000000 !important;
+                                                                                                                            border-color: black !important;
+                                                                                                                        }
 
-                                                                                                                    .page-link {
-                                                                                                                        position: relative;
-                                                                                                                        display: block;
-                                                                                                                        padding: .5rem .75rem;
-                                                                                                                        margin-left: -1px;
-                                                                                                                        line-height: 1.25;
-                                                                                                                        color: #000000;
-                                                                                                                        background-color: #fff;
-                                                                                                                        border: 1px solid #000000 !important;
-                                                                                                                    }
+                                                                                                                        .page-link {
+                                                                                                                            position: relative;
+                                                                                                                            display: block;
+                                                                                                                            padding: .5rem .75rem;
+                                                                                                                            margin-left: -1px;
+                                                                                                                            line-height: 1.25;
+                                                                                                                            color: #000000;
+                                                                                                                            background-color: #fff;
+                                                                                                                            border: 1px solid #000000 !important;
+                                                                                                                        }
 
-                                                                                                                    .page-item.disabled .page-link {
-                                                                                                                        color: #6c757d;
-                                                                                                                        pointer-events: none;
-                                                                                                                        cursor: auto;
-                                                                                                                        background-color: #fff;
-                                                                                                                        border-color: #000000 !important;
-                                                                                                                    } */
+                                                                                                                        .page-item.disabled .page-link {
+                                                                                                                            color: #6c757d;
+                                                                                                                            pointer-events: none;
+                                                                                                                            cursor: auto;
+                                                                                                                            background-color: #fff;
+                                                                                                                            border-color: #000000 !important;
+                                                                                                                        } */
         .grid-table {
             width: 100%;
             text-align: left;
@@ -410,6 +410,9 @@
                                                         <option value="bloodline"
                                                             {{ request('sort_by') == 'bloodline' ? 'selected' : '' }}>
                                                             Bloodline</option>
+                                                        <option value="location"
+                                                            {{ request('sort_by') == 'location' ? 'selected' : '' }}>
+                                                            Keeping Location</option>
                                                         <option value="created_at"
                                                             {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>
                                                             Date Created</option>
