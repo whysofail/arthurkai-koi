@@ -60,7 +60,6 @@ class C_ArthurkaikoiAdmin extends Controller
         $sortby = $request->query('sort_by'); // Sorting key
         $order = $request->query('order', 'asc'); // Default to ascending order
 
-
         // Validate layout
         $validLayouts = ['list', 'grid'];
         $layout = in_array($layout, $validLayouts) ? $layout : 'list';
@@ -143,6 +142,8 @@ class C_ArthurkaikoiAdmin extends Controller
             ->orWhereRaw('LOWER(nickname) LIKE ?', ["%$term%"])
             ->orWhereRaw('LOWER(seller) LIKE ?', ["%$term%"])
             ->orWhereRaw('LOWER(handler) LIKE ?', ["%$term%"])
+            ->orWhereRaw('LOWER(location) LIKE ?', ["%$term%"])
+
             ->orWhereHas('variety', function ($q) use ($term) {
                 $this->addRelatedSearchConditions($q, $term);
             })
