@@ -28,7 +28,7 @@ Route::get('kois/search', [APIKoiController::class, 'searchKoi']);
 Route::get('breeders', [APIKoiController::class, 'getBreeders']);
 Route::get('varieties', [APIKoiController::class, 'getVarieties']);
 Route::get('contact', [APIKoiController::class, 'getContactUs']);
-route::get('news', [APIKoiController::class, 'news'])->name('news.index');
+Route::get('news', [APIKoiController::class, 'news'])->name('news.index');
 Route::get('news/{slug}', [APIKoiController::class, 'newsDetails'])->name('news.show');
 
 Route::middleware('validate.api_key')->group(function () {
