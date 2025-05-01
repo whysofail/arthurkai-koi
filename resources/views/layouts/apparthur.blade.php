@@ -32,7 +32,7 @@
     <main>
         <nav class="navbar navbar-expand-lg">
             <div class="container">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="{{ route("homepage") }}">
                     <img src="{{ asset("website/images/logom.png") }}" class="logomobile">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"

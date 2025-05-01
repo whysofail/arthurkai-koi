@@ -4,31 +4,37 @@
 
 <head>
 
-    <link rel="icon" type="image/png" href="{{ asset("images/logo/koilogo.png") }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo/koilogo.png') }}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Arthurkai-Koi | @yield("title")</title>
-    <link rel="stylesheet" href="{{ asset("css/app.css") }}">
+    <title>Arthurkai-Koi | @yield('title')</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <!-- summernote -->
-    <link rel="stylesheet" href="{{ asset("plugins/summernote/summernote-bs4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="{{ asset("plugins/fontawesome-free/css/all.min.css") }}">
+    <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
     <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="{{ asset("plugins/overlayScrollbars/css/OverlayScrollbars.min.css") }}">
+    <link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
     <!-- DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="{{ asset("plugins/datatables-bs4/css/dataTables.bootstrap4.min.css") }}">
-    <link rel="stylesheet" href="{{ asset("plugins/datatables-responsive/css/responsive.bootstrap4.min.css") }}">
-    <link rel="stylesheet" href="{{ asset("plugins/datatables-buttons/css/buttons.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset("dist/css/adminlte.min.css") }}">
+    <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Truculenta:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+
+
 
     <style>
         body {
@@ -92,12 +98,12 @@
         }
     </style>
 
-    @yield("css")
+    @yield('css')
 
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-    @include("arthurkaikoiadmin.includes.sidenav")
+    @include('arthurkaikoiadmin.includes.sidenav')
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-dark" style="background: black;">
@@ -119,14 +125,14 @@
         </li> --}}
 
                 @guest
-                    @if (Route::has("login"))
+                    @if (Route::has('login'))
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route("login") }}">{{ __("Login") }}</a>
+                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                         </li>
                     @endif
-                    @if (Route::has("register"))
+                    @if (Route::has('register'))
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route("register") }}">{{ __("Register") }}</a>
+                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                         </li>
                     @endif
                 @else
@@ -136,17 +142,17 @@
 
                     <li class="nav-item">
 
-                        <a class="nav-link" href="{{ route("logout") }}"
+                        <a class="nav-link" href="{{ route('logout') }}"
                             onclick="event.preventDefault();
                              document.getElementById('logout-form').submit();">
 
-                            {{ __("Logout") }}
+                            {{ __('Logout') }}
 
                         </a>
 
                     </li>
 
-                    <form id="logout-form" action="{{ route("logout") }}" method="POST" class="d-none">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
 
                         @csrf
 
@@ -158,7 +164,7 @@
     </nav>
     <!-- /.navbar -->
     <div id='loader'></div>
-    @yield("content")
+    @yield('content')
     <!-- Main Footer -->
     </div>
     <!-- ./wrapper -->
@@ -166,30 +172,30 @@
 
     <script src="https://kit.fontawesome.com/66254d2337.js" crossorigin="anonymous"></script>
     <!-- jQuery -->
-    <script src="{{ asset("plugins/jquery/jquery.min.js") }}"></script>
+    <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
-    <script src="{{ asset("plugins/bootstrap/js/bootstrap.bundle.min.js") }}"></script>
+    <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- DataTables  & Plugins -->
-    <script src="{{ asset("plugins/datatables/jquery.dataTables.min.js") }}"></script>
-    
+    <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
 
-    <script src="{{ asset("plugins/datatables-responsive/js/dataTables.responsive.min.js") }}"></script>
-    <script src="{{ asset("plugins/datatables-responsive/js/responsive.bootstrap4.min.js") }}"></script>
-    <script src="{{ asset("plugins/datatables-buttons/js/dataTables.buttons.min.js") }}"></script>
-    <script src="{{ asset("plugins/datatables-buttons/js/buttons.bootstrap4.min.js") }}"></script>
-    <script src="{{ asset("plugins/jszip/jszip.min.js") }}"></script>
-    <script src="{{ asset("plugins/pdfmake/pdfmake.min.js") }}"></script>
-    <script src="{{ asset("plugins/pdfmake/vfs_fonts.js") }}"></script>
-    <script src="{{ asset("plugins/datatables-buttons/js/buttons.html5.min.js") }}"></script>
-    <script src="{{ asset("plugins/datatables-buttons/js/buttons.print.min.js") }}"></script>
-    <script src="{{ asset("plugins/datatables-buttons/js/buttons.colVis.min.js") }}"></script>
+
+    <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('plugins/jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <!-- AdminLTE App -->
-    <script src="{{ asset("dist/js/adminlte.min.js") }} "></script>
+    <script src="{{ asset('dist/js/adminlte.min.js') }} "></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="{{ asset("dist/js/demo.js") }}"></script>
+    <script src="{{ asset('dist/js/demo.js') }}"></script>
     <!-- Page specific script -->
     <!-- Summernote -->
-    <script src="{{ asset("plugins/summernote/summernote-bs4.min.js") }}"></script>
+    <script src="{{ asset('plugins/summernote/summernote-bs4.min.js') }}"></script>
     {{-- <script src="{{ asset('js/chart.js') }}"></script> --}}
     <script src="https://code.highcharts.com/highcharts.js"></script>
 
@@ -225,7 +231,7 @@
                 "lengthChange": false,
                 "autoWidth": false,
                 "buttons": ["excel", "pdf", "print"],
-                "pageLength" : 25,
+                "pageLength": 25,
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
     </script>
@@ -238,9 +244,9 @@
         });
     </script>
 
-    @yield("script")
+    @yield('script')
     {{-- Toast --}}
-    @include("partials.toast.error")
+    @include('partials.toast.error')
 
 
 </body>

@@ -6,12 +6,12 @@
 @section("content")
 <section class="artists-section " id="section_2">
       <div class="container justify-content-center align-content-center" style="min-height: 50vh;">
-        <div class="d-flex">
-            <div class="col-md-6">
-                <h2>For more information</h2> 
-                <p>Please kindly contact us at :</p>
+          <div class="row">
+            <div class="col-12 col-md-6 mb-3 mb-md-0">
+              <h2>For more information</h2>
+              <p>Please kindly contact us at :</p>
             </div>
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
                 <div class="services-info">
                     @if (!empty($contactus->email))
                     <div>

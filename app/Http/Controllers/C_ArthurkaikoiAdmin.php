@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
 use App\Models\Koi;
@@ -71,14 +72,20 @@ class C_ArthurkaikoiAdmin extends Controller
             $this->applySearchFilters($koiQuery, $search);
         }
 
-        // Apply key-value filters if both key and value are provided
         if ($filters) {
             foreach ($filters as $filter) {
-                if (isset($filter['key']) && isset($filter['value'])) {
+                if (
+                    array_key_exists('key', $filter) &&
+                    $filter['key'] !== null &&
+                    $filter['key'] !== '' &&
+                    array_key_exists('value', $filter)
+                ) {
                     $this->applyKeyValueFilters($koiQuery, $filter['key'], $filter['value']);
                 }
             }
         }
+
+
         // Apply ordering if sortby and order are provided
         if ($sortby && $order) {
             $this->applyOrdering($koiQuery, $sortby, $order);
@@ -135,6 +142,8 @@ class C_ArthurkaikoiAdmin extends Controller
             ->orWhereRaw('LOWER(nickname) LIKE ?', ["%$term%"])
             ->orWhereRaw('LOWER(seller) LIKE ?', ["%$term%"])
             ->orWhereRaw('LOWER(handler) LIKE ?', ["%$term%"])
+            ->orWhereRaw('LOWER(location) LIKE ?', ["%$term%"])
+
             ->orWhereHas('variety', function ($q) use ($term) {
                 $this->addRelatedSearchConditions($q, $term);
             })
@@ -158,19 +167,36 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $relatedColumns = ['variety', 'breeder', 'bloodline'];
 
-        // Check if the key is in related columns and apply the respective filter
         $query->where(function ($subQuery) use ($key, $value, $relatedColumns) {
+            $isEmpty = is_null($value) || $value === '';
+
             if (in_array($key, $relatedColumns)) {
-                $subQuery->whereHas($key, function ($q) use ($value) {
-                    $this->addRelatedKeyValueConditions($q, $value);
+                $subQuery->whereHas($key, function ($q) use ($isEmpty, $value) {
+                    if ($isEmpty) {
+                        $q->where(function ($nested) {
+                            $nested->whereNull('name')
+                                ->orWhere('name', '')
+                                ->orWhereNull('code')
+                                ->orWhere('code', '');
+                        });
+                    } else {
+                        $q->where(function ($nested) use ($value) {
+                            $nested->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($value) . '%'])
+                                ->orWhereRaw('LOWER(code) LIKE ?', ['%' . strtolower($value) . '%']);
+                        });
+                    }
                 });
             } else {
-                // Apply raw filtering if not a related column
-                $subQuery->whereRaw("LOWER($key) LIKE ?", ["%$value%"]);
+                if ($isEmpty) {
+                    $subQuery->where(function ($q) use ($key) {
+                        $q->whereNull($key)->orWhere($key, '');
+                    });
+                } else {
+                    $subQuery->whereRaw("LOWER($key) LIKE ?", ['%' . strtolower($value) . '%']);
+                }
             }
         });
     }
-
 
 
 
@@ -1000,7 +1026,7 @@ class C_ArthurkaikoiAdmin extends Controller
     public function koidetail($id)
     {
         $koi = Koi::with('history')->where('id', $id)->first();
-        // return response()->json($koi);
+
         $entryUrl = $request->entryUrl ?? url()->previous();
         if (strpos($entryUrl, 'detail') !== false || strpos($entryUrl, '500') !== false) {
             $entryUrl = url('/CMS/koi?layout=grid'); // Fallback to the grid layout
@@ -1085,7 +1111,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'bloodline_id' => is_string($request->bloodline) ? 1 : $request->bloodline,
             'sequence' => $sequence,
             'size' => $request->size,
-            'birthdate' => $request->birth ? Carbon::createFromFormat('Y-m', $request->birth)->startOfMonth() : null,
+            'birthdate' => $request->birthdate ? Carbon::createFromFormat('Y-m', $request->birthdate)->startOfMonth() : null,
             'gender' => $request->gender,
             'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : null,
             'seller' => $request->seller ?? '',
@@ -1100,6 +1126,11 @@ class C_ArthurkaikoiAdmin extends Controller
             'trophy' => $link_trophys,
             'certificate' => $link_certificates,
             'status' => $request->status,
+            'sell_date' => $request->sell_date,
+            'buyer_name' => $request->buyer_name,
+            'death_date' => $request->death_date,
+            'death_note' => $request->death_note,
+
         ]);
         return redirect('/CMS/koi/detail/' . $koi->id);
     }
@@ -1134,25 +1165,31 @@ class C_ArthurkaikoiAdmin extends Controller
         }
 
         return array_map(function ($file) use ($destinationPath) {
-            // Ensure the file is valid
             if (!$file->isValid()) {
-                return ''; // Skip invalid files
+                return '';
             }
 
-            // Get the original filename and its extension
             $originalName = $file->getClientOriginalName();
             $extension = $file->getClientOriginalExtension();
-
-            // Create a unique filename, preserving the original name
             $uniqueFilename = uniqid() . "_" . pathinfo($originalName, PATHINFO_FILENAME) . '.' . $extension;
 
-            // Move the file to the specified path
-            $file->move($destinationPath, $uniqueFilename);
+            $fullPath = public_path($destinationPath);
+            if (!file_exists($fullPath)) {
+                mkdir($fullPath, 0755, true);
+            }
 
-            return $uniqueFilename; // Return just the filename
+            $file->move($fullPath, $uniqueFilename);
+
+            Log::info('File stored', [
+                'type' => 'multi',
+                'originalName' => $originalName,
+                'storedAs' => $uniqueFilename,
+                'path' => $fullPath . '/' . $uniqueFilename,
+            ]);
+
+            return $uniqueFilename;
         }, $files);
     }
-
 
     /**
      * Handle single file upload.
@@ -1163,20 +1200,26 @@ class C_ArthurkaikoiAdmin extends Controller
             return '';
         }
 
-        // Get the original filename and its extension
         $originalName = $file->getClientOriginalName();
         $extension = $file->getClientOriginalExtension();
-
-        // Create a unique filename, preserving the original name
         $uniqueFilename = uniqid() . "_" . pathinfo($originalName, PATHINFO_FILENAME) . '.' . $extension;
 
-        // Move the file to the specified path
-        $file->move($destinationPath, $uniqueFilename);
+        $fullPath = public_path($destinationPath);
+        if (!file_exists($fullPath)) {
+            mkdir($fullPath, 0755, true);
+        }
 
-        return $uniqueFilename; // Return just the filename, not the full path
+        $file->move($fullPath, $uniqueFilename);
+
+        Log::info('File stored', [
+            'type' => 'single',
+            'originalName' => $originalName,
+            'storedAs' => $uniqueFilename,
+            'path' => $fullPath . '/' . $uniqueFilename,
+        ]);
+
+        return $uniqueFilename;
     }
-
-
 
 
     public function koigstore(request $request)
@@ -1379,6 +1422,7 @@ class C_ArthurkaikoiAdmin extends Controller
     }
     public function koiupdate(Request $request)
     {
+
         // Fetch the existing Koi record
         $koi = Koi::findOrFail($request->id);
 
@@ -1397,8 +1441,14 @@ class C_ArthurkaikoiAdmin extends Controller
         Log::info('New Photos Uploaded', ['newPhotos' => $newPhotos]);
 
         $newVideos = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
+        Log::info('New Videos Uploaded', ['newVideos' => $newVideos]);
+
         $linkTrophies = $this->handleSingleFileUpload($request->file('trophy'), 'img/koi/trophy');
+        Log::info('Trophy Uploaded', ['trophy' => $linkTrophies]);
+
         $linkCertificates = $this->handleSingleFileUpload($request->file('certificate'), 'img/koi/certificate');
+        Log::info('Certificate Uploaded', ['certificate' => $linkCertificates]);
+
 
         // Process edited photos
         foreach ($request->file() as $key => $file) {
@@ -1485,10 +1535,11 @@ class C_ArthurkaikoiAdmin extends Controller
             'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : null,
             'seller' => $request->seller ?? '',
             'handler' => $request->handler ?? '',
-            'price_buy_idr' => $request->pricebuy_idr ? (int) $request->pricebuy_idr : $koi->price_buy_idr,
-            'price_buy_jpy' => $request->pricebuy_jpy ? (int) $request->pricebuy_jpy : $koi->price_buy_jpy,
-            'price_sell_idr' => $request->pricesell_idr ? (int) $request->pricesell_idr : $koi->price_sell_idr,
-            'price_sell_jpy' => $request->pricesell_jpy ? (int) $request->pricesell_jpy : $koi->price_sell_jpy,
+            'price_buy_idr' => isset($request->pricebuy_idr) ? (int) $request->pricebuy_idr : $koi->price_buy_idr,
+            'price_buy_jpy' => isset($request->pricebuy_jpy) ? (int) $request->pricebuy_jpy : $koi->price_buy_jpy,
+            'price_sell_idr' => isset($request->pricesell_idr) ? (int) $request->pricesell_idr : $koi->price_sell_idr,
+            'price_sell_jpy' => isset($request->pricesell_jpy) ? (int) $request->pricesell_jpy : $koi->price_sell_jpy,
+
             'location' => $request->location,
             'photo' => implode('|', $finalPhotos),
             'video' => implode('|', $finalVideos),
@@ -1504,7 +1555,7 @@ class C_ArthurkaikoiAdmin extends Controller
         $entryUrl = $request->input('entryUrl', route('cmskoi') . '?layout=grid'); // Fallback if no entryUrl is provided
 
         // Ensure we're using the correct entryUrl when redirecting back to the edit page
-        return redirect('/CMS/koi/edit/' . $koi->id . '?entryUrl=' . urlencode($entryUrl))
+        return redirect('/CMS/koi/detail/' . $koi->id . '?entryUrl=' . urlencode($entryUrl))
             ->with('success', 'Koi record updated successfully.');
     }
 
@@ -1855,7 +1906,7 @@ class C_ArthurkaikoiAdmin extends Controller
 
         Variety::create([
             'name' => $request->name,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
         ]);
 
         return redirect('/CMS/variety');
@@ -1880,7 +1931,7 @@ class C_ArthurkaikoiAdmin extends Controller
         // Update the variety
         $variety->update([
             'name' => $request->name,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
         ]);
 
         // Update all Koi that have this variety
@@ -1930,11 +1981,11 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $request->validate([
             'bloodline_name' => ['required'],
-            'bloodline_code' => ['required']
+            'bloodline_code' => ['required', 'unique:bloodline,code']
         ]);
         Bloodline::create([
             'name' => $request->bloodline_name,
-            'code' => $request->bloodline_code,
+            'code' => Str::upper($request->code),
             // 'variety' => $request->variety,
         ]);
 
@@ -1949,9 +2000,17 @@ class C_ArthurkaikoiAdmin extends Controller
 
     public function bloodlineupdate(request $request)
     {
+        $request->validate([
+            'bloodline_name' => ['required'],
+            'code' => [
+                'required',
+                Rule::unique('breeder', 'code')->ignore($request->id)
+            ]
+        ]);
+
         Bloodline::where('id', $request->id)->update([
             'name' => $request->name,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
         ]);
         return redirect('/CMS/bloodline');
     }
@@ -1979,13 +2038,13 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $request->validate([
             'name' => ['required'],
-            'code' => ['required']
+            'code' => ['required', 'unique:breeder,code']
         ]);
         Breeder::create([
             'name' => $request->name,
             'location' => $request->location,
             'contact' => $request->contact,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
             'website' => $request->website,
         ]);
 
@@ -2002,14 +2061,17 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $request->validate([
             'name' => ['required'],
-            'code' => ['required']
+            'code' => [
+                'required',
+                Rule::unique('breeder', 'code')->ignore($request->id)
+            ]
         ]);
 
         Breeder::where('id', $request->id)->update([
             'name' => $request->name,
             'location' => $request->location,
             'contact' => $request->contact,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
             'website' => $request->website,
         ]);
 
@@ -2038,7 +2100,7 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $request->validate([
             'name' => ['required'],
-            'code' => ['required']
+            'code' => ['required', 'unique:agent,code']
         ]);
 
         Agent::create([
@@ -2046,7 +2108,7 @@ class C_ArthurkaikoiAdmin extends Controller
             'location' => $request->location,
             'website' => $request->website,
             'owner' => $request->owner,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
         ]);
 
         return redirect('/CMS/agent');
@@ -2062,14 +2124,18 @@ class C_ArthurkaikoiAdmin extends Controller
     {
         $request->validate([
             'name' => ['required'],
-            'code' => ['required']
+            'code' => [
+                'required',
+                Rule::unique('breeder', 'code')->ignore($request->id)
+            ]
         ]);
+
         Agent::where('id', $request->id)->update([
             'name' => $request->name,
             'location' => $request->location,
             'website' => $request->website,
             'owner' => $request->owner,
-            'code' => $request->code,
+            'code' => Str::upper($request->code),
         ]);
 
         return redirect('/CMS/agent');

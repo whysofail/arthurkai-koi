@@ -23,19 +23,10 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
+
     public function index()
     {
-        $koi = Koi::count();
-        $variety = Variety::count();
-        $bloodline = Bloodline::count();
-        $breeder = Breeder::count();
-        $agent = Agent::count();
-
-        return view('arthurkaikoiadmin.homemenu', compact('koi', 'variety', 'bloodline', 'breeder', 'agent'));
+        return redirect('/CMS/dashboard');
     }
+
 }
