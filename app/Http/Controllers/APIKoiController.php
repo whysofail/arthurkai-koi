@@ -7,6 +7,7 @@ use App\Models\Koi;
 use App\Models\Variety;
 use App\Models\Breeder;
 use App\Models\ContactUs;
+use App\Models\News;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Builder;
@@ -211,5 +212,30 @@ class APIKoiController extends Controller
         //
     }
 
+    public function news(Request $request)
+    {
+        $news = News::latest()->paginate(10);
+
+        return response()->json([
+            'data' => $news,
+            'message' => 'News fetched successfully',
+        ]);
+    }
+
+    public function newsDetails($slug)
+    {
+        $news = News::where('slug', $slug)->first();
+
+        if (!$news) {
+            return response()->json([
+                'message' => 'News not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'data' => $news,
+            'message' => 'News details fetched successfully',
+        ]);
+    }
 
 }
