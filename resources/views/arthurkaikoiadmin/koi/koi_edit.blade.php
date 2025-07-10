@@ -526,88 +526,126 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="col-sm-12 mt-3">
                                             <label>Trophy</label><br>
-                                            @php
-                                                // Split the trophy string by '|' to get an array of trophy filenames
-                                                $trophies = explode('|', $k->trophy);
-                                            @endphp
+                                            <div class="form-group">
+                                                {{-- Existing Trophies --}}
+                                                @if (!empty($k->trophy))
+                                                    @php $trophies = explode('|', $k->trophy); @endphp
+                                                    @foreach ($trophies as $trophy)
+                                                        @if (!empty($trophy))
+                                                            <div class="my-2 trophy-item">
+                                                                <img src="{{ asset('img/koi/trophy/' . $trophy) }}"
+                                                                    width="125" class="img-thumbnail img-thumbnailt">
+                                                                <div class="mt-1">
+                                                                    <input type="file"
+                                                                        class="form-control-file edit-trophy"
+                                                                        name="edit_trophy_{{ $loop->index }}"
+                                                                        accept="image/*" style="display: none;">
+                                                                    <button type="button"
+                                                                        class="btn btn-primary btn-sm edit-trophy-button"
+                                                                        data-target="input[name='edit_trophy_{{ $loop->index }}']">Edit</button>
+                                                                    <button type="button"
+                                                                        class="btn btn-danger btn-sm remove-trophy"
+                                                                        data-trophy="{{ $trophy }}">Remove</button>
+                                                                    <span class="trophy-filename d-block mt-1 text-muted"
+                                                                        style="font-size: 0.8rem;">{{ $trophy }}</span>
+                                                                    <input type="hidden" name="existing_trophies[]"
+                                                                        value="{{ $trophy }}">
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @else
+                                                    <p>No trophy document provided</p>
+                                                @endif
 
-                                            @forelse ($trophies as $index => $trophy)
-                                                <div class="trophy-item">
-                                                    @if (!empty($trophy))
-                                                        <img width="125" class="img-thumbnail mb-2"
-                                                            src="{{ asset('img/koi/trophy/' . trim($trophy)) }}"
-                                                            alt="Trophy Image">
-                                                    @else
-                                                        <span>No Trophy</span>
-                                                    @endif
-
-                                                    <div class="custom-file">
-                                                        <input type="file" class="edit-trophy custom-file-input"
-                                                            name="trophy" accept="image/*"
-                                                            id="trophy_{{ $index }}"
-                                                            onchange="updateTrophyLabel(event, {{ $index }})">
-                                                        <label class="custom-file-label" for="trophy_{{ $index }}"
-                                                            id="labelTrophy_{{ $index }}">
-                                                            {{ $trophy ?? 'No file chosen' }}
-                                                        </label>
+                                                {{-- Button to Add New Trophy --}}
+                                                <div
+                                                    class="input-group realprocodeLT control-group lst incrementLT justify-content-end mt-2">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-success btn-clickLT" type="button">
+                                                            <i class="glyphicon glyphicon-plus"></i> Add Trophy
+                                                        </button>
                                                     </div>
                                                 </div>
-                                            @empty
-                                                <div class="custom-file">
-                                                    <input type="file" class="edit-trophy custom-file-input"
-                                                        name="trophy" accept="image/*" id="trophy_0"
-                                                        onchange="updateTrophyLabel(event, 0)">
-                                                    <label class="custom-file-label" for="trophy_0" id="labelTrophy_0">
-                                                        No file chosen
-                                                    </label>
-                                                </div>
-                                            @endforelse
-                                        </div>
 
+                                                {{-- Hidden Clone Template for New Trophy Input --}}
+                                                <div class="cloneLT d-none">
+                                                    <div
+                                                        class="realprocodeLT control-group lst input-group mt-2 align-items-center">
+                                                        <input type="file" name="link_trophy[]" class="form-control"
+                                                            accept="image/*" onchange="link_trophy(event)">
+                                                        <div class="input-group-btn">
+                                                            <button class="btn btn-danger" type="button">
+                                                                <i class="glyphicon glyphicon-remove"></i> Remove
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="col-sm-12 mt-3">
                                             <label>Certificate</label><br>
-                                            @php
-                                                // Split the certificate string by '|' to get an array of certificate filenames
-                                                $certificates = explode('|', $k->certificate);
-                                            @endphp
+                                            <div class="form-group">
+                                                @if (!empty($k->certificate))
+                                                    @php $certificates = explode('|', $k->certificate); @endphp
+                                                    @foreach ($certificates as $certificate)
+                                                        @if (!empty($certificate))
+                                                            <div class="my-2 certificate-item">
+                                                                <img src="{{ asset('img/koi/certificate/' . $certificate) }}"
+                                                                    width="125" class="img-thumbnail img-thumbnailc">
+                                                                <div class="mt-1">
+                                                                    <input type="file"
+                                                                        class="form-control-file edit-certificate"
+                                                                        name="edit_certificate_{{ $loop->index }}"
+                                                                        accept="image/*" style="display: none;">
+                                                                    <button type="button"
+                                                                        class="btn btn-primary btn-sm edit-certificate-button"
+                                                                        data-target="input[name='edit_certificate_{{ $loop->index }}']">Edit</button>
+                                                                    <button type="button"
+                                                                        class="btn btn-danger btn-sm remove-certificate"
+                                                                        data-certificate="{{ $certificate }}">Remove</button>
+                                                                    <span
+                                                                        class="certificate-filename d-block mt-1 text-muted"
+                                                                        style="font-size: 0.8rem;">{{ $certificate }}</span>
+                                                                    <input type="hidden" name="existing_certificates[]"
+                                                                        value="{{ $certificate }}">
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @else
+                                                    <p>No certificate images provided</p>
+                                                @endif
 
-                                            @forelse ($certificates as $index => $certificate)
-                                                <div class="certificate-item">
-                                                    @if (!empty($certificate))
-                                                        <img width="125" class="img-thumbnail mb-2"
-                                                            src="{{ asset('img/koi/certificate/' . trim($certificate)) }}"
-                                                            alt="Certificate Image">
-                                                    @else
-                                                        <span>No Certificate</span>
-                                                    @endif
-
-                                                    <div class="custom-file">
-                                                        <input type="file" class="edit-certificate custom-file-input"
-                                                            name="certificate" accept="image/*"
-                                                            id="certificate_{{ $index }}"
-                                                            onchange="updateCertificateLabel(event, {{ $index }})">
-                                                        <label class="custom-file-label"
-                                                            for="certificate_{{ $index }}"
-                                                            id="labelCertificate_{{ $index }}">
-                                                            {{ $certificate ?? 'No file chosen' }}
-                                                        </label>
+                                                {{-- Button to Add New Certificate --}}
+                                                <div
+                                                    class="input-group realprocodeLC control-group lst incrementLC justify-content-end mt-2">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-success btn-clickLC" type="button">
+                                                            <i class="glyphicon glyphicon-plus"></i> Add Certificate
+                                                        </button>
                                                     </div>
                                                 </div>
-                                            @empty
-                                                <div class="custom-file">
-                                                    <input type="file" class="edit-certificate custom-file-input"
-                                                        name="certificate" accept="image/*" id="certificate_0"
-                                                        onchange="updateCertificateLabel(event, 0)">
-                                                    <label class="custom-file-label" for="certificate_0"
-                                                        id="labelCertificate_0">
-                                                        No file chosen
-                                                    </label>
+
+                                                {{-- Hidden Clone Template for New Certificate Input --}}
+                                                <div class="cloneLC d-none">
+                                                    <div
+                                                        class="realprocodeLC control-group lst input-group mt-2 align-items-center">
+                                                        <input type="file" name="link_certificate[]"
+                                                            class="form-control" accept="image/*"
+                                                            onchange="previewImage(event, '.img-thumbnailc')">
+                                                        <div class="input-group-btn">
+                                                            <button class="btn btn-danger" type="button">
+                                                                <i class="glyphicon glyphicon-remove"></i> Remove
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            @endforelse
+                                            </div>
                                         </div>
+
 
                                         <h2>Additional Information</h2>
                                         <hr>
@@ -702,27 +740,6 @@
     <!-- Select2 -->
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script>
-        function updateTrophyLabel(event, index) {
-            const file = event.target.files[0];
-            const label = document.getElementById('labelTrophy_' + index);
-
-            if (file) {
-                label.textContent = file.name; // Update label with file name
-            } else {
-                // If no file is selected (or file is removed), keep the original label
-                label.textContent = 'No file chosen';
-            }
-        }
-
-
-        function updateCertificateLabel(event, index) {
-            const fileName = event.target.files[0]?.name || 'No file chosen';
-            const label = document.getElementById('labelCertificate_' + index);
-            label.textContent = fileName;
-        }
-
-
-
         // Function to format Rupiah
         function formatRupiah(angka, prefix) {
             var number_string = angka.replace(/[^,\d]/g, '').toString(),
@@ -810,394 +827,287 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle "Edit" button click to trigger file input
-            document.querySelectorAll('.edit-photo-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    // Find the associated file input
-                    const targetSelector = this.getAttribute('data-target');
-                    console.log(targetSelector);
-                    const fileInput = document.querySelector(targetSelector);
-                    console.log(fileInput)
-                    if (fileInput) {
-                        fileInput.click(); // Trigger the file input click
-                    }
+            const koiForm = document.getElementById('koiForm');
+
+            // === 🖼️ Unified Edit Preview Handler ===
+            function bindEditHandlers({
+                buttonClass,
+                inputClass,
+                itemClass,
+                previewSelector,
+                filenameSelector,
+                isVideo = false
+            }) {
+                document.querySelectorAll(buttonClass).forEach(button => {
+                    button.addEventListener('click', function() {
+                        const targetSelector = this.getAttribute('data-target');
+                        const fileInput = document.querySelector(targetSelector);
+                        if (fileInput) fileInput.click();
+                    });
                 });
-            });
 
-            // Handle file input change to update photo preview
-            document.querySelectorAll('.edit-photo').forEach(input => {
-                input.addEventListener('change', function() {
-                    const file = this.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const photoItem = input.closest('.photo-item');
-                            const img = photoItem.querySelector('img');
-                            const filenameSpan = photoItem.querySelector('.photo-filename');
-
-                            img.src = e.target.result; // Update image preview
-                            filenameSpan.textContent = file.name; // Update filename
+                document.querySelectorAll(inputClass).forEach(input => {
+                    input.addEventListener('change', function() {
+                        const file = this.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const container = input.closest(itemClass);
+                                const preview = container.querySelector(previewSelector);
+                                const filenameSpan = container.querySelector(filenameSelector);
+                                if (isVideo) {
+                                    preview.src = e.target.result;
+                                    preview.load();
+                                } else {
+                                    preview.src = e.target.result;
+                                }
+                                if (filenameSpan) filenameSpan.textContent = file.name;
+                            };
+                            reader.readAsDataURL(file);
                         }
-                        reader.readAsDataURL(file);
-                    }
+                    });
                 });
+            }
+
+            // === ❌ Remove Handlers ===
+            function bindRemoveHandlers({
+                buttonClass,
+                itemClass,
+                dataAttr,
+                hiddenName
+            }) {
+                document.querySelectorAll(buttonClass).forEach(button => {
+                    button.addEventListener('click', function() {
+                        const item = this.closest(itemClass);
+                        const value = this.getAttribute(dataAttr);
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = hiddenName + '[]';
+                        input.value = value;
+                        koiForm.appendChild(input);
+                        item.remove();
+                    });
+                });
+            }
+
+            // === 📂 Clone + Remove Handlers ===
+            function setupCloneHandlers() {
+                const mappings = [{
+                        button: '.btn-clickLP',
+                        clone: '.cloneLP',
+                        target: '.incrementLP'
+                    },
+                    {
+                        button: '.btn-clickLV',
+                        clone: '.cloneLV',
+                        target: '.incrementLV'
+                    },
+                    {
+                        button: '.btn-clickPH',
+                        clone: '.clonePH',
+                        target: '.incrementPH'
+                    },
+                    {
+                        button: '.btn-clickLT',
+                        clone: '.cloneLT',
+                        target: '.incrementLT'
+                    },
+                    {
+                        button: '.btn-clickLC',
+                        clone: '.cloneLC',
+                        target: '.incrementLC'
+                    },
+                ];
+
+                mappings.forEach(({
+                    button,
+                    clone,
+                    target
+                }) => {
+                    $(button).on('click', function() {
+                        const newInput = $(clone).children().first().clone();
+                        newInput.find('input[type="file"]').val('');
+                        $(target).append(newInput);
+                    });
+                });
+
+                // Remove buttons
+                $("body").on("click", ".realprocodeLP .btn-danger", function() {
+                    $(this).closest(".realprocodeLP").remove();
+                });
+                $("body").on("click", ".realprocodeLV .btn-danger", function() {
+                    $(this).closest(".realprocodeLV").remove();
+                });
+                $("body").on("click", ".realprocodePH .btn-danger", function() {
+                    $(this).closest(".realprocodePH").remove();
+                });
+                $("body").on("click", ".realprocodeLT .btn-danger", function() {
+                    $(this).closest(".realprocodeLT").remove();
+                });
+                $("body").on("click", ".realprocodeLC .btn-danger", function() {
+                    $(this).closest(".realprocodeLC").remove();
+                });
+            }
+
+            // === 🖼️ Custom Preview Functions (for new uploads) ===
+            function previewImage(event, targetClass) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const output = event.target.closest('.form-group, .input-group').querySelector(targetClass);
+                    if (output) output.src = reader.result;
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            }
+
+            window.photohighlight = (e) => previewImage(e, '.img-thumbnailh');
+            window.Imagelinkphoto = (e) => previewImage(e, '.img-thumbnailp');
+            window.link_video = (e) => previewImage(e, '.img-thumbnailv');
+            window.link_trophy = (e) => previewImage(e, '.img-thumbnailt');
+
+            // === 🔗 Bind All Edit Sections ===
+            bindEditHandlers({
+                buttonClass: '.edit-photo-button',
+                inputClass: '.edit-photo',
+                itemClass: '.photo-item',
+                previewSelector: 'img',
+                filenameSelector: '.photo-filename',
             });
 
-            // Handle photo removal
-            document.querySelectorAll('.remove-photo').forEach(button => {
-                button.addEventListener('click', function() {
-                    const photoItem = this.closest('.photo-item');
-                    const photo = this.getAttribute('data-photo');
-
-                    // Add hidden input to mark this photo for removal
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'remove_photos[]';
-                    input.value = photo;
-                    document.getElementById('koiForm').appendChild(input);
-
-                    // Remove the photo item from the DOM
-                    photoItem.remove();
-                });
+            bindEditHandlers({
+                buttonClass: '.edit-video-button',
+                inputClass: '.edit-video',
+                itemClass: '.video-item',
+                previewSelector: 'video',
+                filenameSelector: '#spanLinkVideo',
+                isVideo: true,
             });
 
-            document.querySelectorAll('.edit-video-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    const targetInput = document.querySelector(button.getAttribute('data-target'));
-                    if (targetInput) {
-                        targetInput.click();
-                    }
-                });
+            bindEditHandlers({
+                buttonClass: '.edit-trophy-button',
+                inputClass: '.edit-trophy',
+                itemClass: '.trophy-item',
+                previewSelector: 'img',
+                filenameSelector: '.trophy-filename',
             });
 
-
-            document.querySelectorAll('.edit-video').forEach(input => {
-                input.addEventListener('change', function() {
-                    const file = this.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const videoItem = input.closest(
-                                '.my-2'); // Assuming each video container has this class
-                            const video = videoItem.querySelector('video');
-                            const filenameSpan = videoItem.querySelector('#spanLinkVideo');
-
-                            video.src = e.target.result; // Update video preview
-                            filenameSpan.textContent = file.name; // Update filename
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
+            bindEditHandlers({
+                buttonClass: '.edit-certificate-button',
+                inputClass: '.edit-certificate',
+                itemClass: '.certificate-item',
+                previewSelector: 'img',
+                filenameSelector: '.certificate-filename',
             });
 
-
-            // Handle photo removal
-            document.querySelectorAll('.remove-video').forEach(button => {
-                button.addEventListener('click', function() {
-                    const videoItem = this.closest('.video-item');
-                    const video = this.getAttribute('data-video');
-
-                    // Add hidden input to mark this video for removal
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'remove_videos[]';
-                    input.value = video;
-                    document.getElementById('koiForm').appendChild(input);
-
-                    // Remove the video item from the DOM
-                    videoItem.remove();
-                });
+            // === 🔗 Bind All Remove Sections ===
+            bindRemoveHandlers({
+                buttonClass: '.remove-photo',
+                itemClass: '.photo-item',
+                dataAttr: 'data-photo',
+                hiddenName: 'remove_photos',
             });
+
+            bindRemoveHandlers({
+                buttonClass: '.remove-video',
+                itemClass: '.video-item',
+                dataAttr: 'data-video',
+                hiddenName: 'remove_videos',
+            });
+
+            bindRemoveHandlers({
+                buttonClass: '.remove-trophy',
+                itemClass: '.trophy-item',
+                dataAttr: 'data-trophy',
+                hiddenName: 'remove_trophies',
+            });
+
+            bindRemoveHandlers({
+                buttonClass: '.remove-certificate',
+                itemClass: '.certificate-item',
+                dataAttr: 'data-certificate',
+                hiddenName: 'remove_certificates',
+            });
+
+            // 🔁 Set up clone buttons
+            setupCloneHandlers();
         });
     </script>
 
+
     <script>
-        function photohighlight(event) {
-            var reader = new FileReader();
-            reader.onload = function() {
-                var output = event.target.parentElement.parentElement.parentElement.querySelector('.img-thumbnailh');
-                output.src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-
-        function Imagelinkphoto(event) {
-            var reader = new FileReader();
-            reader.onload = function() {
-                var output = event.target.parentElement.parentElement.parentElement.querySelector('.img-thumbnailp');
-                output.src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-
-        function link_video(event) {
-            var reader = new FileReader();
-            reader.onload = function() {
-                var output = event.target.parentElement.parentElement.parentElement.querySelector('.img-thumbnailv');
-                output.src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-
-        $(document).ready(function() {
-            $(".btn-clickPH").click(function() {
-                var lsthmtl = $(".clonePH").html();
-                $(".incrementPH").after(lsthmtl);
-            });
-            $("body").on("click", ".btn-danger", function() {
-                $(this).parents(".realprocodePH").remove();
-            });
-        });
-
-        $(document).ready(function() {
-            $(".btn-clickLP").click(function() {
-                // Clone the template
-                var newInput = $(".cloneLP").children().first().clone(); // Clone the first child
-                newInput.find('input[type="file"]').val(''); // Clear the value of the input
-                $(".incrementLP").append(newInput); // Append the cloned input below the existing ones
-            });
-
-            $("body").on("click", ".btn-danger", function() {
-                $(this).closest(".realprocodeLP").remove(); // Remove the specific input group
-            });
-        });
-
-
-        $(document).ready(function() {
-            $("body").on("click", ".remove-photo", function() {
-                $(this).parents(".photo-item").remove();
-            });
-        });
-
-
-        $(document).ready(function() {
-            $(".btn-clickLV").click(function() {
-                var lsthmtl = $(".cloneLV").html();
-                $(".incrementLV").after(lsthmtl);
-            });
-            $("body").on("click", ".btn-danger", function() {
-                $(this).parents(".realprocodeLV").remove();
-            });
-        });
-
-
-
-        $('#link_video').on('change', function() {
-            //get the file name
-            var fileName = $(this).val();
-            //replace the "Choose a file" label
-            $(this).next('.custom-file-label').html(fileName);
-        });
-
-        var promoImagelinkvideo = function(event) {
-            var outputourBrands = document.getElementById('link_video');
-            outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-            outputourBrands.onload = function() {
-                URL.revokeObjectURL(outputourBrands.src) // free memory
-            }
-        };
-
-        $('#photo_highlight').on('change', function() {
-            //get the file name
-            var fileName = $(this).val();
-            //replace the "Choose a file" label
-            $(this).next('.custom-file-label').html(fileName);
-        });
-
-
-        $('#link_photo').on('change', function() {
-            //get the file name
-            var fileName = $(this).val();
-            //replace the "Choose a file" label
-            $(this).next('.custom-file-label').html(fileName);
-        });
-
-        var Imagelinkphoto = function(event) {
-            var outputourBrands = document.getElementById('link_photo');
-            outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-            outputourBrands.onload = function() {
-                URL.revokeObjectURL(outputourBrands.src) // free memory
-            }
-        };
-
-        $('#link_trophy').on('change', function() {
-            //get the file name
-            var fileName = $(this).val();
-            //replace the "Choose a file" label
-            $(this).next('.custom-file-label').html(fileName);
-        });
-
-        var Imagelinktrophy = function(event) {
-            var outputourBrands = document.getElementById('link_trophy');
-            outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-            outputourBrands.onload = function() {
-                URL.revokeObjectURL(outputourBrands.src) // free memory
-            }
-        };
-
-        $('#link_certificate').on('change', function() {
-            //get the file name
-            var fileName = $(this).val();
-            //replace the "Choose a file" label
-            $(this).next('.custom-file-label').html(fileName);
-        });
-
-        var Imagelinkcertificate = function(event) {
-            var outputourBrands = document.getElementById('link_certificate');
-            outputourBrands.src = URL.createObjectURL(event.target.files[0]);
-            outputourBrands.onload = function() {
-                URL.revokeObjectURL(outputourBrands.src) // free memory
-            }
-        };
-
-        $('#description').summernote({
-            height: 635,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear']],
-                ['font', ['strikethrough', 'superscript', 'subscript']],
-                ['font', ['fontsize', 'color']],
-                ['font', ['fontname']],
-                ['para', ['ul', 'ol', 'listStyles', 'paragraph']],
-                ['height', ['height']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture', 'video']],
-                ['history', ['undo', 'redo']],
-                ['view', ['codeview', 'fullscreen', 'findnreplace']],
-                ['help', ['help']]
-            ],
-        });
-
-        $('.select2').select2()
-
-        //Initialize Select2 Elements
-        $('.select2bs4').select2({
-            theme: 'bootstrap4'
-        })
-
-
-        /* Fungsi */
+        // --- 💰 Currency Formatting ---
         function formatRupiah(angka, prefix) {
-            var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+            const number_string = angka.replace(/[^,\d]/g, '').toString();
+            const split = number_string.split(',');
+            const sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            const ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
             if (ribuan) {
-                separator = sisa ? '.' : '';
+                const separator = sisa ? '.' : '';
                 rupiah += separator + ribuan.join('.');
             }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix ? prefix + rupiah : rupiah;
         }
 
         function formatJPY(angka, prefix) {
-            var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                jpy = split[0].substr(0, sisa),
-                yen = split[0].substr(sisa).match(/\d{3}/gi);
+            const number_string = angka.replace(/[^,\d]/g, '').toString();
+            const split = number_string.split(',');
+            const sisa = split[0].length % 3;
+            let jpy = split[0].substr(0, sisa);
+            const yen = split[0].substr(sisa).match(/\d{3}/gi);
 
-            if (yen) {
-                separator = sisa ? '' : '';
-                jpy += separator + yen.join('');
-            }
-
-            jpy = split[1] != undefined ? jpy + ',' + split[1] : jpy;
-            return prefix == undefined ? jpy : (jpy ? '¥ ' + jpy : '');
+            if (yen) jpy += yen.join('');
+            jpy = split[1] !== undefined ? jpy + ',' + split[1] : jpy;
+            return prefix ? prefix + jpy : jpy;
         }
 
-        var rupiahpsidr = document.getElementById('pricesell_idr');
-        rupiahpsidr.addEventListener('keyup', function(e) {
-            rupiahpsidr.value = formatRupiah(this.value, 'Rp. ');
-        });
-
-        var rupiahpsjpy = document.getElementById('pricesell_jpy');
-        rupiahpsjpy.addEventListener('keyup', function(e) {
-            rupiahpsjpy.value = formatJPY(this.value, '¥ ');
-        });
-
-        var rupiahpbidr = document.getElementById('pricebuy_idr');
-        rupiahpbidr.addEventListener('keyup', function(e) {
-            rupiahpbidr.value = formatRupiah(this.value, 'Rp. ');
-        });
-
-        var rupiahpbjpy = document.getElementById('pricebuy_jpy');
-        rupiahpbjpy.addEventListener('keyup', function(e) {
-            rupiahpbjpy.value = formatJPY(this.value, '¥ ');
-        });
-    </script>
-    <script>
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $(document).ready(function() {
-            $('#year').change(function() {
-                let year = $(this).val();
-                let id = $('#id').val();
-
-                $.ajax({
-                    url: "{{ route('cmsgetyear') }}",
-                    method: 'GET', // Menggunakan metode GET
-                    data: {
-                        id: id,
-                        year: year,
-
-                    },
-                    dataType: 'json',
-                    success: function(data) {
-                        console.log(data)
-                        if (data.length > 0) {
-                            $('#koi_sequence').val(data[0].koi_sequence)
-                            data.forEach(function(item) {
-                                $('#id_history').val(item.id_history);
-                                $('#id').val(item.id);
-                                $('#size').val(item.size);
-                                $('#hagent').val(item.hagent);
-                                $('#kep_loc').val(item.kep_loc);
-                                $('#pricesell_idr').val(item.pricesell_idr);
-                                $('#pricesell_jpy').val(item.pricesell_jpy);
-                                $('#photo_highlight').val(item.photo_highlight);
-                                $('#photo_highlight').attr("src",
-                                    "img/koi/photo_highlight/".item.photo_highlight);
-                                $('#photo').val(item.photo);
-                                $('#link_photo').attr("src", "img/koi/link_photo/".item
-                                    .link_photo);
-                                $('#link_video').val(item.link_video);
-                                $('#link_video').attr("src", "img/koi/link_video/".item
-                                    .link_video);
-                                $('#link_trophy').val(item.link_trophy);
-                                $('#link_trophy').attr("src", "img/koi/link_trophy/"
-                                    .item.link_trophy);
-                                $('#name_trophy').val(item.name_trophy);
-                                $('#link_certificate').val(item.link_certificate);
-                                $('#link_certificate').attr("src",
-                                    "img/koi/link_certificate/".item
-                                    .link_certificate);
-                                $('#name_certificate').val(item.name_certificate);
-                                $('#buyer_name').val(item.buyer_name);
-                                $('#death_date').val(item.death_date);
-                                $('#death_note').val(item.death_note);
-                                $('#koi_sequence').val(item.koi_sequence);
-                            });
-                        } else {
-                            // Jika data kosong, kosongkan nilai dari semua elemen
-                            $('#size, #hagent, #kep_loc, #pricesell_idr, #pricesell_jpy, #photo_highlight_input, #link_photo, #link_video, #link_trophy, #name_trophy, #link_certificate, #name_certificate, #buyer_name, #death_date, #death_note, #id_history, #koi_sequence')
-                                .val('');
-                            $('#photo_highlight, #link_photo, #link_video, #link_trophy, #link_certificate')
-                                .attr('src', '');
-                        }
-                    },
-                    error: function(err) {
-                        console.log(err);
-                    }
-                });
+        function setupCurrencyInputs() {
+            $('#pricesell_idr').on('keyup', function() {
+                this.value = formatRupiah(this.value, 'Rp. ');
             });
+            $('#pricesell_jpy').on('keyup', function() {
+                this.value = formatJPY(this.value, '¥ ');
+            });
+            $('#pricebuy_idr').on('keyup', function() {
+                this.value = formatRupiah(this.value, 'Rp. ');
+            });
+            $('#pricebuy_jpy').on('keyup', function() {
+                this.value = formatJPY(this.value, '¥ ');
+            });
+        }
+
+        // --- ✍️ WYSIWYG + Selects ---
+        function initUIEditors() {
+            $('#description').summernote({
+                height: 635,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['font', ['fontsize', 'color']],
+                    ['font', ['fontname']],
+                    ['para', ['ul', 'ol', 'listStyles', 'paragraph']],
+                    ['height', ['height']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['history', ['undo', 'redo']],
+                    ['view', ['codeview', 'fullscreen', 'findnreplace']],
+                    ['help', ['help']]
+                ],
+            });
+
+            $('.select2').select2();
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+        }
+
+        // --- 🚀 Initialize Everything ---
+        $(document).ready(() => {
+            setupCloneHandlers();
+            setupCurrencyInputs();
+            initUIEditors();
         });
     </script>
     <script>
@@ -1231,5 +1141,6 @@
             dateFormat: "Y-m-d" // or your preferred format
         });
     </script>
+
 
 @endsection

@@ -248,6 +248,48 @@
     {{-- Toast --}}
     @include('partials.toast.error')
 
+    <script>
+        @if (session('toast_success'))
+            $(document).Toasts('create', {
+                class: 'bg-success',
+                title: 'Success',
+                body: '{{ session('toast_success') }}',
+                autohide: true,
+                delay: 4000,
+            });
+        @endif
+
+        @if (session('toast_error'))
+            $(document).Toasts('create', {
+                class: 'bg-danger',
+                title: 'Error',
+                body: '{{ session('toast_error') }}',
+                autohide: true,
+                delay: 5000,
+            });
+        @endif
+
+        @if (session('toast_info'))
+            $(document).Toasts('create', {
+                class: 'bg-info',
+                title: 'Notice',
+                body: '{{ session('toast_info') }}',
+                autohide: true,
+                delay: 4000,
+            });
+        @endif
+
+        @if (session('toast_warning'))
+            $(document).Toasts('create', {
+                class: 'bg-warning',
+                title: 'Warning',
+                body: '{{ session('toast_warning') }}',
+                autohide: true,
+                delay: 5000,
+            });
+        @endif
+    </script>
+
 
 </body>
 

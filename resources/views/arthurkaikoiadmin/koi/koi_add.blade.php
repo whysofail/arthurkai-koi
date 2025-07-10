@@ -399,27 +399,85 @@
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
-                                        <div class="input-group row">
-                                            <label for="link_trophy" class="col-sm-2 col-form-label">Trophy File</label>
-                                            <div class="col-sm-10">
-                                                <input type="file" class="form-control" name="link_trophy"
-                                                    value="{{ old('link_trophy') }}" id="link_trophy"
-                                                    style="height: auto !important;" accept="image/*">
+                                        <div class="col-sm-12" style="margin-top: 10px">
+                                            <h2>Koi Trophy</h2>
+                                            <hr>
+                                            <div class="input-group row">
+                                                <label for="link_photo" class="col-sm-2 col-form-label pt-4">Link
+                                                    Trophy</label>
+                                                <div class="col-sm-10" id="satu">
+                                                    <div class="form-group">
+                                                        <img width="125" id="link_photo" class="img-thumbnailp">
+                                                        <div
+                                                            class="input-group realprocodeLT control-group lst incrementLT">
+                                                            <input type="file" name="link_trophy[]"
+                                                                class="myfrm form-control"
+                                                                onchange="Imagelinkphoto(event)" accept="image/*">
+                                                            <div class="input-group-btn">
+                                                                <button class="btn btn-success btn-clickLT"
+                                                                    type="button"><i
+                                                                        class="fldemo glyphicon glyphicon-plus"></i>Add</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="cloneLT hide" style="display: none;">
+                                                            <div class="realprocodeLT control-group lst input-group"
+                                                                style="margin-top:10px">
+                                                                <input type="file" name="link_trophy[]"
+                                                                    class="myfrm form-control"
+                                                                    onchange="Imagelinkphoto(event)">
+                                                                <div class="input-group-btn">
+                                                                    <button class="btn btn-danger" type="button"><i
+                                                                            class="fldemo glyphicon glyphicon-remove"></i>
+                                                                        Remove</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="col-sm-12" style="margin-top: 10px">
-                                        <div class="input-group row">
-                                            <label for="link_certificate" class="col-sm-2 col-form-label">
-                                                Certificate File</label>
-                                            <div class="col-sm-10">
-                                                <input type="file" class="form-control" name="link_certificate"
-                                                    value="{{ old('link_certificate') }}" id="link_certificate"
-                                                    style="height: auto !important;">
+                                        <div class="col-sm-12" style="margin-top: 10px">
+                                            <h2>Koi Certificate</h2>
+                                            <hr>
+                                            <div class="input-group row">
+                                                <label for="link_certificate" class="col-sm-2 col-form-label pt-4">Link
+                                                    Certificate</label>
+                                                <div class="col-sm-10" id="satu">
+                                                    <div class="form-group">
+                                                        <img width="125" id="link_photo" class="img-thumbnailp">
+                                                        <div
+                                                            class="input-group realprocodeLC control-group lst incrementLC">
+                                                            <input type="file" name="link_certificate[]"
+                                                                class="myfrm form-control"
+                                                                onchange="Imagelinkphoto(event)" accept="image/*">
+                                                            <div class="input-group-btn">
+                                                                <button class="btn btn-success btn-clickLC"
+                                                                    type="button"><i
+                                                                        class="fldemo glyphicon glyphicon-plus"></i>Add</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="cloneLC hide" style="display: none;">
+                                                            <div class="realprocodeLC control-group lst input-group"
+                                                                style="margin-top:10px">
+                                                                <input type="file" name="link_certificate[]"
+                                                                    class="myfrm form-control"
+                                                                    onchange="Imagelinkphoto(event)">
+                                                                <div class="input-group-btn">
+                                                                    <button class="btn btn-danger" type="button"><i
+                                                                            class="fldemo glyphicon glyphicon-remove"></i>
+                                                                        Remove</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="col-sm-12" style="margin-top: 15px">
                                         <h2>Additional Information</h2>
                                         <hr>
@@ -728,6 +786,27 @@
             });
             $("body").on("click", ".btn-danger", function() {
                 $(this).parents(".realprocodePH").remove();
+            });
+        });
+
+        $(document).ready(function() {
+            $(".btn-clickLC").click(function() {
+                var lsthmtl = $(".cloneLC").html();
+                $(".incrementLC").after(lsthmtl);
+            });
+            $("body").on("click", ".btn-danger", function() {
+                $(this).parents(".realprocodeLC").remove();
+            });
+        });
+
+
+        $(document).ready(function() {
+            $(".btn-clickLT").click(function() {
+                var lsthmtl = $(".cloneLT").html();
+                $(".incrementLT").after(lsthmtl);
+            });
+            $("body").on("click", ".btn-danger", function() {
+                $(this).parents(".realprocodeLT").remove();
             });
         });
 

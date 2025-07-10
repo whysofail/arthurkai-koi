@@ -1100,8 +1100,8 @@ class C_ArthurkaikoiAdmin extends Controller
         // Handle file uploads
         $image = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
         $imagev = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
-        $link_trophys = $this->handleSingleFileUpload($request->file('link_trophy'), 'img/koi/trophy');
-        $link_certificates = $this->handleSingleFileUpload($request->file('link_certificate'), 'img/koi/certificate');
+        $link_trophys = $this->handleFileUploads($request->file('link_trophy'), 'img/koi/trophy');
+        $link_certificates = $this->handleFileUploads($request->file('link_certificate'), 'img/koi/certificate');
         // Create Koi record    
         $koi = Koi::create([
             'code' => $koiCode,
@@ -1123,8 +1123,8 @@ class C_ArthurkaikoiAdmin extends Controller
             'location' => $request->location,
             'photo' => implode('|', $image),
             'video' => implode('|', $imagev),
-            'trophy' => $link_trophys,
-            'certificate' => $link_certificates,
+            'trophy' => implode('|', $link_trophys),
+            'certificate' => implode('|', $link_certificates),
             'status' => $request->status,
             'sell_date' => $request->sell_date,
             'buyer_name' => $request->buyer_name,
@@ -1423,105 +1423,98 @@ class C_ArthurkaikoiAdmin extends Controller
     public function koiupdate(Request $request)
     {
 
-        // Fetch the existing Koi record
         $koi = Koi::findOrFail($request->id);
 
-        // Retrieve and format current photos
-        $currentPhotos = array_filter(explode('|', trim($koi->photo))); // Trim whitespace and remove empty elements
-        Log::info('Current Photos', ['currentPhotos' => $currentPhotos]);
+        // === Load Current Media ===
+        $currentPhotos = array_filter(explode('|', trim($koi->photo ?? '')));
+        $currentVideos = array_filter(explode('|', trim($koi->video ?? '')));
+        $currentTrophy = array_filter(explode('|', trim($koi->trophy ?? '')));
+        $currentCertificate = array_filter(explode('|', trim($koi->certificate ?? '')));
 
-        $updatedPhotos = $currentPhotos; // Start with existing photos
+        $updatedPhotos = $currentPhotos;
+        $updatedVideos = $currentVideos;
+        $updatedTrophy = $currentTrophy;
+        $updatedCertificate = $currentCertificate;
 
-        // Retrieve and format current videos
-        $currentVideos = array_filter(explode('|', trim($koi->video))); // Trim whitespace and remove empty elements
-        $updatedVideos = $currentVideos; // Start with existing videos
-
-        // Handle new file uploads
+        // === Upload New Files ===
         $newPhotos = $this->handleFileUploads($request->file('link_photo'), 'img/koi/photo');
-        Log::info('New Photos Uploaded', ['newPhotos' => $newPhotos]);
-
         $newVideos = $this->handleFileUploads($request->file('link_video'), 'img/koi/video');
-        Log::info('New Videos Uploaded', ['newVideos' => $newVideos]);
-
-        $linkTrophies = $this->handleSingleFileUpload($request->file('trophy'), 'img/koi/trophy');
-        Log::info('Trophy Uploaded', ['trophy' => $linkTrophies]);
-
-        $linkCertificates = $this->handleSingleFileUpload($request->file('certificate'), 'img/koi/certificate');
-        Log::info('Certificate Uploaded', ['certificate' => $linkCertificates]);
+        $newTrophies = $this->handleFileUploads($request->file('link_trophy'), 'img/koi/trophy');
+        $newCertificates = $this->handleFileUploads($request->file('link_certificate'), 'img/koi/certificate');
 
 
-        // Process edited photos
+        // return dd($currentCertificate, $newCertificates);
+        // === Replace Edited Photos ===
         foreach ($request->file() as $key => $file) {
             if (preg_match('/edit_photo_(\d+)/', $key, $matches) && $file->isValid()) {
                 $index = (int) $matches[1];
                 if (isset($updatedPhotos[$index])) {
-                    // Handle the upload and replace the corresponding photo
                     $newPhotoPath = $this->handleSingleFileUpload($file, 'img/koi/photo');
                     if ($newPhotoPath) {
-                        $updatedPhotos[$index] = basename($newPhotoPath); // New photo filename
-                        Log::info('Replaced Photo', ['index' => $index, 'newPhotoPath' => $newPhotoPath]);
+                        $updatedPhotos[$index] = basename($newPhotoPath);
                     }
                 }
             }
         }
 
-        // Handle photo removals
-        if ($request->has('remove_photos')) {
-            $updatedPhotos = array_diff($updatedPhotos, $request->remove_photos);
-            Log::info('Photos Marked for Removal', ['remove_photos' => $request->remove_photos]);
-
-        }
-
-        // Finalize photo array by merging with new photos
-        $finalPhotos = array_merge($updatedPhotos, $newPhotos);
-        Log::info('Final Photos Array', ['finalPhotos' => $finalPhotos]);
-
-        // Process edited videos
+        // === Replace Edited Videos ===
         foreach ($request->file() as $key => $file) {
             if (preg_match('/edit_video_(\d+)/', $key, $matches) && $file->isValid()) {
                 $index = (int) $matches[1];
                 if (isset($updatedVideos[$index])) {
-                    // Handle the upload and replace the corresponding video
                     $newVideoPath = $this->handleSingleFileUpload($file, 'img/koi/video');
                     if ($newVideoPath) {
-                        $updatedVideos[$index] = basename($newVideoPath); // New video filename
+                        $updatedVideos[$index] = basename($newVideoPath);
                     }
                 }
             }
         }
 
-        // Handle video removals
+        // === Handle Removals ===
+        if ($request->has('remove_photos')) {
+            $updatedPhotos = array_diff($updatedPhotos, $request->remove_photos);
+        }
         if ($request->has('remove_videos')) {
             $updatedVideos = array_diff($updatedVideos, $request->remove_videos);
         }
+        if ($request->has('remove_trophies')) {
+            $updatedTrophy = array_diff($updatedTrophy, $request->remove_trophies);
+        }
+        if ($request->has('remove_certificates')) {
+            $updatedCertificate = array_diff($updatedCertificate, $request->remove_certificates);
+        }
 
-        // Finalize video array by merging with new videos
+        // === Finalize Media Arrays ===
+        $finalPhotos = array_merge($updatedPhotos, $newPhotos);
         $finalVideos = array_merge($updatedVideos, $newVideos);
+        $finalTrophies = array_merge($updatedTrophy, $newTrophies);
+        $finalCertificates = array_merge($updatedCertificate, $newCertificates);
 
-        // Remove unused photos and videos for the current Koi
+        // === Cleanup Old Files ===
         $this->removeUnusedFilesForCurrentKoi('img/koi/photo', $currentPhotos, $finalPhotos);
         $this->removeUnusedFilesForCurrentKoi('img/koi/video', $currentVideos, $finalVideos);
+        $this->removeUnusedFilesForCurrentKoi('img/koi/trophy', $currentTrophy, $finalTrophies);
+        $this->removeUnusedFilesForCurrentKoi('img/koi/certificate', $currentCertificate, $finalCertificates);
 
-        // Update Koi code if base parameters change
+        // === Update Koi Code if Needed ===
         $variety = Variety::find($request->variety);
         $breeder = Breeder::find($request->breeder);
-        $purchaseDate = !empty($koi->purchase_date)
-            ? Carbon::createFromFormat('Y-m', substr($koi->purchase_date, 0, 7))->format('my')
-            : '';
+        $purchaseDate = $koi->purchase_date ? Carbon::createFromFormat('Y-m', substr($koi->purchase_date, 0, 7))->format('my') : '';
         $requestPurchaseDate = $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->format('my') : '';
-        $isPurchaseDateChanged = $requestPurchaseDate != $purchaseDate;
+
         $isVarietyChanged = $koi->variety_id != $request->variety;
         $isBreederChanged = $koi->breeder_id != $request->breeder;
+        $isPurchaseDateChanged = $requestPurchaseDate !== $purchaseDate;
 
         if ($isVarietyChanged || $isBreederChanged || $isPurchaseDateChanged) {
             $sequence = $this->generateSequence($variety, $breeder, $requestPurchaseDate);
-            $koiCode = $variety->code . $breeder->code . ($requestPurchaseDate != '' ? $requestPurchaseDate : '0000') . $sequence;
+            $koiCode = $variety->code . $breeder->code . ($requestPurchaseDate ?: '0000') . $sequence;
         } else {
             $koiCode = $koi->code;
             $sequence = $koi->sequence;
         }
 
-        // Update Koi record
+        // === Update DB Record ===
         $koi->update([
             'code' => $koiCode,
             'nickname' => $request->nickname,
@@ -1535,16 +1528,15 @@ class C_ArthurkaikoiAdmin extends Controller
             'purchase_date' => $request->purchase_date ? Carbon::createFromFormat('Y-m', $request->purchase_date)->startOfMonth() : null,
             'seller' => $request->seller ?? '',
             'handler' => $request->handler ?? '',
-            'price_buy_idr' => isset($request->pricebuy_idr) ? (int) $request->pricebuy_idr : $koi->price_buy_idr,
-            'price_buy_jpy' => isset($request->pricebuy_jpy) ? (int) $request->pricebuy_jpy : $koi->price_buy_jpy,
-            'price_sell_idr' => isset($request->pricesell_idr) ? (int) $request->pricesell_idr : $koi->price_sell_idr,
-            'price_sell_jpy' => isset($request->pricesell_jpy) ? (int) $request->pricesell_jpy : $koi->price_sell_jpy,
-
+            'price_buy_idr' => $request->pricebuy_idr ?? $koi->price_buy_idr,
+            'price_buy_jpy' => $request->pricebuy_jpy ?? $koi->price_buy_jpy,
+            'price_sell_idr' => $request->pricesell_idr ?? $koi->price_sell_idr,
+            'price_sell_jpy' => $request->pricesell_jpy ?? $koi->price_sell_jpy,
             'location' => $request->location,
             'photo' => implode('|', $finalPhotos),
             'video' => implode('|', $finalVideos),
-            'trophy' => $linkTrophies ?: $koi->trophy,
-            'certificate' => $linkCertificates ?: $koi->certificate,
+            'trophy' => implode('|', $finalTrophies),
+            'certificate' => implode('|', $finalCertificates),
             'status' => $request->status,
             'death_date' => $request->death_date ? Carbon::createFromFormat('Y-m-d', $request->death_date) : null,
             'sell_date' => $request->date_sell ? Carbon::createFromFormat('Y-m-d', $request->date_sell) : null,
@@ -1552,12 +1544,11 @@ class C_ArthurkaikoiAdmin extends Controller
             'death_note' => $request->death_note,
         ]);
 
-        $entryUrl = $request->input('entryUrl', route('cmskoi') . '?layout=grid'); // Fallback if no entryUrl is provided
+        return redirect('/CMS/koi/detail/' . $koi->id . '?entryUrl=' . urlencode($request->input('entryUrl', route('cmskoi') . '?layout=grid')))
+            ->with('toast_success', 'Koi record updated successfully.');
 
-        // Ensure we're using the correct entryUrl when redirecting back to the edit page
-        return redirect('/CMS/koi/detail/' . $koi->id . '?entryUrl=' . urlencode($entryUrl))
-            ->with('success', 'Koi record updated successfully.');
     }
+
 
     /**
      * Remove unused files from the specified directory for the current koi.
