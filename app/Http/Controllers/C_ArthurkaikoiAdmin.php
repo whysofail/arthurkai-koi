@@ -1445,6 +1445,8 @@ class C_ArthurkaikoiAdmin extends Controller
 
         // return dd($currentCertificate, $newCertificates);
         // === Replace Edited Photos ===
+
+
         foreach ($request->file() as $key => $file) {
             if (preg_match('/edit_photo_(\d+)/', $key, $matches) && $file->isValid()) {
                 $index = (int) $matches[1];
@@ -1469,6 +1471,34 @@ class C_ArthurkaikoiAdmin extends Controller
                 }
             }
         }
+        // === Replace Edited Trophies ===
+        foreach ($request->file() as $key => $file) {
+            if (preg_match('/edit_trophy_(\d+)/', $key, $matches) && $file->isValid()) {
+                $index = (int) $matches[1];
+                if (isset($updatedTrophy[$index])) {
+                    $newTrophyPath = $this->handleSingleFileUpload($file, 'img/koi/trophy');
+                    if ($newTrophyPath) {
+                        $updatedTrophy[$index] = basename($newTrophyPath);
+                    }
+                }
+            }
+        }
+
+        // === Replace Edited Certificates ===
+        foreach ($request->file() as $key => $file) {
+            if (preg_match('/edit_certificate_(\d+)/', $key, $matches) && $file->isValid()) {
+                $index = (int) $matches[1];
+                if (isset($updatedCertificate[$index])) {
+                    $newCertificatePath = $this->handleSingleFileUpload($file, 'img/koi/certificate');
+                    if ($newCertificatePath) {
+                        $updatedCertificate[$index] = basename($newCertificatePath);
+                    }
+                }
+            }
+        }
+
+        // TODO : Make new function to handle replacement.
+
 
         // === Handle Removals ===
         if ($request->has('remove_photos')) {
