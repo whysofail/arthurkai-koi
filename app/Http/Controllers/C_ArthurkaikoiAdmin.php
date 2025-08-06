@@ -25,6 +25,7 @@ use App\Models\News;
 use App\Models\OurCollection;
 use App\Enums\PostType;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 
 use Illuminate\Support\Facades\Log;
@@ -47,74 +48,57 @@ class C_ArthurkaikoiAdmin extends Controller
         $agent = Agent::count();
         return view('arthurkaikoiadmin.homemenu', compact('koi', 'variety', 'bloodline', 'breeder', 'agent'));
     }
-
-    ### KOI ###
     public function koi(Request $request)
     {
-        // Get the layout, search query, pagination count, key-value filters, and sorting options
         $layout = $request->query('layout', 'list');
         $search = $request->query('search');
-        $perPage = $request->query('per_page', 8); // Default to 8 items per page
+        $perPage = $request->query('per_page', 8);
         $filters = $request->query('filters', []);
-        $value = $request->query('value'); // Filter value
-        $sortby = $request->query('sort_by'); // Sorting key
-        $order = $request->query('order', 'asc'); // Default to ascending order
+        $value = $request->query('value');
+        $sortby = $request->query('sort_by');
+        $order = $request->query('order', 'asc');
 
-        // Validate layout
         $validLayouts = ['list', 'grid'];
         $layout = in_array($layout, $validLayouts) ? $layout : 'list';
 
-        $koitotal = Koi::count();
         $koiQuery = Koi::query();
 
-        // Apply search filters if search term is provided
         if ($search) {
             $this->applySearchFilters($koiQuery, $search);
         }
 
         if ($filters) {
             foreach ($filters as $filter) {
-                if (
-                    array_key_exists('key', $filter) &&
-                    $filter['key'] !== null &&
-                    $filter['key'] !== '' &&
-                    array_key_exists('value', $filter)
-                ) {
+                if (!empty($filter['key']) && array_key_exists('value', $filter)) {
                     $this->applyKeyValueFilters($koiQuery, $filter['key'], $filter['value']);
                 }
             }
         }
 
-
-        // Apply ordering if sortby and order are provided
         if ($sortby && $order) {
             $this->applyOrdering($koiQuery, $sortby, $order);
         }
-        // Paginate the results based on layout and per-page selection
+
         if ($layout === 'list') {
             $koi = $koiQuery->get();
-            return view('arthurkaikoiadmin.dashboard', compact('koitotal', 'koi', 'layout', 'perPage'));
+            $koitotal = $koi->count();
         } else {
-            // Conditionally apply 'latest()' if no search, key-value filters, or sorting are applied
             if (!$search && !$filters && !$value && !$sortby) {
-                $koiQuery->orderBy('koi.updated_at', 'desc');
+                $koiQuery->orderBy('updated_at', 'desc');
             }
-            // return dd($koiQuery->toSql());
-            // Apply pagination with appends for query parameters
-            $koi = $koiQuery->paginate($perPage)->appends([
-                'layout' => $layout,
-                'search' => $search,
-                'per_page' => $perPage,
-                'filters' => $filters,
-                'value' => $value,
-                'sort_by' => $sortby,
-                'order' => $order
-            ]);
 
-
-            return view('arthurkaikoiadmin.koi.koi_grid', compact('koitotal', 'koi', 'layout', 'search', 'perPage'));
+            $koi = $koiQuery->paginate($perPage)->appends($request->query());
+            $koitotal = $koiQuery->count();
         }
+
+        $view = $layout === 'list'
+            ? 'arthurkaikoiadmin.dashboard'
+            : 'arthurkaikoiadmin.koi.koi_grid';
+
+        return view($view, compact('koitotal', 'koi', 'layout', 'search', 'perPage'));
     }
+
+
 
 
     private function applySearchFilters($query, $search)
